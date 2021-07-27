@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "tim.h": "c",
+    "main.h": "c",
+    "tsm.h": "c",
+    "mpu.h": "c",
+    "cstdio": "c",
+    "stdint.h": "c",
+    "dma.h": "c",
+    "xutility": "c",
+    "settings.h": "c"
+  }
+}
