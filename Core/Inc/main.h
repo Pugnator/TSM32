@@ -64,6 +64,8 @@ void Error_Handler(void);
 #define NSS_GPIO_Port GPIOC
 #define BATTERY_ADC_Pin GPIO_PIN_0
 #define BATTERY_ADC_GPIO_Port GPIOA
+#define J1850RX_Pin GPIO_PIN_1
+#define J1850RX_GPIO_Port GPIOA
 #define J1850TX_Pin GPIO_PIN_2
 #define J1850TX_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_0

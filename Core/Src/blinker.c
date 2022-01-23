@@ -6,12 +6,12 @@
 bool left_blinker_enabled = false;
 bool right_blinker_enabled = false;
 bool hazard_blinker_enabled = false;
-bool overtake_mode = false;
+bool overtakeMode = false;
 bool blink_pause = false;
 
 uint32_t blink_counter = 0;
 
-void blinker_leftside_toggle()
+void blinkerLeftsideToggle()
 {
   if (hazard_blinker_enabled)
   {
@@ -33,7 +33,7 @@ void blinker_leftside_off()
   left_blinker_enabled = false;
 }
 
-void blinker_rightside_toggle()
+void blinkerRightsideToggle()
 {
   if (hazard_blinker_enabled)
   {
@@ -122,7 +122,7 @@ void blinker_worker()
     return;
   }
   
-  if (overtake_mode && OVERTAKE_BLINK_COUNT <= blink_counter)
+  if (overtakeMode && OVERTAKE_BLINK_COUNT <= blink_counter)
   {
     blinker_leftside_off();
     blinker_rightside_off();
@@ -142,7 +142,7 @@ void blinker_worker()
   blink_pause = !blink_pause;
 }
 
-void blinker_hazard_toggle()
+void blinkerHazardToggle()
 {
   Print("Hazard toggle\r\n");
   hazard_blinker_enabled = !hazard_blinker_enabled;

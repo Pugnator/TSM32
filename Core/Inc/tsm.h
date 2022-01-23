@@ -25,13 +25,13 @@
 extern bool left_blinker_enabled;
 extern bool right_blinker_enabled;
 extern bool hazard_blinker_enabled;
-extern bool overtake_mode;
+extern bool overtakeMode;
 
 void blinker_leftside_off();
-void blinker_leftside_toggle();
+void blinkerLeftsideToggle();
 void blinker_rightside_off();
-void blinker_rightside_toggle();
-void blinker_hazard_toggle();
+void blinkerRightsideToggle();
+void blinkerHazardToggle();
 void blinker_worker();
 
 void kalmanInit(float mea_e, float est_e, float q);
