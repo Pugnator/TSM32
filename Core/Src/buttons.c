@@ -96,15 +96,22 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       stopTim4();
       PrintF("RT pressed for %u\r\n", pressTime);
       rightButtonState = true;
-      blinkerRightsideToggle();      
+      blinkerRightsideToggle();
       waitLongPress = true;
       startTim4();
     }
   }
   // J1850 service timer, 200us
   else if (TIM3 == htim->Instance)
-  {   
+  {
     messageCollected = true;
+    if (rxQueryNotEmpty)
+    {
+      HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+      HAL_Delay(2000);
+      HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+      rxQueryNotEmpty = false;
+    }
     __HAL_TIM_SET_COUNTER(&htim3, 0);
     HAL_TIM_Base_Stop_IT(&htim3);
   }

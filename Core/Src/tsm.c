@@ -9,7 +9,7 @@ void HAL_IncTick(void)
   uwTick += uwTickFreq;
 }
 
-void tsm_run()
+void tsmRunApp()
 {
   PrintF("TSM %s %s (%s) started\r\n", VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
   // kalmanInit(2, 2, 0.01);
@@ -27,14 +27,15 @@ void tsm_run()
   // blinker_leftside_off();
   // blinker_rightside_off();
   // mems_setup();
-
+  HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+  
   while (1)
   {
     if (messageCollected)
     {
       printFrameJ1850();
       messageReset();
-      messageCollected = false;
+      messageCollected = false;     
     }
     // blinker_worker();
     // HAL_ADC_Start_IT(&hadc1);

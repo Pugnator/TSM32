@@ -17,10 +17,12 @@ typedef union j1850Header
 typedef enum sourceType
 {
   ECM = 0x10,
+  GAUGE = 0x10,
+  TSM = 0x40,
   RPM = 0x1B,
   SPEED = 0x29,
-  TSM = 0xDA,
-  CHECK_ENGINE = 0x88,
+  BLINKER = 0xDA,
+  MIL = 0x88,
   GEAR = 0x3b,
   TEMP = 0x49,
   ODO = 0x69,
@@ -32,9 +34,18 @@ typedef enum sourceType
 
 } sourceType;
 
-extern uint8_t payloadJ1850[12];
+#define PAYLOAD_SIZE 64
+
+extern uint8_t payloadJ1850[PAYLOAD_SIZE];
+extern uint8_t sendBufJ1850[PAYLOAD_SIZE];
 extern volatile uint8_t byteCounter;
 extern volatile bool messageCollected;
+extern volatile bool rxQueryNotEmpty;
+
+void printFrameJ1850();
+void sendCommandJ1850(const uint8_t *data, size_t size);
+uint8_t j1850Crc(uint8_t *msg_buf, int8_t nbytes);
+void messageReset();
 
 // define J1850 VPW timing requirements in accordance with SAE J1850 standard
 // all width times in us
@@ -74,7 +85,3 @@ extern volatile bool messageCollected;
 #define RX_IFR_LONG_MIN 96  // minimum long in frame respond pulse time
 #define RX_IFR_LONG_MAX 163 // maximum long in frame respond pulse time
 
-void j1850_break();
-void printFrameJ1850();
-uint8_t j1850Crc(uint8_t *msg_buf, int8_t nbytes);
-void messageReset();

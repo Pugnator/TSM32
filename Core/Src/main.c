@@ -28,6 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "dwtdelay.h"
 
 /* USER CODE END Includes */
 
@@ -54,7 +55,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-void tsm_run();
+void tsmRunApp();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -97,14 +98,15 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
-  MX_TIM2_Init();
+  MX_TIM2_Init();  
   /* USER CODE BEGIN 2 */
-
+  DWT_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  tsm_run();
+  tsmRunApp();
+
   while (1)
   {
     /* USER CODE END WHILE */

@@ -8,6 +8,7 @@ static volatile uint32_t fallEdgeTime = 0;
 static volatile bool isRisingEdge = true;
 volatile bool messageStarted = false;
 volatile bool messageCollected = false;
+volatile bool rxQueryNotEmpty = false;
 volatile uint8_t byteCounter = 0;
 static volatile uint8_t bitCounter = 0;
 static volatile uint32_t frameCounter = 0;
@@ -15,7 +16,8 @@ static volatile uint32_t badFrameCounter = 0;
 
 #define BIT_PER_BYTE 7
 
-uint8_t payloadJ1850[12] = {0};
+uint8_t payloadJ1850[PAYLOAD_SIZE] = {0};
+uint8_t sendBufJ1850[PAYLOAD_SIZE] = {0};
 
 static void stop_tim3()
 {
@@ -40,23 +42,23 @@ const char *sourceToStr(sourceType type)
     return "RPMs";
   case SPEED:
     return "Speedometer";
-  case TSM:
+  case BLINKER:
     return "Turn signal module";
-  case CHECK_ENGINE:
-    return "Check engine light";
+  case MIL:
+    return "Malfunction Indicator Lamp";
   case TEMP:
     return "Engine temperature";
   case ODO:
     return "Odometer";
   case FUEL:
     return "Fuel gauge";
-   case ENGSTAT:
+  case ENGSTAT:
     return "Engine status";
-   case NET:
+  case NET:
     return "Network Control";
-   case SECURITY:
+  case SECURITY:
     return "Vehicle Security";
-   case VSC:
+  case VSC:
     return "Vehicle Speed Control";
   default:
     return "Unknown source";
@@ -65,24 +67,42 @@ const char *sourceToStr(sourceType type)
 
 void printFrameJ1850()
 {
+  if (byteCounter <= 4)
+  {
+    return;
+  }
   uint8_t crc = j1850Crc(payloadJ1850, byteCounter - 1);
-  PrintF("Frame #%u [CRC: 0x%02X] %s\r\n", frameCounter, crc, crc == payloadJ1850[byteCounter - 1] ? "VALID" : "IVALID!");
+  PrintF("Frame #%u [CRC: 0x%02X] %s\r\n", frameCounter, crc, crc == payloadJ1850[byteCounter - 1] ? "VALID" : "INVALID!");
   for (uint8_t i = 0; i < byteCounter; i++)
   {
     PrintF("0x%02X ", payloadJ1850[i]);
   }
   Print("\r\n");
-  if (crc != payloadJ1850[byteCounter - 1] || byteCounter < 3)
+  if (crc != payloadJ1850[byteCounter - 1])
   {
     return;
   }
   j1850Header h;
   h.header = payloadJ1850[0];
+  /*
+  } else if ((x & 0xff0fffff) == 0x6c00f114) {
+      if (D) Log.d(TAG, "DTC clear request");
+    } else if ((x & 0xffff0fff) == 0x6cf10054) {
+      if (D) Log.d(TAG, "DTC clear reply");
+    } else
+  */
   PrintF("HEADER\r\nPriority: %u\r\n", h.priority);
   PrintF("%u bytes header\r\n", h.type ? 1 : 3);
   PrintF("Message to '%s'\r\n", sourceToStr(payloadJ1850[1]));
   PrintF("Message from '%s'\r\n", sourceToStr(payloadJ1850[2]));
   PrintF("*********************\r\n");
+
+  if (frameCounter == 100)
+  {    
+    //sendCommandJ1850(&m);
+  }
+  // RPM = (hex2dec(XX)*256+hex2dec(YY)) / 4
+  // KpH = (hex2dec(XX)*256+hex2dec(YY)) / 128
 }
 
 void messageReset()
@@ -93,6 +113,7 @@ void messageReset()
   messageStarted = false;
 }
 
+/* Thanks to B. Roadman's web site for this CRC code */
 uint8_t j1850Crc(uint8_t *msg_buf, int8_t nbytes)
 {
   if (0 == nbytes || 11 < nbytes)
@@ -135,10 +156,8 @@ static inline void onFallingEdge(TIM_HandleTypeDef *htim)
   // Start of Frame
   if (pulse <= RX_SOF_MAX && pulse > RX_SOF_MIN)
   {
-    // HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-    // HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
     frameCounter++;
-    // PrintF("Start Of Frame, %uus\r\n", pulse);
+    DEBUG_LOG("Start Of Frame, %uus\r\n", pulse);
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     messageStarted = true;
   }
@@ -149,12 +168,12 @@ static inline void onFallingEdge(TIM_HandleTypeDef *htim)
   }
   if (pulse <= RX_LONG_MAX && pulse > RX_LONG_MIN)
   {
-    // PrintF("Active 0, %uus\r\n", pulse);
+    DEBUG_LOG("Active 0, %uus\r\n", pulse);
     payloadJ1850[byteCounter] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
   }
   else if (pulse <= RX_SHORT_MAX && pulse > RX_SHORT_MIN)
   {
-    // PrintF("Active 1, %uus\r\n", pulse);
+    DEBUG_LOG("Active 1, %uus\r\n", pulse);
     payloadJ1850[byteCounter] |= 1UL << (BIT_PER_BYTE - bitCounter++);
   }
 }
@@ -171,29 +190,35 @@ static inline void onRisingEdge(TIM_HandleTypeDef *htim)
   uint32_t pulse = riseEdgeTime - fallEdgeTime;
   if (pulse > RX_IFS_MIN)
   {
-    // PrintF("\r\nIFS, %uus\r\n", pulse);
+    DEBUG_LOG("\r\nIFS, %uus\r\n", pulse);
     messageStarted = false;
   }
   else if (pulse > RX_EOF_MIN)
   {
-    PrintF("EOF, %uus\r\n", pulse);
+    DEBUG_LOG("EOF, %uus\r\n", pulse);
     messageStarted = false;
   }
   else if (RX_EOD_MAX >= pulse && pulse > RX_EOD_MIN)
   {
-    PrintF("EOD, %uus\r\n", pulse);
+    DEBUG_LOG("EOD, %uus\r\n", pulse);
     messageStarted = false;
   }
   else if (RX_LONG_MAX >= pulse && pulse > RX_LONG_MIN)
   {
-    // PrintF("Passive 1, %uus\r\n", pulse);
+    DEBUG_LOG("Passive 1, %uus\r\n", pulse);
     payloadJ1850[byteCounter] |= 1UL << (BIT_PER_BYTE - bitCounter++);
   }
   else if (RX_SHORT_MAX >= pulse && pulse > RX_SHORT_MIN)
   {
-    // PrintF("Passive 0, %uus\r\n", pulse);
+    DEBUG_LOG("Passive 0, %uus\r\n", pulse);
     payloadJ1850[byteCounter] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
   }
+}
+
+void sendCommandJ1850(const uint8_t *data, size_t size)
+{
+  memcpy(sendBufJ1850, data, size);
+  rxQueryNotEmpty = true;  
 }
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
@@ -228,13 +253,6 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
   {
     bitCounter = 0;
     byteCounter++;
-  }
-  assert(byteCounter < 11);
-}
-
-void j1850_break()
-{
-  HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, 1);
-  HAL_Delay(5);
-  HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, 0);
+  }   
+  assert(byteCounter < PAYLOAD_SIZE);
 }
