@@ -28,16 +28,19 @@ void tsmRunApp()
   // blinker_rightside_off();
   // mems_setup();
   HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-  
+
   while (1)
   {
+    HAL_GPIO_TogglePin(J1850TX_GPIO_Port, J1850TX_Pin);
+    /*
     if (messageCollected)
     {
       printFrameJ1850();
       messageReset();
       messageCollected = false;     
     }
-    // blinker_worker();
-    // HAL_ADC_Start_IT(&hadc1);
+    //blinker_worker();
+    //HAL_ADC_Start_IT(&hadc1);
+    */
   }
 }
