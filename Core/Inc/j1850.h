@@ -38,6 +38,7 @@ typedef enum sourceType
 
 extern uint8_t payloadJ1850[PAYLOAD_SIZE];
 extern uint8_t sendBufJ1850[PAYLOAD_SIZE];
+extern size_t sendBufLen;
 extern volatile uint8_t byteCounter;
 extern volatile bool messageCollected;
 extern volatile bool rxQueryNotEmpty;
@@ -84,4 +85,3 @@ void messageReset();
 #define RX_IFR_SHORT_MAX 96 // maximum short in frame respond pulse time
 #define RX_IFR_LONG_MIN 96  // minimum long in frame respond pulse time
 #define RX_IFR_LONG_MAX 163 // maximum long in frame respond pulse time
-

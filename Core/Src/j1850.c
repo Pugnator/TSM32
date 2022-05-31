@@ -18,15 +18,10 @@ static volatile uint32_t badFrameCounter = 0;
 
 uint8_t payloadJ1850[PAYLOAD_SIZE] = {0};
 uint8_t sendBufJ1850[PAYLOAD_SIZE] = {0};
-
-static void stop_tim3()
-{
-  HAL_TIM_Base_Stop_IT(&htim3);
-}
+size_t sendBufLen = 0;
 
 static void start_tim3()
 {
-  stop_tim3();
   __HAL_TIM_CLEAR_FLAG(&htim3, TIM_SR_UIF);
   __HAL_TIM_SET_COUNTER(&htim3, 0);
   HAL_TIM_Base_Start_IT(&htim3);
@@ -97,9 +92,10 @@ void printFrameJ1850()
   PrintF("Message from '%s'\r\n", sourceToStr(payloadJ1850[2]));
   PrintF("*********************\r\n");
 
-  if (frameCounter == 100)
-  {    
-    //sendCommandJ1850(&m);
+  if (frameCounter == 10)
+  {
+    const uint8_t msg[] = {0x6C, 0x10, 0xF1, 0x19, 0xF3};
+    // sendCommandJ1850(msg, 5);
   }
   // RPM = (hex2dec(XX)*256+hex2dec(YY)) / 4
   // KpH = (hex2dec(XX)*256+hex2dec(YY)) / 128
@@ -157,24 +153,30 @@ static inline void onFallingEdge(TIM_HandleTypeDef *htim)
   if (pulse <= RX_SOF_MAX && pulse > RX_SOF_MIN)
   {
     frameCounter++;
-    DEBUG_LOG("Start Of Frame, %uus\r\n", pulse);
+    PrintF("Start Of Frame, %uus\r\n", pulse);
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     messageStarted = true;
   }
 
   if (!messageStarted)
   {
+    //We saw no SOF and got something else here.
     return;
   }
+
   if (pulse <= RX_LONG_MAX && pulse > RX_LONG_MIN)
   {
     DEBUG_LOG("Active 0, %uus\r\n", pulse);
-    payloadJ1850[byteCounter] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
+    payloadJ1850[byteCounter] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));    
   }
   else if (pulse <= RX_SHORT_MAX && pulse > RX_SHORT_MIN)
   {
     DEBUG_LOG("Active 1, %uus\r\n", pulse);
     payloadJ1850[byteCounter] |= 1UL << (BIT_PER_BYTE - bitCounter++);
+  }
+  else
+  {
+    PrintF("Unknown signal. Active, %uus\r\n", pulse);
   }
 }
 
@@ -190,17 +192,17 @@ static inline void onRisingEdge(TIM_HandleTypeDef *htim)
   uint32_t pulse = riseEdgeTime - fallEdgeTime;
   if (pulse > RX_IFS_MIN)
   {
-    DEBUG_LOG("\r\nIFS, %uus\r\n", pulse);
+    PrintF("\r\nIFS, %uus\r\n", pulse);
     messageStarted = false;
   }
   else if (pulse > RX_EOF_MIN)
   {
-    DEBUG_LOG("EOF, %uus\r\n", pulse);
+    PrintF("\r\nEOF, %uus\r\n", pulse);
     messageStarted = false;
   }
   else if (RX_EOD_MAX >= pulse && pulse > RX_EOD_MIN)
   {
-    DEBUG_LOG("EOD, %uus\r\n", pulse);
+    PrintF("\r\nEOD, %uus\r\n", pulse);
     messageStarted = false;
   }
   else if (RX_LONG_MAX >= pulse && pulse > RX_LONG_MIN)
@@ -213,12 +215,26 @@ static inline void onRisingEdge(TIM_HandleTypeDef *htim)
     DEBUG_LOG("Passive 0, %uus\r\n", pulse);
     payloadJ1850[byteCounter] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
   }
+  else
+  {
+    PrintF("Unknown signal. Passive, %uus\r\n", pulse);
+  }
 }
 
 void sendCommandJ1850(const uint8_t *data, size_t size)
 {
+  sendBufLen = size;
   memcpy(sendBufJ1850, data, size);
-  rxQueryNotEmpty = true;  
+  // sendBufJ1850[sendBufLen] = j1850Crc(sendBufJ1850, sendBufLen);
+  // sendBufLen++;
+  Print("##########################\r\n");
+  Print("Sending message\r\n");
+  for (uint8_t i = 0; i < sendBufLen; i++)
+  {
+    PrintF("0x%02X ", sendBufJ1850[i]);
+  }
+  Print("\r\n##########################\r\n");
+  rxQueryNotEmpty = true;
 }
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
@@ -253,6 +269,6 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
   {
     bitCounter = 0;
     byteCounter++;
-  }   
+  }
   assert(byteCounter < PAYLOAD_SIZE);
 }

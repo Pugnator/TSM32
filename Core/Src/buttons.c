@@ -1,5 +1,6 @@
 #include "tsm.h"
 #include "j1850.h"
+#include "dwtdelay.h"
 
 static bool leftButtonState = true;
 static bool rightButtonState = true;
@@ -9,6 +10,8 @@ static uint32_t longPressConter = 0;
 
 uint32_t triggerTime = 0;
 #define MIN_PRESS_TIME 500
+
+inline void sendMessage();
 
 static void stopTim4()
 {
@@ -105,14 +108,64 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   else if (TIM3 == htim->Instance)
   {
     messageCollected = true;
+    HAL_GPIO_TogglePin(J1850TX_GPIO_Port, J1850TX_Pin);
     if (rxQueryNotEmpty)
     {
-      HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-      HAL_Delay(2000);
-      HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-      rxQueryNotEmpty = false;
+      sendMessage();
     }
-    __HAL_TIM_SET_COUNTER(&htim3, 0);
     HAL_TIM_Base_Stop_IT(&htim3);
   }
+}
+
+inline void sendMessage()
+{
+  bool bitActive = false;
+  HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+  DWT_Delay(TX_SOF);
+  HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+  for (int i = 0; i < sendBufLen; i++)
+  {
+    int bit = 7;
+    uint8_t temp = sendBufJ1850[i];
+    while (bit >= 0)
+    {
+      if (temp & 0x01)
+      {
+        // 1
+        // PrintF("bit %d is 1\n", bit);
+        if (bitActive)
+        {
+          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+          DWT_Delay(TX_SHORT);
+        }
+        else
+        {
+          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+          DWT_Delay(TX_LONG);
+        }
+      }
+      else
+      {
+        // 0
+        // PrintF("bit %d is 0\n", bit);
+        if (bitActive)
+        {
+          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+          DWT_Delay(TX_LONG);
+        }
+        else
+        {
+          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+          DWT_Delay(TX_SHORT);
+        }
+      }
+
+      bit--;
+      bitActive = !bitActive;
+      temp = temp >> 1;
+    }
+  }
+  HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+  rxQueryNotEmpty = false;
+  sendBufLen = 0;
 }
