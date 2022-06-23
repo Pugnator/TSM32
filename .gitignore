@@ -44,3 +44,6 @@ firmware/obj/
 firmware/bin/
 pics/
 *.d
+
+
+*.bak
