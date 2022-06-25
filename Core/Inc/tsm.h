@@ -36,7 +36,11 @@ void blinkerRightsideToggle();
 void blinkerHazardToggle();
 void blinker_worker();
 
+void enable_starter();
+void disable_starter();
+
 void kalmanInit(float mea_e, float est_e, float q);
+float updateEstimate(float mea);
 
 #ifdef __cplusplus
 }

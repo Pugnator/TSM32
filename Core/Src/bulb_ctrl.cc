@@ -1,0 +1,57 @@
+#include "tsm.h"
+#include "settings.h"
+
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+
+  static uint32_t running_voltage_count = 0;
+  static uint32_t stopped_voltage_count = 0;
+
+  uint8_t SIDEMARK_BRIGHTNESS = 10;
+
+
+  void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+  {
+    if (ADC1 == hadc->Instance)
+    {
+      if (hazard_blinker_enabled)
+      {
+        return;
+      }
+
+      uint32_t k = (uint32_t)updateEstimate(HAL_ADC_GetValue(&hadc1));
+
+      if (ADC_13V_VALUE <= k)
+      {
+        stopped_voltage_count = 0;
+        if (100 < running_voltage_count++)
+        {
+          disable_starter();
+          SIDEMARK_BRIGHTNESS = 10;
+        }
+      }
+      else
+      {
+        running_voltage_count = 0;
+        if (100 < stopped_voltage_count++)
+        {
+          enable_starter();
+          SIDEMARK_BRIGHTNESS = 0;
+        }
+      }
+      LEFT_PWM_OUT = left_blinker_enabled ? LEFT_PWM_OUT : SIDEMARK_BRIGHTNESS;
+      RIGHT_PWM_OUT = right_blinker_enabled ? RIGHT_PWM_OUT : SIDEMARK_BRIGHTNESS;
+    }
+  }
+
+  void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
+  {
+  }
+
+#ifdef __cplusplus
+}
+#endif

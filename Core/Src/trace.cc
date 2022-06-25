@@ -51,8 +51,8 @@ extern "C"
   }
 
   void _putchar(char character)
-  {    
-    HAL_UART_Transmit(&huart2, reinterpret_cast<uint8_t*>(&character), 1, 100);
+  {
+    HAL_UART_Transmit(&huart2, reinterpret_cast<uint8_t *>(&character), 1, 100);
   }
 
 #ifdef __cplusplus
