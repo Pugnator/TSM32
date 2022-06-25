@@ -1,5 +1,6 @@
 #include "tsm.h"
 #include "mpu.h"
+#include "usart.h"
 #include "j1850.h"
 #include <stdio.h>
 
@@ -16,6 +17,9 @@ void HAL_IncTick(void)
 
 void tsmRunApp()
 { 
+
+  Print("Test\r\n");
+  return;
   
   PrintF("TSM %s %s (%s) started\r\n", VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
@@ -23,6 +27,7 @@ void tsmRunApp()
   // eeprom_test();
   /*Battery watchdog*/
   HAL_ADC_Start(&hadc1);
+  
   /*J1850 logger*/
   HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_2);
   //SWO_Init(0x1, CPU_CORE_FREQUENCY_HZ);

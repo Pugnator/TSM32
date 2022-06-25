@@ -1,13 +1,14 @@
 #include "tsm.h"
-#include "usart.h"
 #include <stdio.h>
-#include <string.h>
+#include "usart.h"
+
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-void SWO_Init(uint32_t portBits, uint32_t cpuCoreFreqHz)
-{
+  void SWO_Init(uint32_t portBits, uint32_t cpuCoreFreqHz)
+  {
     uint32_t SWOSpeed = 64000;                              /* default 64k baud rate */
     uint32_t SWOPrescaler = (cpuCoreFreqHz / SWOSpeed) - 1; /* SWOSpeed in Hz, note that cpuCoreFreqHz is expected to be match the CPU core clock */
 
@@ -20,39 +21,40 @@ void SWO_Init(uint32_t portBits, uint32_t cpuCoreFreqHz)
     ITM->TER = portBits;                                                                               /* ITM Trace Enable Register. Enabled tracing on stimulus ports. One bit per stimulus port. */
     *((volatile unsigned *)(ITM_BASE + 0x01000)) = 0x400003FE;                                         /* DWT_CTRL */
     *((volatile unsigned *)(ITM_BASE + 0x40304)) = 0x00000100;                                         /* Formatter and Flush Control Register */
-}
+  }
 
-void SWO_PrintChar(char c, uint8_t portNo)
-{
+  void SWO_PrintChar(char c, uint8_t portNo)
+  {
     volatile int timeout;
 
     /* Check if Trace Control Register (ITM->TCR at 0xE0000E80) is set */
     if ((ITM->TCR & ITM_TCR_ITMENA_Msk) == 0)
-    {           /* check Trace Control Register if ITM trace is enabled*/
-        return; /* not enabled? */
+    {         /* check Trace Control Register if ITM trace is enabled*/
+      return; /* not enabled? */
     }
     /* Check if the requested channel stimulus port (ITM->TER at 0xE0000E00) is enabled */
     if ((ITM->TER & (1ul << portNo)) == 0)
-    {           /* check Trace Enable Register if requested port is enabled */
-        return; /* requested port not enabled? */
+    {         /* check Trace Enable Register if requested port is enabled */
+      return; /* requested port not enabled? */
     }
     timeout = 5000; /* arbitrary timeout value */
     while (ITM->PORT[0].u32 == 0)
     {
-        /* Wait until STIMx is ready, then send data */
-        timeout--;
-        if (timeout == 0)
-        {
-            return; /* not able to send */
-        }
+      /* Wait until STIMx is ready, then send data */
+      timeout--;
+      if (timeout == 0)
+      {
+        return; /* not able to send */
+      }
     }
     ITM->PORT[0].u16 = 0x08 | (c << 8);
-}
+  }
 
-void traceMsg(const char *msg)
-{
-    HAL_UART_Transmit(&huart1, (uint8_t *)msg, strlen(msg), 100);
-}
+  void _putchar(char character)
+  {    
+    HAL_UART_Transmit(&huart2, reinterpret_cast<uint8_t*>(&character), 1, 100);
+  }
+
 #ifdef __cplusplus
 }
 #endif
