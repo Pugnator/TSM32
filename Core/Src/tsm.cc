@@ -3,6 +3,10 @@
 #include "j1850.h"
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define CPU_CORE_FREQUENCY_HZ 100000000 
 
 void HAL_IncTick(void)
@@ -50,3 +54,7 @@ void tsmRunApp()
     
   }
 }
+
+#ifdef __cplusplus
+}
+#endif

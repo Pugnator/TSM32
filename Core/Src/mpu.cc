@@ -2,6 +2,10 @@
 #include "mpu.h"
 #include "settings.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if MEMS_ENABLED
 
 #define MPU9250_ADDRESS 0x69
@@ -134,3 +138,7 @@ void mems_setup()
   Print("MEMS disabled\r\n");
 #endif
 }
+
+#ifdef __cplusplus
+}
+#endif

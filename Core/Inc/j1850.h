@@ -1,6 +1,10 @@
 #pragma once
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef union j1850Header
 {
   struct
@@ -10,7 +14,7 @@ typedef union j1850Header
     uint8_t ifr : 1;
     uint8_t type : 1;
     uint8_t priority : 3;
-  };
+  }ctx;
   uint8_t header;
 } j1850Header;
 
@@ -85,3 +89,7 @@ void messageReset();
 #define RX_IFR_SHORT_MAX 96 // maximum short in frame respond pulse time
 #define RX_IFR_LONG_MIN 96  // minimum long in frame respond pulse time
 #define RX_IFR_LONG_MAX 163 // maximum long in frame respond pulse time
+
+#ifdef __cplusplus
+}
+#endif

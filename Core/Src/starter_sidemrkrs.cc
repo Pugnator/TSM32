@@ -2,6 +2,10 @@
 #include "settings.h"
 #include <math.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static float _err_measure;
 static float _err_estimate;
 static float _q;
@@ -108,3 +112,7 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
 {
 
 }
+
+#ifdef __cplusplus
+}
+#endif

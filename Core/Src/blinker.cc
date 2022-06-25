@@ -1,6 +1,10 @@
 #include "tsm.h"
 #include "settings.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //SAE J590b and associated standards specify 60 - 120 flashes per minute for turn signals, with 90 per minute as a target
 
 bool left_blinker_enabled = false;
@@ -152,3 +156,7 @@ void blinkerHazardToggle()
     left_blinker_enabled = false;
   }
 }
+
+#ifdef __cplusplus
+}
+#endif

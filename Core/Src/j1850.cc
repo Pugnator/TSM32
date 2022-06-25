@@ -3,6 +3,10 @@
 #include <string.h>
 #include <assert.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static volatile uint32_t riseEdgeTime = 0;
 static volatile uint32_t fallEdgeTime = 0;
 static volatile bool isRisingEdge = true;
@@ -86,15 +90,15 @@ void printFrameJ1850()
       if (D) Log.d(TAG, "DTC clear reply");
     } else
   */
-  PrintF("HEADER\r\nPriority: %u\r\n", h.priority);
-  PrintF("%u bytes header\r\n", h.type ? 1 : 3);
-  PrintF("Message to '%s'\r\n", sourceToStr(payloadJ1850[1]));
-  PrintF("Message from '%s'\r\n", sourceToStr(payloadJ1850[2]));
+  PrintF("HEADER\r\nPriority: %u\r\n", h.ctx.priority);
+  PrintF("%u bytes header\r\n", h.ctx.type ? 1 : 3);
+  PrintF("Message to '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[1])));
+  PrintF("Message from '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[2])));
   PrintF("*********************\r\n");
 
   if (frameCounter == 10)
   {
-    const uint8_t msg[] = {0x6C, 0x10, 0xF1, 0x19, 0xF3};
+    //const uint8_t msg[] = {0x6C, 0x10, 0xF1, 0x19, 0xF3};
     // sendCommandJ1850(msg, 5);
   }
   // RPM = (hex2dec(XX)*256+hex2dec(YY)) / 4
@@ -263,7 +267,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
     onFallingEdge(htim);
     isRisingEdge = true;
     __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_2, TIM_INPUTCHANNELPOLARITY_RISING);
-    start_tim3();
+    start_tim6();
   }
   if (bitCounter == 8)
   {
@@ -272,3 +276,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
   }
   assert(byteCounter < PAYLOAD_SIZE);
 }
+
+#ifdef __cplusplus
+}
+#endif

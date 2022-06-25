@@ -190,6 +190,11 @@
 #define MPU9250_SPIx_ADDR 0x00
 //////////////////////////////////////////////////////////////////////////
 //
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum MPU9250_GYRO_DLPF
 {
   MPU9250_GYRO_DLPF_250HZ = 0,
@@ -273,3 +278,6 @@ void mems_reset();
 void mems_setup();
 uint32_t mems_read_temp();
 void mems_read_all();
+#ifdef __cplusplus
+}
+#endif

@@ -20,6 +20,10 @@
 #define PRESSED (GPIO_PIN_RESET)
 #define DEPRESSED (GPIO_PIN_SET)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern bool left_blinker_enabled;
 extern bool right_blinker_enabled;
 extern bool hazard_blinker_enabled;
@@ -33,3 +37,7 @@ void blinkerHazardToggle();
 void blinker_worker();
 
 void kalmanInit(float mea_e, float est_e, float q);
+
+#ifdef __cplusplus
+}
+#endif

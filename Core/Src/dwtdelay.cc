@@ -23,6 +23,10 @@
 #include "stm32f4xx_hal.h" // change to whatever MCU you use
 #include "dwtdelay.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Initialization routine.
  * You might need to enable access to DWT registers on Cortex-M7
@@ -82,4 +86,8 @@ void DWT_Delay(uint32_t us) // microseconds
     ;
 }
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif

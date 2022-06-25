@@ -2,6 +2,10 @@
 #include "j1850.h"
 #include "dwtdelay.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static bool leftButtonState = true;
 static bool rightButtonState = true;
 
@@ -123,9 +127,9 @@ inline void sendMessage()
   HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
   DWT_Delay(TX_SOF);
   HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-  for (int i = 0; i < sendBufLen; i++)
+  for (size_t i = 0; i < sendBufLen; i++)
   {
-    int bit = 7;
+    size_t bit = 7;
     uint8_t temp = sendBufJ1850[i];
     while (bit >= 0)
     {
@@ -169,3 +173,7 @@ inline void sendMessage()
   rxQueryNotEmpty = false;
   sendBufLen = 0;
 }
+
+#ifdef __cplusplus
+}
+#endif

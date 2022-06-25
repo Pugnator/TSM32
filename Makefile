@@ -56,16 +56,8 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
-Core/Src/tsm.c \
-Core/Src/starter_sidemrkrs.c \
-Core/Src/j1850.c \
-Core/Src/blinker.c \
-Core/Src/eeprom.c \
-Core/Src/buttons.c \
-Core/Src/mpu.c \
 Core/Src/gpio.c \
 Core/Src/adc.c \
-Core/Src/dwtdelay.c \
 Core/Src/rtc.c \
 Core/Src/tim.c \
 Core/Src/i2c.c \
@@ -99,6 +91,14 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
 
 # C sources
 CPP_SOURCES =  \
+	Core/Src/starter_sidemrkrs.cc \
+	Core/Src/j1850.cc \
+	Core/Src/blinker.cc \
+	Core/Src/eeprom.cc \
+	Core/Src/buttons.cc \
+	Core/Src/mpu.cc \
+	Core/Src/tsm.cc \
+	Core/Src/dwtdelay.cc \
 	Core/Src/trace.cc
 
 # ASM sources
@@ -170,17 +170,18 @@ C_INCLUDES =  \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include
 
+CXXERRORS_TO_SKIP := -Wno-volatile
 
+CXXSTD := gnu++20 -pedantic -pedantic-errors $(CXXERRORS_TO_SKIP) -Werror
+CSTD := c11 -pedantic
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
-CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+CFLAGS+= $(MCU) --std=$(CSTD) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
-CPPFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+CXXFLAGS+= $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -flto
 
-ifeq ($(DEBUG), 1)
-CFLAGS += -g -gdwarf-2
-endif
+CXXFLAGS += --std=$(CXXSTD) -Wall -D_GNU_SOURCE -fno-rtti -fno-exceptions -fpermissive -fno-builtin
 
 
 # Generate dependency information
@@ -190,7 +191,7 @@ CFLAGS += -DVERSION_BUILD_DATE=\""$(BUILD_DATE)\"" \
           -DVERSION_TAG=\""$(BUILD_TAG)\"" \
           -DVERSION_BUILD=\""$(BUILD_INFO)\""
 
-CPPFLAGS += -DVERSION_BUILD_DATE=\""$(BUILD_DATE)\"" \
+CXXFLAGS += -DVERSION_BUILD_DATE=\""$(BUILD_DATE)\"" \
           -DVERSION_TAG=\""$(BUILD_TAG)\"" \
           -DVERSION_BUILD=\""$(BUILD_INFO)\""
 
@@ -230,7 +231,7 @@ $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
 $(BUILD_DIR)/%.o: %.cc Makefile | $(BUILD_DIR) 
-	$(CPP) -c $(CPPFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.cc=.lst)) $< -o $@
+	$(CPP) -c $(CXXFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.cc=.lst)) $< -o $@
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
