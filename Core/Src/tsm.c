@@ -1,8 +1,9 @@
 #include "tsm.h"
 #include "mpu.h"
 #include "j1850.h"
-#include "eeprom.h"
 #include <stdio.h>
+
+#define CPU_CORE_FREQUENCY_HZ 100000000 
 
 void HAL_IncTick(void)
 {
@@ -10,22 +11,26 @@ void HAL_IncTick(void)
 }
 
 void tsmRunApp()
-{
+{ 
+  
   PrintF("TSM %s %s (%s) started\r\n", VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
-  // kalmanInit(2, 2, 0.01);
+
+  kalmanInit(2, 2, 0.01);
   // eeprom_test();
   /*Battery watchdog*/
-  // HAL_ADC_Start(&hadc1);
+  HAL_ADC_Start(&hadc1);
   /*J1850 logger*/
-  HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
+  HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_2);
+  //SWO_Init(0x1, CPU_CORE_FREQUENCY_HZ);
+  //ITM_SendChar('a');
   /*Blinker bulb PWM*/
-  // HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
-  // HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
   /*Starter enable*/
-  // HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
 
-  // blinker_leftside_off();
-  // blinker_rightside_off();
+  blinker_leftside_off();
+  blinker_rightside_off();
   // mems_setup();
   HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
@@ -39,8 +44,9 @@ void tsmRunApp()
       messageReset();
       messageCollected = false;     
     }
-    //blinker_worker();
-    //HAL_ADC_Start_IT(&hadc1);
     */
+    blinker_worker();
+    //HAL_ADC_Start_IT(&hadc1);
+    
   }
 }

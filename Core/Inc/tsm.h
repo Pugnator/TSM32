@@ -4,21 +4,13 @@
 #include "tim.h"
 #include "adc.h"
 #include "gpio.h"
-#include "dma.h"
+//#include "dma.h"
 #include "stdint.h"
 #include <stdbool.h>
 #include <SEGGER_RTT.h>
 
-#define LOGGING_CHANNEL 0
+#include "trace.h"
 
-#ifdef NDEBUG
-#define DEBUG_LOG PrintF
-#else
-#define DEBUG_LOG(...)
-#endif
-
-#define Print(x) SEGGER_RTT_WriteString(LOGGING_CHANNEL, x)
-#define PrintF(...) SEGGER_RTT_printf(LOGGING_CHANNEL, ##__VA_ARGS__)
 
 #define LEFT_PWM_OUT (TIM1->CCR3)
 #define RIGHT_PWM_OUT (TIM1->CCR4)

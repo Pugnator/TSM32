@@ -20,11 +20,11 @@ uint8_t payloadJ1850[PAYLOAD_SIZE] = {0};
 uint8_t sendBufJ1850[PAYLOAD_SIZE] = {0};
 size_t sendBufLen = 0;
 
-static void start_tim3()
+static void start_tim6()
 {
-  __HAL_TIM_CLEAR_FLAG(&htim3, TIM_SR_UIF);
-  __HAL_TIM_SET_COUNTER(&htim3, 0);
-  HAL_TIM_Base_Start_IT(&htim3);
+  __HAL_TIM_CLEAR_FLAG(&htim6, TIM_SR_UIF);
+  __HAL_TIM_SET_COUNTER(&htim6, 0);
+  HAL_TIM_Base_Start_IT(&htim6);
 }
 
 const char *sourceToStr(sourceType type)
@@ -252,8 +252,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
   if (isRisingEdge)
   {
-    __HAL_TIM_SET_COUNTER(&htim3, 0);
-    HAL_TIM_Base_Stop_IT(&htim3);
+    __HAL_TIM_SET_COUNTER(&htim6, 0);
+    HAL_TIM_Base_Stop_IT(&htim6);
     onRisingEdge(htim);
     isRisingEdge = false;
     __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_2, TIM_INPUTCHANNELPOLARITY_FALLING);

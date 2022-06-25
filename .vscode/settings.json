@@ -8,6 +8,8 @@
     "stdint.h": "c",
     "dma.h": "c",
     "xutility": "c",
-    "settings.h": "c"
+    "settings.h": "c",
+    "eeprom.h": "c",
+    "segger_rtt.h": "c"
   }
 }

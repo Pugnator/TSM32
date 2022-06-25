@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f1xx_hal.h"
+#include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -58,10 +58,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define STARTER_RELAY_Pin GPIO_PIN_13
+#define STARTER_RELAY_Pin GPIO_PIN_0
 #define STARTER_RELAY_GPIO_Port GPIOC
-#define NSS_Pin GPIO_PIN_14
-#define NSS_GPIO_Port GPIOC
 #define BATTERY_ADC_Pin GPIO_PIN_0
 #define BATTERY_ADC_GPIO_Port GPIOA
 #define J1850RX_Pin GPIO_PIN_1
@@ -72,10 +70,8 @@ void Error_Handler(void);
 #define LED_GPIO_Port GPIOB
 #define RT_BUTTON_Pin GPIO_PIN_12
 #define RT_BUTTON_GPIO_Port GPIOB
-#define RT_BUTTON_EXTI_IRQn EXTI15_10_IRQn
 #define LT_BUTTON_Pin GPIO_PIN_13
 #define LT_BUTTON_GPIO_Port GPIOB
-#define LT_BUTTON_EXTI_IRQn EXTI15_10_IRQn
 #define LT_PWM_Pin GPIO_PIN_10
 #define LT_PWM_GPIO_Port GPIOA
 #define RT_PWM_Pin GPIO_PIN_11

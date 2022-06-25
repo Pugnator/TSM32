@@ -13,17 +13,17 @@ uint32_t triggerTime = 0;
 
 inline void sendMessage();
 
-static void stopTim4()
+static void stopTim9()
 {
-  HAL_TIM_Base_Stop_IT(&htim4);
+  HAL_TIM_Base_Stop_IT(&htim9);
 }
 
-static void startTim4()
+static void startTim9()
 {
-  stopTim4();
-  __HAL_TIM_CLEAR_FLAG(&htim4, TIM_SR_UIF);
-  __HAL_TIM_SET_COUNTER(&htim4, 0);
-  HAL_TIM_Base_Start_IT(&htim4);
+  stopTim9();
+  __HAL_TIM_CLEAR_FLAG(&htim9, TIM_SR_UIF);
+  __HAL_TIM_SET_COUNTER(&htim9, 0);
+  HAL_TIM_Base_Start_IT(&htim9);
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
@@ -32,12 +32,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   PrintF("Button pressed at %u\r\n", triggerTime);
   if (GPIO_Pin == LT_BUTTON_Pin && leftButtonState)
   {
-    startTim4();
+    startTim9();
     leftButtonState = false;
   }
   else if (GPIO_Pin == RT_BUTTON_Pin && rightButtonState)
   {
-    startTim4();
+    startTim9();
     rightButtonState = false;
   }
 }
@@ -46,7 +46,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   uint32_t eventTime = HAL_GetTick();
   uint32_t pressTime = eventTime - triggerTime;
-  if (TIM4 == htim->Instance)
+  if (TIM9 == htim->Instance)
   {
     if (waitLongPress)
     {
@@ -63,8 +63,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
           Print("Short press\r\n");
           overtakeMode = true;
         }
-        __HAL_TIM_SET_COUNTER(&htim4, 0);
-        HAL_TIM_Base_Stop_IT(&htim4);
+        __HAL_TIM_SET_COUNTER(&htim9, 0);
+        HAL_TIM_Base_Stop_IT(&htim9);
         waitLongPress = false;
         longPressConter = 0;
       }
@@ -81,31 +81,31 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       leftButtonState = true;
       rightButtonState = true;
       blinkerHazardToggle();
-      stopTim4();
+      stopTim9();
     }
     /* if left button is still pressed */
     else if (LEFT_BUTTON == PRESSED)
     {
-      stopTim4();
+      stopTim9();
       PrintF("LT pressed for %u\r\n", pressTime);
       leftButtonState = true;
       blinkerLeftsideToggle();
       waitLongPress = true;
-      startTim4();
+      startTim9();
     }
     /* if right button is still pressed */
     else if (RIGHT_BUTTON == PRESSED)
     {
-      stopTim4();
+      stopTim9();
       PrintF("RT pressed for %u\r\n", pressTime);
       rightButtonState = true;
       blinkerRightsideToggle();
       waitLongPress = true;
-      startTim4();
+      startTim9();
     }
   }
   // J1850 service timer, 200us
-  else if (TIM3 == htim->Instance)
+  else if (TIM6 == htim->Instance)
   {
     messageCollected = true;
     HAL_GPIO_TogglePin(J1850TX_GPIO_Port, J1850TX_Pin);
@@ -113,7 +113,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
       sendMessage();
     }
-    HAL_TIM_Base_Stop_IT(&htim3);
+    HAL_TIM_Base_Stop_IT(&htim6);
   }
 }
 

@@ -1,6 +1,5 @@
 #include "tsm.h"
 #include "mpu.h"
-#include "spi.h"
 #include "settings.h"
 
 #if MEMS_ENABLED
