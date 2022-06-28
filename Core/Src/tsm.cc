@@ -16,7 +16,7 @@ extern "C"
 
   void tsmRunApp()
   {
-    PrintF("TSM %s %s (%s) started\r\n", VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);      
+    PrintF("TSM %s %s (%s) started\r\n", VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
     kalmanInit(2, 2, 0.01);
     // eeprom_test();
@@ -31,8 +31,8 @@ extern "C"
     /*Starter enable*/
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
 
-    blinker_leftside_off();
-    blinker_rightside_off();
+    blinkerLeftSideOff();
+    blinkerRightSideOff();
     // mems_setup();
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
@@ -46,7 +46,7 @@ extern "C"
         messageReset();
         messageCollected = false;
       }
-      */
+      */      
       blinker_worker();
       // HAL_ADC_Start_IT(&hadc1);
     }

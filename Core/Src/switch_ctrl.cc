@@ -39,18 +39,21 @@ extern "C"
     {
       startTim9();
       leftButtonState = false;
+      PrintF("Left switch\r\n");
     }
     else if (GPIO_Pin == RT_BUTTON_Pin && rightButtonState)
     {
       startTim9();
       rightButtonState = false;
+      PrintF("Right switch\r\n");
     }
   }
-
+  // HAL_TIM_IRQHandler
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     uint32_t eventTime = HAL_GetTick();
     uint32_t pressTime = eventTime - triggerTime;
+    PrintF("HAL_TIM_PeriodElapsedCallback\r\n");
     if (TIM9 == htim->Instance)
     {
       if (waitLongPress)

@@ -22,6 +22,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "trace.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,7 +74,7 @@ extern TIM_HandleTypeDef htim9;
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
-
+  Print("NMI_Handler");
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
   while (1)
@@ -88,7 +89,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+  Print("HardFault_Handler");
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -103,7 +104,7 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
-
+  Print("MemManage_Handler");
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
   {
@@ -118,7 +119,7 @@ void MemManage_Handler(void)
 void BusFault_Handler(void)
 {
   /* USER CODE BEGIN BusFault_IRQn 0 */
-
+  Print("BusFault_Handler");
   /* USER CODE END BusFault_IRQn 0 */
   while (1)
   {
@@ -133,7 +134,7 @@ void BusFault_Handler(void)
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
-
+  Print("UsageFault_Handler");
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
   {
@@ -222,7 +223,7 @@ void ADC_IRQHandler(void)
 void TIM1_BRK_TIM9_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_BRK_TIM9_IRQn 0 */
-
+  
   /* USER CODE END TIM1_BRK_TIM9_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);
   HAL_TIM_IRQHandler(&htim9);
@@ -237,7 +238,6 @@ void TIM1_BRK_TIM9_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(RT_BUTTON_Pin);
   HAL_GPIO_EXTI_IRQHandler(LT_BUTTON_Pin);
@@ -252,7 +252,7 @@ void EXTI15_10_IRQHandler(void)
 void TIM5_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM5_IRQn 0 */
-
+  Print("TIM5");
   /* USER CODE END TIM5_IRQn 0 */
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
@@ -266,7 +266,7 @@ void TIM5_IRQHandler(void)
 void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
-
+  Print("TIM6");
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */

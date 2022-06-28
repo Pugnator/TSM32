@@ -29,9 +29,9 @@ extern bool right_blinker_enabled;
 extern bool hazard_blinker_enabled;
 extern bool overtakeMode;
 
-void blinker_leftside_off();
+void blinkerLeftSideOff();
 void blinkerLeftsideToggle();
-void blinker_rightside_off();
+void blinkerRightSideOff();
 void blinkerRightsideToggle();
 void blinkerHazardToggle();
 void blinker_worker();
