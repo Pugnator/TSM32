@@ -53,7 +53,7 @@ extern "C"
   {
     uint32_t eventTime = HAL_GetTick();
     uint32_t pressTime = eventTime - triggerTime;
-    PrintF("HAL_TIM_PeriodElapsedCallback\r\n");
+
     if (TIM9 == htim->Instance)
     {
       if (waitLongPress)
@@ -63,7 +63,7 @@ extern "C"
         {
           if (LEFT_BUTTON == PRESSED || RIGHT_BUTTON == PRESSED)
           {
-            PrintF("Long press for %u\r\n", pressTime);
+            PrintF("Long press for %ums\r\n", pressTime);
             overtakeMode = false;
           }
           else
@@ -77,22 +77,23 @@ extern "C"
           longPressConter = 0;
         }
       }
+
       if (MIN_PRESS_TIME >= pressTime)
       {
-        PrintF("Press time [%u] is less than required [%u], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
+        PrintF("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
         return;
       }
       /* if both buttons are pressed */
       if (LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED)
       {
-        PrintF("Hazard light for %u\r\n", pressTime);
+        PrintF("Both switches was ON for %ums\r\n", pressTime);
         leftButtonState = true;
         rightButtonState = true;
         blinkerHazardToggle();
         stopTim9();
       }
       /* if left button is still pressed */
-      else if (LEFT_BUTTON == PRESSED)
+      else if (!hazard_blinker_enabled && LEFT_BUTTON == PRESSED)
       {
         stopTim9();
         PrintF("LT pressed for %u\r\n", pressTime);
@@ -102,7 +103,7 @@ extern "C"
         startTim9();
       }
       /* if right button is still pressed */
-      else if (RIGHT_BUTTON == PRESSED)
+      else if (!hazard_blinker_enabled && RIGHT_BUTTON == PRESSED)
       {
         stopTim9();
         PrintF("RT pressed for %u\r\n", pressTime);
@@ -122,6 +123,10 @@ extern "C"
         sendMessage();
       }
       HAL_TIM_Base_Stop_IT(&htim6);
+    }
+    else
+    {
+      PrintF("Unknown event\r\n");
     }
   }
 

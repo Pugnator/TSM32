@@ -128,9 +128,11 @@ extern "C"
     }
 
     if (overtakeMode && OVERTAKE_BLINK_COUNT <= blink_counter)
-    {
+    {      
       blinkerLeftSideOff();
       blinkerRightSideOff();
+      overtakeMode = false;
+      blink_counter = 0;
       return;
     }
 
