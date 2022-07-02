@@ -11,6 +11,8 @@
 
 #include "trace.h"
 
+#define MIN_PRESS_TIME 250
+
 #define LEFT_PWM_OUT (TIM1->CCR3)
 #define RIGHT_PWM_OUT (TIM1->CCR4)
 

@@ -14,7 +14,6 @@ extern "C"
   static uint32_t longPressCounter = 0;
 
   uint32_t triggerTime = 0;
-#define MIN_PRESS_TIME 250
 
   inline void sendMessage();
 
@@ -53,78 +52,13 @@ extern "C"
 
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
-    uint32_t eventTime = HAL_GetTick();
-    uint32_t pressTime = eventTime - triggerTime;
-
-    if (TIM9 == htim->Instance)
+    if (TIM6 != htim->Instance && TIM9 != htim->Instance)
     {
-      if (waitLongPress)
-      {
-        if (longPressCounter++ != 3)
-        {
-          return;
-        }
-
-        if (LEFT_BUTTON == PRESSED || RIGHT_BUTTON == PRESSED)
-        {
-          PrintF("Long press for %ums\r\n", pressTime);
-          overtakeMode = false;
-        }
-        else
-        {
-          Print("Short press\r\n");
-          overtakeMode = true;
-        }
-        stopTim9();
-       
-        waitLongPress = false;
-        leftButtonState = true;
-        rightButtonState = true;
-        longPressCounter = 0;
-        return;
-      }
-
-      if (MIN_PRESS_TIME >= pressTime)
-      {
-        PrintF("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
-        PrintF("States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
-               rightButtonState ? "ON" : "OFF", leftButtonState ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
-        return;
-      }
-      /* if both buttons are pressed */
-      if (LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED)
-      {
-        PrintF("Both switches was ON for %ums\r\n", pressTime);
-        leftButtonState = true;
-        rightButtonState = true;
-        blinkerHazardToggle();
-        waitLongPress = true;
-        //stopTim9();
-        startTim9();
-      }
-      /* if left button is still pressed */
-      else if (!hazardEnabled && LEFT_BUTTON == PRESSED)
-      {
-        stopTim9();
-        PrintF("LT pressed for %u\r\n", pressTime);
-        leftButtonState = true;
-        blinkerLeftsideToggle();
-        waitLongPress = true;
-        startTim9();
-      }
-      /* if right button is still pressed */
-      else if (!hazardEnabled && RIGHT_BUTTON == PRESSED)
-      {
-        stopTim9();
-        PrintF("RT pressed for %u\r\n", pressTime);
-        rightButtonState = true;
-        blinkerRightsideToggle();
-        waitLongPress = true;
-        startTim9();
-      }
+      return;
     }
+
     // J1850 service timer, 200us
-    else if (TIM6 == htim->Instance)
+    if (TIM6 == htim->Instance)
     {
       messageCollected = true;
       HAL_GPIO_TogglePin(J1850TX_GPIO_Port, J1850TX_Pin);
@@ -133,10 +67,76 @@ extern "C"
         sendMessage();
       }
       HAL_TIM_Base_Stop_IT(&htim6);
+      return;
     }
-    else
+
+    uint32_t eventTime = HAL_GetTick();
+    uint32_t pressTime = eventTime - triggerTime;
+
+    if (waitLongPress)
     {
-      PrintF("Unknown event\r\n");
+      if (longPressCounter++ != 3)
+      {
+        return;
+      }
+
+      if (LEFT_BUTTON == PRESSED || RIGHT_BUTTON == PRESSED)
+      {
+        PrintF("Long press for %ums\r\n", pressTime);
+        overtakeMode = false;
+      }
+      else
+      {
+        Print("Short press\r\n");
+        overtakeMode = true;
+      }
+      stopTim9();
+
+      waitLongPress = false;
+      leftButtonState = true;
+      rightButtonState = true;
+      longPressCounter = 0;
+      return;
+    }
+
+    //too quick press - skip
+    if (MIN_PRESS_TIME >= pressTime)
+    {
+      PrintF("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
+      PrintF("States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
+             rightButtonState ? "ON" : "OFF", leftButtonState ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
+      return;
+    }
+    /* if both buttons are pressed */
+    if (LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED)
+    {
+      PrintF("Both switches was ON for %ums\r\n", pressTime);
+      leftButtonState = true;
+      rightButtonState = true;
+      blinkerHazardToggle();
+      waitLongPress = true;
+      // stopTim9();
+      startTim9();
+    }
+    /* if left button is still pressed */
+    else if (!hazardEnabled && LEFT_BUTTON == PRESSED)
+    {
+      stopTim9();
+      PrintF("LT pressed for %u\r\n", pressTime);
+      leftButtonState = true;
+      blinkerLeftsideToggle();
+      waitLongPress = true;
+      startTim9();
+    }
+    /* if right button is still pressed */
+    else if (!hazardEnabled && RIGHT_BUTTON == PRESSED)
+    {
+      stopTim9();
+      PrintF("RT pressed for %u\r\n", pressTime);
+      rightButtonState = true;
+      blinkerRightsideToggle();
+      waitLongPress = true;
+      startTim9();
     }
   }
 
