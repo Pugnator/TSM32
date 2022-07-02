@@ -98,7 +98,9 @@ extern "C"
         leftButtonState = true;
         rightButtonState = true;
         blinkerHazardToggle();
-        stopTim9();
+        waitLongPress = true;
+        //stopTim9();
+        startTim9();
       }
       /* if left button is still pressed */
       else if (!hazardEnabled && LEFT_BUTTON == PRESSED)

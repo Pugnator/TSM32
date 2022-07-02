@@ -19,6 +19,7 @@ extern "C"
   void blinkerOff()
   {
     Print("Both sides off\r\n");
+    hazardEnabled = false;
     leftEnabled = false;
     rightEnabled = false;
     RIGHT_PWM_OUT = 0;
