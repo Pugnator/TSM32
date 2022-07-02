@@ -8,83 +8,114 @@ extern "C"
 
   // SAE J590b and associated standards specify 60 - 120 flashes per minute for turn signals, with 90 per minute as a target
 
-  bool left_blinker_enabled = false;
-  bool right_blinker_enabled = false;
-  bool hazard_blinker_enabled = false;
+  bool leftEnabled = false;
+  bool rightEnabled = false;
+  bool hazardEnabled = false;
   bool overtakeMode = false;
   bool blink_pause = false;
 
   uint32_t blink_counter = 0;
 
+  void blinkerOff()
+  {
+    Print("Both sides off\r\n");
+    leftEnabled = false;
+    rightEnabled = false;
+    RIGHT_PWM_OUT = 0;
+    LEFT_PWM_OUT = 0;
+  }
+
   void blinkerLeftsideToggle()
   {
-    if (hazard_blinker_enabled)
+    if (hazardEnabled)
     {
       return;
     }
+
     Print("Left Side toggle\r\n");
     blink_pause = false;
     blink_counter = 0;
-    left_blinker_enabled = !left_blinker_enabled;
-    if (left_blinker_enabled)
+    leftEnabled = !leftEnabled;
+    if (leftEnabled)
     {
       blinkerRightSideOff();
     }
-  }
-
-  void blinkerLeftSideOff()
-  {
-    Print("Left side blinker off\r\n");
-    left_blinker_enabled = false;
-  }
-
-  void blinkerRightsideToggle()
-  {
-    if (hazard_blinker_enabled)
-    {
-      return;
-    }
-    Print("Right Side toggle\r\n");
-    blink_counter = 0;
-    blink_pause = false;
-    right_blinker_enabled = !right_blinker_enabled;
-    if (right_blinker_enabled)
+    else
     {
       blinkerLeftSideOff();
     }
   }
 
+  void blinkerLeftSideOff()
+  {
+    Print("Left side off\r\n");
+    leftEnabled = false;
+    LEFT_PWM_OUT = 0;
+  }
+
+  void blinkerRightsideToggle()
+  {
+    if (hazardEnabled)
+    {
+      return;
+    }
+
+    Print("Right Side toggle\r\n");
+    blink_counter = 0;
+    blink_pause = false;
+    rightEnabled = !rightEnabled;
+    if (rightEnabled)
+    {
+      blinkerLeftSideOff();
+    }
+    else
+    {
+      blinkerRightSideOff();
+    }
+  }
+
   void blinkerRightSideOff()
   {
-    Print("Right side blinker off\r\n");
-    right_blinker_enabled = false;
+    Print("Right side off\r\n");
+    rightEnabled = false;
+    RIGHT_PWM_OUT = 0;
+  }
+
+  void blinkerHazardToggle()
+  {
+    Print("Hazard toggle\r\n");
+    hazardEnabled = !hazardEnabled;
+    if (!hazardEnabled)
+    {
+      blinkerOff();
+    }
   }
 
   static void blinker_on()
   {
-    for (uint16_t period = 0; period <= 99; period += hazard_blinker_enabled ? PWM_HAZARD_DUTY_STEP : PWM_ON_DUTY_STEP)
+    for (uint16_t period = 0; period <= 99; period += hazardEnabled ? PWM_HAZARD_DUTY_STEP : PWM_ON_DUTY_STEP)
     {
-      if (hazard_blinker_enabled)
+      if (hazardEnabled)
       {
         LEFT_PWM_OUT = period;
         RIGHT_PWM_OUT = period;
       }
-      else if (left_blinker_enabled)
+      else if (leftEnabled)
       {
         LEFT_PWM_OUT = period;
       }
-      else if (right_blinker_enabled)
+      else if (rightEnabled)
       {
         RIGHT_PWM_OUT = period;
       }
       HAL_Delay(PWM_DUTY_DELAY);
     }
     HAL_Delay(TURN_OFF_DELAY);
-    if (left_blinker_enabled || hazard_blinker_enabled)
+    if (leftEnabled || hazardEnabled)
     {
       LEFT_PWM_OUT = 0;
     }
-    else if (right_blinker_enabled || hazard_blinker_enabled)
+    else if (rightEnabled || hazardEnabled)
     {
       RIGHT_PWM_OUT = 0;
     }
@@ -92,45 +123,44 @@ extern "C"
 
   static void blinker_off()
   {
-    for (uint16_t period = 0; period <= 99; period += hazard_blinker_enabled ? PWM_HAZARD_DUTY_STEP : PWM_ON_DUTY_STEP)
+    for (uint16_t period = 0; period <= 99; period += hazardEnabled ? PWM_HAZARD_DUTY_STEP : PWM_ON_DUTY_STEP)
     {
-      if (hazard_blinker_enabled)
+      if (hazardEnabled)
       {
         LEFT_PWM_OUT = 0;
         RIGHT_PWM_OUT = 0;
       }
-      else if (left_blinker_enabled)
+      else if (leftEnabled)
       {
         LEFT_PWM_OUT = 0;
       }
-      else if (right_blinker_enabled)
+      else if (rightEnabled)
       {
         RIGHT_PWM_OUT = 0;
       }
       HAL_Delay(PWM_DUTY_DELAY);
     }
     HAL_Delay(TURN_OFF_DELAY);
-    if (left_blinker_enabled || hazard_blinker_enabled)
+    if (leftEnabled || hazardEnabled)
     {
       LEFT_PWM_OUT = 0;
     }
-    else if (right_blinker_enabled || hazard_blinker_enabled)
+    else if (rightEnabled || hazardEnabled)
     {
       RIGHT_PWM_OUT = 0;
     }
   }
 
-  void blinker_worker()
+  void blinkerWorker()
   {
-    if (!hazard_blinker_enabled && !left_blinker_enabled && !right_blinker_enabled)
+    if (!hazardEnabled && !leftEnabled && !rightEnabled)
     {
       return;
     }
 
     if (overtakeMode && OVERTAKE_BLINK_COUNT <= blink_counter)
-    {      
-      blinkerLeftSideOff();
-      blinkerRightSideOff();
+    {
+      blinkerOff();
       overtakeMode = false;
       blink_counter = 0;
       return;
@@ -147,17 +177,6 @@ extern "C"
     }
 
     blink_pause = !blink_pause;
-  }
-
-  void blinkerHazardToggle()
-  {
-    Print("Hazard toggle\r\n");
-    hazard_blinker_enabled = !hazard_blinker_enabled;
-    if (hazard_blinker_enabled)
-    {
-      right_blinker_enabled = false;
-      left_blinker_enabled = false;
-    }
   }
 
 #ifdef __cplusplus

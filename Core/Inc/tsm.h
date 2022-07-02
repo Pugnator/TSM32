@@ -11,7 +11,6 @@
 
 #include "trace.h"
 
-
 #define LEFT_PWM_OUT (TIM1->CCR3)
 #define RIGHT_PWM_OUT (TIM1->CCR4)
 
@@ -21,26 +20,28 @@
 #define DEPRESSED (GPIO_PIN_SET)
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-extern bool left_blinker_enabled;
-extern bool right_blinker_enabled;
-extern bool hazard_blinker_enabled;
-extern bool overtakeMode;
+    extern bool leftEnabled;
+    extern bool rightEnabled;
+    extern bool hazardEnabled;
+    extern bool overtakeMode;
 
-void blinkerLeftSideOff();
-void blinkerLeftsideToggle();
-void blinkerRightSideOff();
-void blinkerRightsideToggle();
-void blinkerHazardToggle();
-void blinker_worker();
+    void blinkerLeftSideOff();
+    void blinkerLeftsideToggle();
+    void blinkerRightSideOff();
+    void blinkerRightsideToggle();
+    void blinkerOff();
+    void blinkerHazardToggle();
+    void blinkerWorker();
 
-void enable_starter();
-void disable_starter();
+    void enable_starter();
+    void disable_starter();
 
-void kalmanInit(float mea_e, float est_e, float q);
-float updateEstimate(float mea);
+    void kalmanInit(float mea_e, float est_e, float q);
+    float updateEstimate(float mea);
 
 #ifdef __cplusplus
 }

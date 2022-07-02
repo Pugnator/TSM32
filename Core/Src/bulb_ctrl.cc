@@ -1,24 +1,21 @@
 #include "tsm.h"
 #include "settings.h"
 
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
 
   static uint32_t running_voltage_count = 0;
   static uint32_t stopped_voltage_count = 0;
 
   uint8_t SIDEMARK_BRIGHTNESS = 10;
 
-
   void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   {
     if (ADC1 == hadc->Instance)
     {
-      if (hazard_blinker_enabled)
+      if (hazardEnabled)
       {
         return;
       }
@@ -43,8 +40,8 @@ extern "C"
           SIDEMARK_BRIGHTNESS = 0;
         }
       }
-      LEFT_PWM_OUT = left_blinker_enabled ? LEFT_PWM_OUT : SIDEMARK_BRIGHTNESS;
-      RIGHT_PWM_OUT = right_blinker_enabled ? RIGHT_PWM_OUT : SIDEMARK_BRIGHTNESS;
+      LEFT_PWM_OUT = leftEnabled ? LEFT_PWM_OUT : SIDEMARK_BRIGHTNESS;
+      RIGHT_PWM_OUT = rightEnabled ? RIGHT_PWM_OUT : SIDEMARK_BRIGHTNESS;
     }
   }
 

@@ -11,16 +11,18 @@ extern "C"
   static bool rightButtonState = true;
 
   static bool waitLongPress = false;
-  static uint32_t longPressConter = 0;
+  static uint32_t longPressCounter = 0;
 
   uint32_t triggerTime = 0;
-#define MIN_PRESS_TIME 500
+#define MIN_PRESS_TIME 250
 
   inline void sendMessage();
 
   static void stopTim9()
   {
     HAL_TIM_Base_Stop_IT(&htim9);
+    __HAL_TIM_SET_COUNTER(&htim9, 0);
+    __HAL_TIM_CLEAR_FLAG(&htim9, TIM_SR_UIF);
   }
 
   static void startTim9()
@@ -34,7 +36,7 @@ extern "C"
   void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     triggerTime = HAL_GetTick();
-    PrintF("Button pressed at %u\r\n", triggerTime);
+    PrintF("Button pressed at %u [L=%u R=%u]\r\n", triggerTime, leftButtonState, rightButtonState);
     if (GPIO_Pin == LT_BUTTON_Pin && leftButtonState)
     {
       startTim9();
@@ -48,7 +50,7 @@ extern "C"
       PrintF("Right switch\r\n");
     }
   }
-  // HAL_TIM_IRQHandler
+
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     uint32_t eventTime = HAL_GetTick();
@@ -58,29 +60,35 @@ extern "C"
     {
       if (waitLongPress)
       {
-        longPressConter++;
-        if (longPressConter == 3)
+        if (longPressCounter++ != 3)
         {
-          if (LEFT_BUTTON == PRESSED || RIGHT_BUTTON == PRESSED)
-          {
-            PrintF("Long press for %ums\r\n", pressTime);
-            overtakeMode = false;
-          }
-          else
-          {
-            Print("Short press\r\n");
-            overtakeMode = true;
-          }
-          __HAL_TIM_SET_COUNTER(&htim9, 0);
-          HAL_TIM_Base_Stop_IT(&htim9);
-          waitLongPress = false;
-          longPressConter = 0;
+          return;
         }
+
+        if (LEFT_BUTTON == PRESSED || RIGHT_BUTTON == PRESSED)
+        {
+          PrintF("Long press for %ums\r\n", pressTime);
+          overtakeMode = false;
+        }
+        else
+        {
+          Print("Short press\r\n");
+          overtakeMode = true;
+        }
+        stopTim9();
+       
+        waitLongPress = false;
+        leftButtonState = true;
+        rightButtonState = true;
+        longPressCounter = 0;
+        return;
       }
 
       if (MIN_PRESS_TIME >= pressTime)
       {
         PrintF("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
+        PrintF("States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
+               rightButtonState ? "ON" : "OFF", leftButtonState ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
         return;
       }
       /* if both buttons are pressed */
@@ -93,7 +101,7 @@ extern "C"
         stopTim9();
       }
       /* if left button is still pressed */
-      else if (!hazard_blinker_enabled && LEFT_BUTTON == PRESSED)
+      else if (!hazardEnabled && LEFT_BUTTON == PRESSED)
       {
         stopTim9();
         PrintF("LT pressed for %u\r\n", pressTime);
@@ -103,7 +111,7 @@ extern "C"
         startTim9();
       }
       /* if right button is still pressed */
-      else if (!hazard_blinker_enabled && RIGHT_BUTTON == PRESSED)
+      else if (!hazardEnabled && RIGHT_BUTTON == PRESSED)
       {
         stopTim9();
         PrintF("RT pressed for %u\r\n", pressTime);

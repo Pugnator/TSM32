@@ -46,8 +46,8 @@ extern "C"
         messageReset();
         messageCollected = false;
       }
-      */      
-      blinker_worker();
+      */
+      blinkerWorker();
       // HAL_ADC_Start_IT(&hadc1);
     }
   }
