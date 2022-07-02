@@ -1,15 +1,97 @@
 #pragma once
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+/*
+ * mpu9250.h
+ *
+ *  Created on: 04.07.2019
+ *  Author: mnowak5
+ */
 
-#define READ_FLAG 0x80
+#include "i2c.h"
+#include "math.h"
+#include "trace.h"
+#include "i2c_er.h"
+#include <math.h>
+
+// The missile knows where it is because it knows where it's not.
+
+/*
+Magnetic Declination: +11° 40'
+Declination is POSITIVE (EAST)
+Inclination: 71° 37'
+Magnetic field strength: 52788.7 nT
+*/
+
+#define MAGNETIC_DECLINATION 11
+
+#define MS_TO_S 1000
+#define G_TO_MS2 9.8115
+#define DEG_TO_RAD (M_PI / 180)
+#define RAD_TO_DEG (180 / M_PI)
+#define FREQUENCY 125                                    // интервал сэмплирования = 8 мс
+#define GYRO_SENSITIVITY 65.5                            // чувствительность гироскопа (см. datasheet Gyro_Sensitivity)
+#define SENS_TO_DEG (1 / (GYRO_SENSITIVITY * FREQUENCY)) // макрос преобразования показаний датчика в градусы
+#define SENS_TO_RAD SENS_TO_DEG *DEG_TO_RAD              // макрос преобразования показаний датчика в радианы
+#define IMU_ADDR 0xD0
+#define AK8963_ADDR 0x0C << 1
+
+typedef union intConfig
+{
+  struct
+  {
+    uint8_t unused : 1;
+    uint8_t BYPASS_EN : 1;
+    uint8_t FSYNC_INT_MODE_EN : 1;
+    uint8_t ACTL_FSYNC : 1;
+    uint8_t INT_ANYRD_2CLEAR : 1;
+    uint8_t LATCH_INT_EN : 1;
+    uint8_t OPEN : 1;
+    uint8_t ACTL : 1;
+  };
+  uint8_t reg;
+} intConfig;
+
+typedef union intEnable
+{
+  struct
+  {
+    uint8_t RAW_RDY_EN : 1;
+    uint8_t unused4 : 1;
+    uint8_t unused3 : 1;
+    uint8_t FSYNC_INT_EN : 1;
+    uint8_t FIFO_OVERFLOW_EN : 1;
+    uint8_t unused2 : 1;
+    uint8_t WOM_EN : 1;
+    uint8_t unused : 1;
+  };
+  uint8_t reg;
+} intEnable;
+
+typedef union intStatus
+{
+  struct
+  {
+    uint8_t RAW_DATA_RDY_INT : 1;
+    uint8_t unused4 : 1;
+    uint8_t unused3 : 1;
+    uint8_t FSYNC_INT : 1;
+    uint8_t FIFO_OVERFLOW_INT : 1;
+    uint8_t unused2 : 1;
+    uint8_t WOM_INT : 1;
+    uint8_t unused : 1;
+  };
+  uint8_t reg;
+} intStatus;
 
 #define MPU9250_SELF_TEST_X_GYRO 0x00
 #define MPU9250_SELF_TEST_Y_GYRO 0x01
 #define MPU9250_SELF_TEST_Z_GYRO 0x02
-
 #define MPU9250_SELF_TEST_X_ACCEL 0x0D
 #define MPU9250_SELF_TEST_Y_ACCEL 0x0E
 #define MPU9250_SELF_TEST_Z_ACCEL 0x0F
-
 #define MPU9250_XG_OFFSET_H 0x13
 #define MPU9250_XG_OFFSET_L 0x14
 #define MPU9250_YG_OFFSET_H 0x15
@@ -20,10 +102,9 @@
 #define MPU9250_CONFIG 0x1A
 #define MPU9250_GYRO_CONFIG 0x1B
 #define MPU9250_ACCEL_CONFIG 0x1C
-#define MPU9250_ACCEL_CONFIG2 0x1D
+#define MPU9250_ACCEL_CONFIG_2 0x1D
 #define MPU9250_LP_ACCEL_ODR 0x1E
 #define MPU9250_WOM_THR 0x1F
-
 #define MPU9250_FIFO_EN 0x23
 #define MPU9250_I2C_MST_CTRL 0x24
 #define MPU9250_I2C_SLV0_ADDR 0x25
@@ -46,7 +127,6 @@
 #define MPU9250_I2C_MST_STATUS 0x36
 #define MPU9250_INT_PIN_CFG 0x37
 #define MPU9250_INT_ENABLE 0x38
-
 #define MPU9250_INT_STATUS 0x3A
 #define MPU9250_ACCEL_XOUT_H 0x3B
 #define MPU9250_ACCEL_XOUT_L 0x3C
@@ -86,7 +166,6 @@
 #define MPU9250_EXT_SENS_DATA_21 0x5E
 #define MPU9250_EXT_SENS_DATA_22 0x5F
 #define MPU9250_EXT_SENS_DATA_23 0x60
-
 #define MPU9250_I2C_SLV0_DO 0x63
 #define MPU9250_I2C_SLV1_DO 0x64
 #define MPU9250_I2C_SLV2_DO 0x65
@@ -97,187 +176,221 @@
 #define MPU9250_USER_CTRL 0x6A
 #define MPU9250_PWR_MGMT_1 0x6B
 #define MPU9250_PWR_MGMT_2 0x6C
-
 #define MPU9250_FIFO_COUNTH 0x72
 #define MPU9250_FIFO_COUNTL 0x73
 #define MPU9250_FIFO_R_W 0x74
 #define MPU9250_WHO_AM_I 0x75
 #define MPU9250_XA_OFFSET_H 0x77
 #define MPU9250_XA_OFFSET_L 0x78
-
 #define MPU9250_YA_OFFSET_H 0x7A
 #define MPU9250_YA_OFFSET_L 0x7B
-
 #define MPU9250_ZA_OFFSET_H 0x7D
 #define MPU9250_ZA_OFFSET_L 0x7E
-//
-#define MPU9250_I2C_READ 0x80
 
-//Magnetometer register maps
-#define MPU9250_AK8963_WIA 0x00
-#define MPU9250_AK8963_INFO 0x01
-#define MPU9250_AK8963_ST1 0x02
-#define MPU9250_AK8963_XOUT_L 0x03
-#define MPU9250_AK8963_XOUT_H 0x04
-#define MPU9250_AK8963_YOUT_L 0x05
-#define MPU9250_AK8963_YOUT_H 0x06
-#define MPU9250_AK8963_ZOUT_L 0x07
-#define MPU9250_AK8963_ZOUT_H 0x08
-#define MPU9250_AK8963_ST2 0x09
-#define MPU9250_AK8963_CNTL 0x0A
-#define MPU9250_AK8963_CNTL2 0x0B
-#define MPU9250_AK8963_RSV 0x0B //DO NOT ACCESS <MPU9250_AK8963_CNTL2>
-#define MPU9250_AK8963_ASTC 0x0C
-#define MPU9250_AK8963_TS1 0x0D //DO NOT ACCESS
-#define MPU9250_AK8963_TS2 0x0E //DO NOT ACCESS
-#define MPU9250_AK8963_I2CDIS 0x0F
-#define MPU9250_AK8963_ASAX 0x10
-#define MPU9250_AK8963_ASAY 0x11
-#define MPU9250_AK8963_ASAZ 0x12
+#define AK9863_WIA 0x00
+#define AK9863_INFO 0x01
+#define AK9863_ST1 0x02
+#define AK9863_HXL 0x03
+#define AK9863_HXH 0x04
+#define AK9863_HYL 0x05
+#define AK9863_HYH 0x06
+#define AK9863_HZL 0x07
+#define AK9863_HZH 0x08
+#define AK9863_ST2 0x09
+#define AK9863_CNTL1 0x0A
+#define AK9863_CNTL2 0x0B
+#define AK9863_RSV 0x0B
+#define AK9863_ASTC 0x0C
+#define AK9863_TS1 0x0D
+#define AK9863_TS2 0x0E
+#define AK9863_I2CDIS 0x0F
+#define AK9863_ASAX 0x10
+#define AK9863_ASAY 0x11
+#define AK9863_ASAZ 0x12
 
-#define MPU9250_AK8963_I2C_ADDR 0x0C
-#define MPU9250_AK8963_POWER_DOWN 0x10
-#define MPU9250_AK8963_FUSE_ROM_ACCESS 0x1F
-#define MPU9250_AK8963_SINGLE_MEASUREMENT 0x11
-#define MPU9250_AK8963_CONTINUOUS_MEASUREMENT 0x16 //MODE 2
-#define MPU9250_AK8963_DATA_READY (0x01)
-#define MPU9250_AK8963_DATA_OVERRUN (0x02)
-#define MPU9250_AK8963_OVERFLOW (0x80)
-#define MPU9250_AK8963_DATA_ERROR (0x40)
-#define MPU9250_AK8963_CNTL2_SRST 0x01
+/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-//
-#define MPU9250_I2C_SLV4_EN 0x80
-#define MPU9250_I2C_SLV4_DONE 0x40
-#define MPU9250_I2C_SLV4_NACK 0x10
-//
-#define MPU9250_I2C_IF_DIS (0x10)
-#define MPU9250_I2C_MST_EN (0x20)
-#define MPU9250_FIFO_RST (0x04)
-#define MPU9250_FIFO_ENABLE (0x40)
-//
-#define MPU9250_RESET 0x80
-#define MPU9250_CLOCK_MASK 0xF8
-#define MPU9250_CLOCK_INTERNAL 0x00
-#define MPU9250_CLOCK_PLL 0x01
-#define MPU9250_CLOCK_PLLGYROZ 0x03
-#define MPU9250_FS_SEL_MASK 0xE7
-#define MPU9250_SLEEP_MASK 0x40
-//
-#define MPU9250_XYZ_GYRO 0xC7
-#define MPU9250_XYZ_ACCEL 0xF8
-//
-#define MPU9250_RAW_RDY_EN (0x01)
-#define MPU9250_RAW_DATA_RDY_INT (0x01)
-#define MPU9250_FIFO_OVERFLOW (0x10)
-//
-#define MPU9250_INT_ANYRD_2CLEAR (0x10)
-#define MPU9250_LATCH_INT_EN (0x20)
-//
-#define MPU9250_MAX_FIFO (1024)
-#define MPU9250_FIFO_SIZE_1024 (0x40)
-#define MPU9250_FIFO_SIZE_2048 (0x80)
-#define MPU9250_FIFO_SIZE_4096 (0xC0)
+#define MPU9250_ACCE_SENSITIVITY_FACTOR_2G 16384
+#define MPU9250_ACCE_SENSITIVITY_FACTOR_4G 8192
+#define MPU9250_ACCE_SENSITIVITY_FACTOR_8G 4096
+#define MPU9250_ACCE_SENSITIVITY_FACTOR_16G 2048
 
-#define MPU9250_TEMP_OUT (0x80)
-#define MPU9250_GYRO_XOUT (0x40)
-#define MPU9250_GYRO_YOUT (0x20)
-#define MPU9250_GYRO_ZOUT (0x10)
-#define MPU9250_ACCEL (0x08)
+/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-//
-#define SMPLRT_DIV 0
-#define MPU9250_SPIx_ADDR 0x00
-//////////////////////////////////////////////////////////////////////////
-//
+#define MPU9250_GYRO_SENSITIVITY_FACTOR_250s 131
+#define MPU9250_GYRO_SENSITIVITY_FACTOR_500s 65.5
+#define MPU9250_GYRO_SENSITIVITY_FACTOR_1000s 32.8
+#define MPU9250_GYRO_SENSITIVITY_FACTOR_2000s 16.4
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-enum MPU9250_GYRO_DLPF
+typedef enum
 {
-  MPU9250_GYRO_DLPF_250HZ = 0,
-  MPU9250_GYRO_DLPF_184HZ,
-  MPU9250_GYRO_DLPF_92HZ,
-  MPU9250_GYRO_DLPF_41HZ,
-  MPU9250_GYRO_DLPF_20HZ,
-  MPU9250_GYRO_DLPF_10HZ,
-  MPU9250_GYRO_DLPF_5HZ,
-  MPU9250_GYRO_DLPF_3600HZ,
-  NUM_GYRO_DLPF
-};
 
-enum MPU9250_GYRO_FSR
+  MPU9250_Init_OK = 0,
+  MPU9250_Init_FAIL = 1,
+
+  MPU9250_Accelerometer_Config_OK = 2,
+  MPU9250_Accelerometer_Config_FAIL = 3,
+
+  MPU9250_Gyroscope_Config_OK = 4,
+  MPU9250_Gyroscope_Config_FAIL = 5,
+
+  MPU9250_Magnetometer_Config_OK = 6,
+  MPU9250_Magnetometer_Config_FAIL = 7,
+
+  MPU9250_Read_Accelerometer_OK = 14,
+  MPU9250_Read_Accelerometer_FAIL = 15,
+
+  MPU9250_Read_Gyroscope_OK = 16,
+  MPU9250_Read_Gyroscope_FAIL = 17,
+
+  MPU9250_Read_Magnetometer_OK = 18,
+  MPU9250_Read_Magnetometer_FAIL = 19,
+
+  MPU9250_Calib_OK = 10,
+  MPU9250_Calib_FAIL = 11,
+
+} MPU9250_Error_code;
+
+/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+typedef enum
 {
-  MPU9250_FSR_250DPS = 0,
-  MPU9250_FSR_500DPS,
-  MPU9250_FSR_1000DPS,
-  MPU9250_FSR_2000DPS,
-  MPU9250_NUM_GYRO_FSR
-};
 
-enum MPU9250_ACCEL_DLPF
+  MPU9250_Device_1 = 0x00, /* ADD pin set to LOW  */
+  MPU9250_Device_2 = 0x01  /* ADD pin set to HIGH */
+
+} MPU9250_Device_number;
+
+/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+typedef enum
 {
-  MPU9250_ACCEL_DLPF_460HZ = 0,
-  MPU9250_ACCEL_DLPF_184HZ,
-  MPU9250_ACCEL_DLPF_92HZ,
-  MPU9250_ACCEL_DLPF_41HZ,
-  MPU9250_ACCEL_DLPF_20HZ,
-  MPU9250_ACCEL_DLPF_10HZ,
-  MPU9250_ACCEL_DLPF_5HZ,
-  MPU9250_ACCEL_DLPF_460HZ2,
-  MPU9250_NUM_ACCEL_DLPF
-};
 
-enum MPU9250_ACCEL_FSR
+  MPU9250_Acce_2G = 0x00,
+  MPU9250_Acce_4G = 0x01,
+  MPU9250_Acce_8G = 0x02,
+  MPU9250_Acce_16G = 0x03
+
+} MPU9250_Acce_range;
+
+/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+typedef enum
 {
-  MPU9250_FSR_2G = 0,
-  MPU9250_FSR_4G,
-  MPU9250_FSR_8G,
-  MPU9250_FSR_16G,
-  MPU9250_NUM_ACCEL_FSR
-};
 
-enum MPU9250_CLK
+  MPU9250_Gyro_250s = 0x00,
+  MPU9250_Gyro_500s = 0x01,
+  MPU9250_Gyro_1000s = 0x02,
+  MPU9250_Gyro_2000s = 0x03
+
+} MPU9250_Gyro_range;
+
+/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+typedef struct MPU9250
 {
-  MPU9250_CLK_INTERNAL = 0,
-  MPU9250_CLK_PLL,
-  MPU9250_NUM_CLK
-};
 
-enum
-{
-  AFS_2G = 0,
-  AFS_4G,
-  AFS_8G,
-  AFS_16G
-};
+  /* Gyroscope variables */
+  int16_t Gyroscope_sensitivity_factor;
+  int16_t Gyroscope_X, Gyroscope_Y, Gyroscope_Z;
+  float Gyroscope_X_offset, Gyroscope_Y_offset, Gyroscope_Z_offset;
+  float Gyroscope_X_dgs, Gyroscope_Y_dgs, Gyroscope_Z_dgs;
 
-enum
-{
-  GFS_250DPS = 0,
-  GFS_500DPS,
-  GFS_1000DPS,
-  GFS_2000DPS
-};
+  /* Accelerometer variables */
+  int16_t Accelerometer_sensitivity_factor;
+  int16_t Accelerometer_X, Accelerometer_Y, Accelerometer_Z;
+  float Accelerometer_X_offset, Accelerometer_Y_offset, Accelerometer_Z_offset;
 
-enum
-{
-  MFS_14BITS = 0, // 0.6 mG per LSB
-  MFS_16BITS      // 0.15 mG per LSB
-};
+  /*
+  struct vector Accelerometer_vector_g;
+  struct vector Accelerometer_vector_g_offset;
+  struct vector Accelerometer_vector_without_g;
+  struct vector Accelerometer_vector_without_g_past;
 
-uint32_t mpu_writereg(uint8_t WriteAddr, uint8_t WriteData);
-uint32_t mpu_readreg(uint8_t WriteAddr, uint8_t WriteData);
-void mpu_readregs(uint8_t ReadAddr, uint8_t *ReadBuf, uint32_t Bytes);
+  struct vector Accelerometer_vector_velocity;
+  struct vector Accelerometer_vector_velocity_past;
+  struct vector Accelerometer_vector_position;
+*/
+  /* Magnetometer variables */
+  uint8_t Magnetometer_address;
+  float Magnetic_declination;
+  float Magnetometer_sesitivity_factor;
+  float Magnetometer_ASAX, Magnetometer_ASAY, Magnetometer_ASAZ;
+  int16_t Magnetometer_X, Magnetometer_Y, Magnetometer_Z;
+  float Magnetometer_X_offset, Magnetometer_Y_offset, Magnetometer_Z_offset;
+  float Magnetometer_X_scale, Magnetometer_Y_scale, Magnetometer_Z_scale;
+  float Magnetometer_Yaw_offset;
+  float Magnetometer_X_uT, Magnetometer_Y_uT, Magnetometer_Z_uT;
 
-uint8_t AK8963ReadByte(uint8_t reg);
+  /* Madgwick filter variables */
+  /*
+  struct quaternion Madgwick_quaternion;
+  struct euler Madgwick_euler;
+*/
+  /* Mahony filter variables */
+  float Mahony_filter_Roll, Mahony_filter_Pitch, Mahony_filter_Yaw;
 
-void mems_reset();
-void mems_setup();
-uint32_t mems_read_temp();
-void mems_read_all();
+  uint32_t temp;
+  float q[4];
+} MPU9250;
+
+MPU9250_Error_code MPU9250_Accelerometer_Configuration(I2C_HandleTypeDef *I2Cx,
+                                                       struct MPU9250 *mpu,
+                                                       MPU9250_Acce_range Range);
+
+MPU9250_Error_code MPU9250_Gyroscope_Configuration(I2C_HandleTypeDef *I2Cx,
+                                                   struct MPU9250 *mpu,
+                                                   MPU9250_Gyro_range Range);
+
+MPU9250_Error_code MPU9250_Magnetometer_Configuration(I2C_HandleTypeDef *I2Cx, struct MPU9250 *mpu);
+
+MPU9250_Error_code MPU9250_Init(I2C_HandleTypeDef *I2Cx,
+                                struct MPU9250 *mpu,
+                                MPU9250_Device_number Number,
+                                MPU9250_Acce_range Acce_range,
+                                MPU9250_Gyro_range Gyro_range);
+
+MPU9250_Error_code MPU9250_Read_Accelerometer(I2C_HandleTypeDef *I2Cx,
+                                              struct MPU9250 *mpu);
+
+MPU9250_Error_code MPU9250_Read_Gyroscope(I2C_HandleTypeDef *I2Cx,
+                                          struct MPU9250 *mpu);
+
+MPU9250_Error_code MPU9250_Read_Magnetometer(I2C_HandleTypeDef *I2Cx,
+                                             struct MPU9250 *mpu);
+
+void MPU9250_Calibration_Acce(I2C_HandleTypeDef *I2Cx,
+                              struct MPU9250 *mpu);
+
+void MPU9250_Calibration_Gyro(I2C_HandleTypeDef *I2Cx,
+                              struct MPU9250 *mpu);
+
+void MPU9250_Calibration_Mag(I2C_HandleTypeDef *I2Cx,
+                             struct MPU9250 *mpu);
+
+void MPU9250_Set_Offsets(I2C_HandleTypeDef *I2Cx,
+                         struct MPU9250 *mpu,
+                         float Acce_X_offset, float Acce_Y_offset, float Acce_Z_offset,
+                         float Gyro_X_offset, float Gyro_Y_offset, float Gyro_Z_offset,
+                         float Mag_X_offset, float Mag_Y_offset, float Mag_Z_offset,
+                         float Mag_X_scale, float Mag_Y_scale, float Mag_Z_scale);
+
+void MPU9250_Update(I2C_HandleTypeDef *I2Cx,
+                    struct MPU9250 *mpu,
+                    float dt);
+
+
+void mpu_test();
+
+
+bool SelfTest(I2C_HandleTypeDef *I2Cx);
+bool MPU9250_write(I2C_HandleTypeDef *I2Cx, uint8_t reg, uint8_t byte);
+bool MPU9250_read(I2C_HandleTypeDef *I2Cx, uint8_t reg, uint8_t *byte);
+void MPU9250_reset(I2C_HandleTypeDef *I2Cx);
+void MPU9250_WOM(I2C_HandleTypeDef *I2Cx);
+
 #ifdef __cplusplus
 }
 #endif
