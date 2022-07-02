@@ -18,7 +18,7 @@ extern "C"
 
   void blinkerOff()
   {
-    Print("Both sides off\r\n");
+    DEBUG_LOG("Both sides off\r\n");
     hazardEnabled = false;
     leftEnabled = false;
     rightEnabled = false;
@@ -33,7 +33,7 @@ extern "C"
       return;
     }
 
-    Print("Left Side toggle\r\n");
+    DEBUG_LOG("Left Side toggle\r\n");
     blink_pause = false;
     blink_counter = 0;
     leftEnabled = !leftEnabled;
@@ -49,7 +49,7 @@ extern "C"
 
   void blinkerLeftSideOff()
   {
-    Print("Left side off\r\n");
+    DEBUG_LOG("Left side off\r\n");
     leftEnabled = false;
     LEFT_PWM_OUT = 0;
   }
@@ -61,7 +61,7 @@ extern "C"
       return;
     }
 
-    Print("Right Side toggle\r\n");
+    DEBUG_LOG("Right Side toggle\r\n");
     blink_counter = 0;
     blink_pause = false;
     rightEnabled = !rightEnabled;
@@ -77,14 +77,14 @@ extern "C"
 
   void blinkerRightSideOff()
   {
-    Print("Right side off\r\n");
+    DEBUG_LOG("Right side off\r\n");
     rightEnabled = false;
     RIGHT_PWM_OUT = 0;
   }
 
   void blinkerHazardToggle()
   {
-    Print("Hazard toggle\r\n");
+    DEBUG_LOG("Hazard toggle\r\n");
     hazardEnabled = !hazardEnabled;
     if (!hazardEnabled)
     {

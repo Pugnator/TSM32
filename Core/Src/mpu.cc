@@ -96,21 +96,21 @@ extern "C"
 
   void print_hex(uint8_t *buf, uint8_t size)
   {
-    Print("\r\n");
+    DEBUG_LOG("\r\n");
     for (uint8_t i = 0; i < size; i++)
     {
       if (0 == i % 8)
       {
-        Print("\r\n");
+        DEBUG_LOG("\r\n");
       }
-      PrintF("0x%02X ", buf[size]);
+      DEBUG_LOG("0x%02X ", buf[size]);
     }
-    Print("\r\n");
+    DEBUG_LOG("\r\n");
   }
 
   void mems_read_all()
   {
-    PrintF("MPU temp is %uC\r\n", mems_read_temp());
+    DEBUG_LOG("MPU temp is %uC\r\n", mems_read_temp());
     uint8_t response[21];
     mpu_readregs(MPU9250_ACCEL_XOUT_H, response, 21);
     print_hex(response, 21);
@@ -127,16 +127,16 @@ extern "C"
   void mems_setup()
   {
 #if MEMS_ENABLED
-    Print("*** MEMS setup start ***\r\n");
-    PrintF("MPU9250 - 0x%X\r\n", mpu_whoami());
-    PrintF("AK8963 - 0x%X\r\n", AK8963_whoami());
-    PrintF("MPU temp is %uC\r\n", mems_read_temp());
-    PrintF("X offset - 0x%X\r\n", mpu_readreg(MPU9250_SELF_TEST_X_ACCEL, 0x00));
+    DEBUG_LOG("*** MEMS setup start ***\r\n");
+    DEBUG_LOG("MPU9250 - 0x%X\r\n", mpu_whoami());
+    DEBUG_LOG("AK8963 - 0x%X\r\n", AK8963_whoami());
+    DEBUG_LOG("MPU temp is %uC\r\n", mems_read_temp());
+    DEBUG_LOG("X offset - 0x%X\r\n", mpu_readreg(MPU9250_SELF_TEST_X_ACCEL, 0x00));
     // mpu_writereg(MPU9250_XA_OFFSET_L, 0x01);
-    // PrintF("X offset - 0x%X\r\n", mpu_readreg(MPU9250_XA_OFFSET_L, 0x00));
-    Print("*** MEMS setup end ***\r\n");
+    // DEBUG_LOG("X offset - 0x%X\r\n", mpu_readreg(MPU9250_XA_OFFSET_L, 0x00));
+    DEBUG_LOG("*** MEMS setup end ***\r\n");
 #else
-  Print("MEMS disabled\r\n");
+  DEBUG_LOG("MEMS disabled\r\n");
 #endif
   }
 

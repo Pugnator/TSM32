@@ -16,7 +16,7 @@ extern "C"
 
   void tsmRunApp()
   {
-    PrintF("TSM %s %s (%s) started\r\n", VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
+    DEBUG_LOG("TSM %s %s (%s) started\r\n", VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
     kalmanInit(2, 2, 0.01);
     // eeprom_test();

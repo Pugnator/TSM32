@@ -35,18 +35,18 @@ extern "C"
   void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     triggerTime = HAL_GetTick();
-    PrintF("Button pressed at %u [L=%u R=%u]\r\n", triggerTime, leftButtonState, rightButtonState);
+    DEBUG_LOG("Button pressed at %u [L=%u R=%u]\r\n", triggerTime, leftButtonState, rightButtonState);
     if (GPIO_Pin == LT_BUTTON_Pin && leftButtonState)
     {
       startTim9();
       leftButtonState = false;
-      PrintF("Left switch\r\n");
+      DEBUG_LOG("Left switch\r\n");
     }
     else if (GPIO_Pin == RT_BUTTON_Pin && rightButtonState)
     {
       startTim9();
       rightButtonState = false;
-      PrintF("Right switch\r\n");
+      DEBUG_LOG("Right switch\r\n");
     }
   }
 
@@ -82,12 +82,12 @@ extern "C"
 
       if (LEFT_BUTTON == PRESSED || RIGHT_BUTTON == PRESSED)
       {
-        PrintF("Long press for %ums\r\n", pressTime);
+        DEBUG_LOG("Long press for %ums\r\n", pressTime);
         overtakeMode = false;
       }
       else
       {
-        Print("Short press\r\n");
+        DEBUG_LOG("Short press\r\n");
         overtakeMode = true;
       }
       stopTim9();
@@ -102,15 +102,15 @@ extern "C"
     //too quick press - skip
     if (MIN_PRESS_TIME >= pressTime)
     {
-      PrintF("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
-      PrintF("States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
+      DEBUG_LOG("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
+      DEBUG_LOG("States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
              rightButtonState ? "ON" : "OFF", leftButtonState ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
       return;
     }
     /* if both buttons are pressed */
     if (LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED)
     {
-      PrintF("Both switches was ON for %ums\r\n", pressTime);
+      DEBUG_LOG("Both switches was ON for %ums\r\n", pressTime);
       leftButtonState = true;
       rightButtonState = true;
       blinkerHazardToggle();
@@ -122,7 +122,7 @@ extern "C"
     else if (!hazardEnabled && LEFT_BUTTON == PRESSED)
     {
       stopTim9();
-      PrintF("LT pressed for %u\r\n", pressTime);
+      DEBUG_LOG("LT pressed for %u\r\n", pressTime);
       leftButtonState = true;
       blinkerLeftsideToggle();
       waitLongPress = true;
@@ -132,7 +132,7 @@ extern "C"
     else if (!hazardEnabled && RIGHT_BUTTON == PRESSED)
     {
       stopTim9();
-      PrintF("RT pressed for %u\r\n", pressTime);
+      DEBUG_LOG("RT pressed for %u\r\n", pressTime);
       rightButtonState = true;
       blinkerRightsideToggle();
       waitLongPress = true;
@@ -155,7 +155,7 @@ extern "C"
         if (temp & 0x01)
         {
           // 1
-          // PrintF("bit %d is 1\n", bit);
+          // DEBUG_LOG("bit %d is 1\n", bit);
           if (bitActive)
           {
             HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
@@ -170,7 +170,7 @@ extern "C"
         else
         {
           // 0
-          // PrintF("bit %d is 0\n", bit);
+          // DEBUG_LOG("bit %d is 0\n", bit);
           if (bitActive)
           {
             HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
