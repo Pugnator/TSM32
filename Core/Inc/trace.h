@@ -2,6 +2,7 @@
 #include "printf.h"
 
 #define LOGGING_CHANNEL 0
+#define NDEBUG
 #define USE_UART2_TRACE
 
 #ifdef NDEBUG

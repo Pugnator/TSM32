@@ -32,7 +32,7 @@ extern "C" {
  * You might need to enable access to DWT registers on Cortex-M7
  *   DWT->LAR = 0xC5ACCE55
  */
-void DWT_Init(void)
+void DWT_Init()
 {
   if (!(CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk))
   {

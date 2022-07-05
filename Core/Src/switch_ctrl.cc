@@ -34,6 +34,12 @@ extern "C"
 
   void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
+
+    if (GPIO_Pin == IMU_INT_Pin)
+    {
+      DEBUG_LOG("MPU Interrupt!\r\n");
+      return;
+    }
     triggerTime = HAL_GetTick();
     DEBUG_LOG("Button pressed at %u [L=%u R=%u]\r\n", triggerTime, leftButtonState, rightButtonState);
     if (GPIO_Pin == LT_BUTTON_Pin && leftButtonState)
@@ -99,12 +105,12 @@ extern "C"
       return;
     }
 
-    //too quick press - skip
+    // too quick press - skip
     if (MIN_PRESS_TIME >= pressTime)
     {
       DEBUG_LOG("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
       DEBUG_LOG("States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
-             rightButtonState ? "ON" : "OFF", leftButtonState ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
+                rightButtonState ? "ON" : "OFF", leftButtonState ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
       return;
     }
     /* if both buttons are pressed */

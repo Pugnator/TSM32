@@ -66,6 +66,10 @@ void Error_Handler(void);
 #define BATTERY_ADC_GPIO_Port GPIOA
 #define J1850RX_Pin GPIO_PIN_1
 #define J1850RX_GPIO_Port GPIOA
+#define MPU_AD0_Pin GPIO_PIN_6
+#define MPU_AD0_GPIO_Port GPIOA
+#define DALLAS_Pin GPIO_PIN_4
+#define DALLAS_GPIO_Port GPIOC
 #define LED_Pin GPIO_PIN_0
 #define LED_GPIO_Port GPIOB
 #define RT_BUTTON_Pin GPIO_PIN_12
@@ -78,6 +82,8 @@ void Error_Handler(void);
 #define LT_PWM_GPIO_Port GPIOA
 #define RT_PWM_Pin GPIO_PIN_11
 #define RT_PWM_GPIO_Port GPIOA
+#define IMU_INT_Pin GPIO_PIN_9
+#define IMU_INT_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

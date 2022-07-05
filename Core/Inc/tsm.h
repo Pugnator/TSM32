@@ -11,6 +11,8 @@
 
 #include "trace.h"
 
+#define USE_STATIC_ALLOC
+
 #define MIN_PRESS_TIME 250
 
 #define LEFT_PWM_OUT (TIM1->CCR3)
@@ -44,6 +46,10 @@ extern "C"
 
     void kalmanInit(float mea_e, float est_e, float q);
     float updateEstimate(float mea);
+
+
+    void DWT_Init();
+    void DWT_Delay(uint32_t us);
 
 #ifdef __cplusplus
 }

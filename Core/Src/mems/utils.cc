@@ -74,3 +74,7 @@ void MPU9250_WOM(I2C_HandleTypeDef *I2Cx)
     HAL_Delay(100); // Wait for all registers to reset 
 
 }
+
+#ifdef __cplusplus
+}
+#endif

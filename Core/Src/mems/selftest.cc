@@ -4,6 +4,10 @@ extern "C"
 {
 #endif
 
+#ifndef NDEBUG
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
+
 // Should return percent deviation from factory trim values, +/- 14 or less deviation is a pass
 bool SelfTest(I2C_HandleTypeDef *I2Cx)
 {
@@ -157,6 +161,7 @@ bool SelfTest(I2C_HandleTypeDef *I2Cx)
     DEBUG_LOG("%f ", result[i]);
   }
   DEBUG_LOG("\r\nSelf test completed\r\n");
+  return true;
 }
 #ifdef __cplusplus
 }
