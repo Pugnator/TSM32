@@ -24,7 +24,7 @@ extern "C"
     DEBUG_LOG("TSM %s %s (%s) started\r\n", VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
     DWT_Init();
 
-    std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);
+    std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);    
 
     kalmanInit(2, 2, 0.01);
     // eeprom_test();
@@ -40,8 +40,7 @@ extern "C"
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
 
     blinkerLeftSideOff();
-    blinkerRightSideOff();
-    // mems_setup();
+    blinkerRightSideOff();    
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
     while (1)
@@ -55,7 +54,10 @@ extern "C"
         messageCollected = false;
       }
       */
-      blinkerWorker();      
+      //blinkerWorker();      
+      
+      HAL_Delay(2000);
+      mpu->getAzimuth();
       // HAL_ADC_Start_IT(&hadc1);
     }
   }
