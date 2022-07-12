@@ -40,6 +40,11 @@ typedef union axes
 }axes;
 
 
+///0 0 0 BIT MODE3 MODE2 MODE1 MODE0
+#define AKM_CONT_MODE_8 0b0001001
+#define AKM_PWDWN_MODE 0b0000000
+#define AKM_RESET 0b0000001
+
 class kalmanFilter
 {
 public:
@@ -71,24 +76,26 @@ public:
 
   void selfTest();
 
-  bool readA();
+  bool readAccel();
   axes readMag();
-  bool readG();
+  bool readGyro();
 
   float getAzimuth();
 
 private:
   bool writeRegMpu(uint8_t reg, uint8_t byte);
-  bool write(uint8_t reg, uint8_t* byte, size_t len);
+  bool writeRegMpu(uint8_t reg, uint8_t* byte, size_t len);
   bool readRegMpu(uint8_t reg, uint8_t *byte);
-  bool read(uint8_t reg, uint8_t *byte, size_t len);
+  bool readRegMpu(uint8_t reg, uint8_t *byte, size_t len);
   
   bool writeRegMag(uint8_t reg, uint8_t byte);
-  bool readm(uint8_t reg, uint8_t *byte);
+  bool readRegMag(uint8_t reg, uint8_t *byte);
   bool readRegMag(uint8_t reg, uint8_t *byte, size_t len);
+  void resetMag();
+
   void reset();
-  bool initacc();
-  bool initmag();  
+  bool initAcc();
+  bool initMag();  
 
   I2C_HandleTypeDef *i2c;
 

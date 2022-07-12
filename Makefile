@@ -104,8 +104,13 @@ CPP_SOURCES =  \
 	Core/Src/dwtdelay.cc \
 	Core/Src/printf.cc \
 	Core/Src/trace.cc\
+	Core/Src/uniqueid.cc\
 	Core/Src/vmmu.cc\
-	Core/Src/mems/mpu.cc	
+	Core/Src/mems/mpu.cc\
+	Core/Src/mems/mag.cc\
+	Core/Src/mems/gyro.cc\
+	Core/Src/mems/selftest.cc\
+	Core/Src/mems/accel.cc\
 
 # ASM sources
 ASM_SOURCES =  \

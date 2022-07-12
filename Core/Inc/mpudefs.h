@@ -101,26 +101,26 @@
 #define MPU9250_ZA_OFFSET_H 0x7D
 #define MPU9250_ZA_OFFSET_L 0x7E
 
-#define AK9863_WIA 0x00
-#define AK9863_INFO 0x01
-#define AK9863_ST1 0x02
-#define AK9863_HXL 0x03
-#define AK9863_HXH 0x04
-#define AK9863_HYL 0x05
-#define AK9863_HYH 0x06
-#define AK9863_HZL 0x07
-#define AK9863_HZH 0x08
-#define AK9863_ST2 0x09
-#define AK9863_CNTL1 0x0A
-#define AK9863_CNTL2 0x0B
-#define AK9863_RSV 0x0B
-#define AK9863_ASTC 0x0C
-#define AK9863_TS1 0x0D
-#define AK9863_TS2 0x0E
-#define AK9863_I2CDIS 0x0F
-#define AK9863_ASAX 0x10
-#define AK9863_ASAY 0x11
-#define AK9863_ASAZ 0x12
+#define AK8963_WIA 0x00
+#define AK8963_INFO 0x01
+#define AK8963_ST1 0x02
+#define AK8963_HXL 0x03
+#define AK8963_HXH 0x04
+#define AK8963_HYL 0x05
+#define AK8963_HYH 0x06
+#define AK8963_HZL 0x07
+#define AK8963_HZH 0x08
+#define AK8963_ST2 0x09
+#define AK8963_CNTL1 0x0A
+#define AK8963_CNTL2 0x0B
+#define AK8963_RSV 0x0B
+#define AK8963_ASTC 0x0C
+#define AK8963_TS1 0x0D
+#define AK8963_TS2 0x0E
+#define AK8963_I2CDIS 0x0F
+#define AK8963_ASAX 0x10
+#define AK8963_ASAY 0x11
+#define AK8963_ASAZ 0x12
 
 /* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 

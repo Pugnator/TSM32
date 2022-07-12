@@ -4,6 +4,7 @@
 #include "j1850.h"
 #include <stdio.h>
 #include "1wire.h"
+#include "id.h"
 #include <memory>
 
 #ifdef __cplusplus
@@ -21,10 +22,12 @@ extern "C"
 
   void tsmRunApp()
   {
-    DEBUG_LOG("TSM %s %s (%s) started\r\n", VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
+    uint32_t id[3] = {0};
+    getCPUid(id, STM32F4_t);
+    DEBUG_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n", id[0], id[1], id[2], VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
     DWT_Init();
 
-    std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);    
+    std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);
 
     kalmanInit(2, 2, 0.01);
     // eeprom_test();
@@ -40,7 +43,7 @@ extern "C"
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
 
     blinkerLeftSideOff();
-    blinkerRightSideOff();    
+    blinkerRightSideOff();
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
     while (1)
@@ -54,11 +57,11 @@ extern "C"
         messageCollected = false;
       }
       */
-      //blinkerWorker();      
-      
+      // blinkerWorker();
+
       HAL_Delay(2000);
-      mpu->getAzimuth();
-      // HAL_ADC_Start_IT(&hadc1);
+      // mpu->readMag();
+      //  HAL_ADC_Start_IT(&hadc1);
     }
   }
 
