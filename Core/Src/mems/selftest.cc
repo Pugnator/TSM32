@@ -3,6 +3,7 @@
 // Should return percent deviation from factory trim values, +/- 14 or less deviation is a pass
 void MPU9250::selfTest()
 {
+  #ifdef MPU_SELFTEST
   DEBUG_LOG("Started self test\r\n");
   uint8_t rawData[6] = {0, 0, 0, 0, 0, 0};
   uint8_t selfTest[6];
@@ -45,11 +46,11 @@ void MPU9250::selfTest()
 
   HAL_Delay(25); // osDelay a while to let the device stabilize
   // Enable self test on all three axes and set accelerometer range to +/- 2 g
-  writeRegMpu(MPU9250_ACCEL_CONFIG, 0xE0);
+  //writeRegMpu(MPU9250_ACCEL_CONFIG, 0xE0);
 
   // Enable self test on all three axes and set gyro range to +/- 250 degrees/s
 
-  writeRegMpu(MPU9250_GYRO_CONFIG, 0xE0);
+  //writeRegMpu(MPU9250_GYRO_CONFIG, 0xE0);
 
   for (int ii = 0; ii < 200; ii++)
   { // get average self-test values of gyro and acclerometer
@@ -113,5 +114,6 @@ void MPU9250::selfTest()
   {
     DEBUG_LOG("%.4f ", result[i]);
   }
+  #endif
   DEBUG_LOG("\r\nSelf test completed\r\n");
 }

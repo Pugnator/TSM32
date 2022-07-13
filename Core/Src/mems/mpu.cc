@@ -8,10 +8,11 @@ MPU9250::MPU9250(I2C_HandleTypeDef *dev)
   aMult = 0;
   gMult = 0;
   mMult = 0;
-  reset();
+  // reset();
 
   _ok = initAcc();
   _ok = initMag();
+  
   /* Calculate multiplicators */
   aMult = 2.0f / 32768.0f;
   gMult = 250.0f / 32768.0f;
@@ -39,51 +40,41 @@ void MPU9250::reset()
   HAL_Delay(100);                        // Wait for all registers to reset
 }
 
-bool MPU9250::writeRegMpu(uint8_t reg, uint8_t byte)
-{
-  uint8_t temp = byte;
-  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR, reg, 1, &temp, 1, 1000) != HAL_OK)
-  {
-    I2C_ClearBusyFlagErratum(i2c, 1000);
-    return false;
-  }
-  return true;
-}
-
 bool MPU9250::writeRegMpu(uint8_t reg, uint8_t *byte, size_t len)
 {
-  for (size_t i = 0; i < len; i++)
+
+  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR, reg, 1, byte, len, 1000) != HAL_OK)
   {
-    if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR, reg, 1, &byte[i], 1, 1000) != HAL_OK)
-    {
-      I2C_ClearBusyFlagErratum(i2c, 1000);
-      return false;
-    }
+    I2C_ClearBusyFlagErratum(i2c, 1000);
+    return false;
   }
 
   return true;
 }
 
-bool MPU9250::readRegMpu(uint8_t reg, uint8_t *byte)
+bool MPU9250::writeRegMpu(uint8_t reg, uint8_t &&byte)
 {
-  if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR, reg, 1, byte, 1, 1000) != HAL_OK)
+  uint8_t temp = byte;
+  uint8_t *data = &temp;  
+
+  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR, reg, 1, data, 1, 1000) != HAL_OK)
   {
     I2C_ClearBusyFlagErratum(i2c, 1000);
     return false;
   }
+
   return true;
 }
 
 bool MPU9250::readRegMpu(uint8_t reg, uint8_t *byte, size_t len)
 {
-  for (size_t i = 0; i < len; i++)
+
+  if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR, reg, 1, byte, len, 1000) != HAL_OK)
   {
-    if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR, reg, 1, &byte[i], 1, 1000) != HAL_OK)
-    {
-      I2C_ClearBusyFlagErratum(i2c, 1000);
-      return false;
-    }
+    I2C_ClearBusyFlagErratum(i2c, 1000);
+    return false;
   }
+
   return true;
 }
 
@@ -111,6 +102,16 @@ void MPU9250::printall()
   readMag();
 }
 
+void MPU9250::scanBus()
+{
+  for (size_t i = 0; i < 0xFF; i++)
+  {
+    if (HAL_OK == HAL_I2C_IsDeviceReady(i2c, i, 10, 100))
+    {
+      DEBUG_LOG("IIC device found at address %#.2X\r\n", i);      
+    }
+  }
+}
 
 kalmanFilter::kalmanFilter(float mea_e, float est_e, float q)
 {

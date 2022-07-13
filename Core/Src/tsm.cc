@@ -57,9 +57,7 @@ extern "C"
         messageCollected = false;
       }
       */
-      // blinkerWorker();
-
-      HAL_Delay(2000);
+      //blinkerWorker();      
       // mpu->readMag();
       //  HAL_ADC_Start_IT(&hadc1);
     }

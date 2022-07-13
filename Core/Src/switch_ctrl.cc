@@ -37,7 +37,7 @@ extern "C"
 
     if (GPIO_Pin == IMU_INT_Pin)
     {
-      DEBUG_LOG("MPU Interrupt!\r\n");
+      //DEBUG_LOG("MPU Interrupt!\r\n");
       return;
     }
     triggerTime = HAL_GetTick();

@@ -1,11 +1,8 @@
 #include "mpu.h"
 
-
-bool MPU9250::writeRegMag(uint8_t reg, uint8_t byte)
-{  
-  uint8_t temp = byte;
-  DEBUG_LOG("MAG write: %.2X to %.2X\r\n", temp, reg);
-  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, &temp, 1, 1000) != HAL_OK)
+bool MPU9250::writeRegMag(uint8_t reg, uint8_t *byte, size_t len)
+{
+  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, byte, len, 1000) != HAL_OK)
   {
     I2C_ClearBusyFlagErratum(i2c, 1000);
     DEBUG_LOG("Failed to write to MAG\r\n");
@@ -14,68 +11,65 @@ bool MPU9250::writeRegMag(uint8_t reg, uint8_t byte)
   return true;
 }
 
-bool MPU9250::readRegMag(uint8_t reg, uint8_t *byte)
+bool MPU9250::writeRegMag(uint8_t reg, uint8_t &&byte)
 {
-  if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, byte, 1, 1000) != HAL_OK)
+  uint8_t temp = byte;
+  uint8_t *data = &temp;
+
+  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, data, 1, 1000) != HAL_OK)
   {
     I2C_ClearBusyFlagErratum(i2c, 1000);
-    DEBUG_LOG("Failed to read MAG\r\n");
+    DEBUG_LOG("Failed to write to MAG\r\n");
     return false;
   }
-  DEBUG_LOG("Read #%.2X from MAG\r\n", *byte);
   return true;
 }
 
 bool MPU9250::readRegMag(uint8_t reg, uint8_t *byte, size_t len)
 {
-  for (size_t i = 0; i < len; i++)
+  if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, byte, len, 1000) != HAL_OK)
   {
-    if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, byte, 1, 1000) != HAL_OK)
-    {
-      I2C_ClearBusyFlagErratum(i2c, 1000);
-      DEBUG_LOG("Failed to read MAG\r\n");
-      return false;
-    }
+    I2C_ClearBusyFlagErratum(i2c, 1000);
+    DEBUG_LOG("Failed to read MAG\r\n");
+    return false;
   }
   return true;
 }
 
 void MPU9250::resetMag()
 {
-  writeRegMpu(AK8963_CNTL2, AKM_RESET);
+  writeRegMpu(AK8963_CNTL2, 0b0000001);
   HAL_Delay(100);
 }
 
 bool MPU9250::initMag()
 {
   /* Check if device connected */
-  if (HAL_OK == HAL_I2C_IsDeviceReady(i2c, MPU9250_I2C_ADDR_MAG, 10, 100))
-  {
-    DEBUG_LOG("MAG is online\r\n");
-  }
-  else
+  if (HAL_OK != HAL_I2C_IsDeviceReady(i2c, MPU9250_I2C_ADDR_MAG, 10, 100))
   {
     DEBUG_LOG("MAG is not online\r\n");
     return false;
-  }  
+  }
 
   // Case 2: Who am i test
   uint8_t wai = 0;
-  readRegMag(AK8963_WIA, &wai);  
+  readRegMag(AK8963_WIA, &wai);
 
   if (wai != 0x48)
   {
     return false;
   }
 
-  DEBUG_LOG("AK8963 is detected [#%.2X]\r\n", wai);  
-  uint8_t reg = 0;  
-  readRegMag(AK8963_INFO, &reg);
-  readRegMag(AK8963_ASAX, &reg);
-  readRegMag(AK8963_ASAY, &reg);
-  readRegMag(AK8963_ASAZ, &reg);
+  DEBUG_LOG("AK8963 is detected [%#.2X]\r\n", wai);
 
-  
+  uint8_t adjData[3] = {0};
+  readRegMag(AK8963_ASAX, adjData, 3);
+  adjX = (((adjData[0] - 128.0) * 0.5)/128.0) + 1;
+  adjY = (((adjData[1] - 128.0) * 0.5)/128.0) + 1;
+  adjZ = (((adjData[2] - 128.0) * 0.5)/128.0) + 1;
+
+  DEBUG_LOG("FuseROM %.4f %.4f %.4f\r\n", adjX, adjY, adjZ);
+
 
 #ifdef MPU_CALIBRATE
   DEBUG_LOG("Started magnetometer calibration\r\n");
@@ -129,29 +123,25 @@ axes MPU9250::readMag()
 
   /* Check status */
   readRegMag(AK8963_ST1, data, 8);
-  
+
   axes result = {0};
   if (data[0] & 0x01)
   {
-    DEBUG_LOG("Data is ready\r\n");
-    
-      uint8_t status2 = 0;
-      readRegMag(AK8963_ST2, &status2, 1);      
-      float Mx_Raw = ((int16_t)data[2] << 8) | data[1];
-      float My_Raw = ((int16_t)data[4] << 8) | data[3];
-      float Mz_Raw = ((int16_t)data[6] << 8) | data[5];
+    DEBUG_LOG("Data is ready\r\n");    
+    float Mx_Raw = ((int16_t)data[2] << 8) | data[1];
+    float My_Raw = ((int16_t)data[4] << 8) | data[3];
+    float Mz_Raw = ((int16_t)data[6] << 8) | data[5];
 
-      result.x = (float)Mx_Raw * mMult;
-      result.y = (float)Mz_Raw * mMult;
-      result.z = (float)My_Raw * mMult;
+    result.x = (float)Mx_Raw * mMult;
+    result.y = (float)Mz_Raw * mMult;
+    result.z = (float)My_Raw * mMult;
 
-      DEBUG_LOG("Magnetometer %.4f, %.4f, %.4f\r\n", result.x, result.y, result.z);
-      return result;
-    
+    DEBUG_LOG("Magnetometer %.4f, %.4f, %.4f\r\n", result.x, result.y, result.z);
+    return result;
   }
   uint8_t cntl1 = 0;
   readRegMag(AK8963_CNTL1, &cntl1, 1);
-  DEBUG_LOG("MAG is not ready, mode = 0%.8b [%.8b]\r\n", cntl1, data[0]);   
+  DEBUG_LOG("MAG is not ready, mode = 0%.8b [%.8b]\r\n", cntl1, data[0]);
   return result;
 }
 
