@@ -183,14 +183,14 @@ C_INCLUDES =  \
 
 CXXERRORS_TO_SKIP := -Wno-volatile
 
-CXXSTD := c++14 -pedantic -pedantic-errors $(CXXERRORS_TO_SKIP) -Werror
+CXXSTD := c++14 -pedantic -pedantic-errors $(CXXERRORS_TO_SKIP) #-Werror
 CSTD := c11 -pedantic
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
-CFLAGS+= $(MCU) --std=$(CSTD) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+CFLAGS+= $(MCU) --std=$(CSTD) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -fno-strict-aliasing
 
-CXXFLAGS+= $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -flto -fno-exceptions -fno-rtti
+CXXFLAGS+= $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -flto -fno-exceptions -fno-rtti -fno-strict-aliasing
 CXXFLAGS += --std=$(CXXSTD) -Wall -D_GNU_SOURCE
 
 

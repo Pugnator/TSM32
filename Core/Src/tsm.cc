@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "1wire.h"
 #include "id.h"
+#include "vmmu.h"
 #include <memory>
 
 #ifdef __cplusplus
@@ -21,18 +22,17 @@ extern "C"
 #define DS2401_FAMILY_CODE 0x01
 
   void tsmRunApp()
-  {
+  {    
     uint32_t id[3] = {0};
     getCPUid(id, STM32F4_t);
     DEBUG_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n", id[0], id[1], id[2], VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
-    DWT_Init();
-
-    std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);
+    DWT_Init();    
 
     kalmanInit(2, 2, 0.01);
-    // eeprom_test();
+    
     /*Battery watchdog*/
     HAL_ADC_Start(&hadc1);
+    HAL_ADC_Start_IT(&hadc1);
 
     /*J1850 logger*/
     HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_2);
@@ -46,9 +46,10 @@ extern "C"
     blinkerRightSideOff();
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
+    std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);    
     while (1)
     {
-
+      //blinkerWorker(); 
       /*
       if (messageCollected)
       {
@@ -57,9 +58,13 @@ extern "C"
         messageCollected = false;
       }
       */
-      //blinkerWorker();      
-      // mpu->readMag();
-      //  HAL_ADC_Start_IT(&hadc1);
+           
+      if(mpu->ok())
+      {
+        //mpu->getAzimuth();
+      }
+      
+      HAL_Delay(2000);      
     }
   }
 

@@ -54,7 +54,7 @@ bool MPU9250::initAcc()
   uint8_t val = 0;
   uint8_t *data = &val;
   readRegMpu(MPU9250_GYRO_CONFIG, data); // get current GYRO_CONFIG register value
-  // c = c & ~0xE0; // Clear self-test bits [7:5]
+  *data = *data & ~0xE0; // Clear self-test bits [7:5]
   *data &= ~0x02;     // Clear Fchoice bits [1:0]
   *data &= ~0x18;     // Clear AFS bits [4:3]
   *data |= 0x00 << 3; // Set full scale range for the gyro
@@ -87,7 +87,7 @@ bool MPU9250::initAcc()
   // can join the I2C bus and all can be controlled by the Arduino as master
   
   writeRegMpu(MPU9250_INT_PIN_CFG, 0x22);  
-  writeRegMpu(MPU9250_INT_ENABLE, 0x01);
+  writeRegMpu(MPU9250_INT_ENABLE, 0x02);
   DEBUG_LOG("MPU is up\r\n");
   return true;
 }

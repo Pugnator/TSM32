@@ -62,9 +62,11 @@
 //    for single thread/task applications.
 //
 
+#define DEBUG_MEMMGR_SUPPORT_STATS
+
 #define FREE(x) stfree((void*)x)
 #define ALLOC(x) stalloc(x)
-#define POOL_SIZE 4096
+#define POOL_SIZE 16*1024
 //Will destroy all allocated memory
 #define EMERGENCY_MEM_POOL_FLUSH vmmu_init()
 
@@ -74,8 +76,14 @@
 // Initialize the memory manager. This function should be called
 // only once in the beginning of the program.
 //
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 void vmmu_init();
-
+#ifdef __cplusplus
+}
+#endif
 // 'malloc' clone
 //
 void* stalloc(uint32_t nbytes);

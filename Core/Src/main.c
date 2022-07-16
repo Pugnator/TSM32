@@ -28,6 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "vmmu.h"
 #include "dwtdelay.h"
 
 /* USER CODE END Includes */
@@ -101,10 +102,11 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init();
+  vmmu_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+  /* USER CODE BEGIN WHILE */  
   tsmRunApp();
 
   while (1)

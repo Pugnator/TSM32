@@ -36,10 +36,152 @@ bool MPU9250::readRegMag(uint8_t reg, uint8_t *byte, size_t len)
   return true;
 }
 
-void MPU9250::resetMag()
+bool MPU9250::magRST()
 {
-  writeRegMpu(AK8963_CNTL2, 0b0000001);
-  HAL_Delay(100);
+  bool result = writeRegMag(AK8963_CNTL2, 0b0000001);
+  if (!result)
+  {
+    return false;
+  }
+  HAL_Delay(10);
+  return true;
+}
+
+bool MPU9250::magSetMode(magMode mode)
+{
+  bool result = false;
+  switch (mode)
+  {
+  case MAG_MODE_PD:
+    result = writeRegMag(AK8963_CNTL1, 0);
+    break;
+  case MAG_MODE_FUSE_ROM:
+    result = writeRegMag(AK8963_CNTL1, 0b00001111);
+    break;
+  case MAG_MODE_SINGLE:
+    result = writeRegMag(AK8963_CNTL1, 0b00010001);
+    break;
+  case MAG_MODE_CONT_8HZ:
+    result = writeRegMag(AK8963_CNTL1, 0b00010010);
+    break;
+  case MAG_MODE_CONT_100HZ:
+    result = writeRegMag(AK8963_CNTL1, 0b00010110);
+    break;
+  case MAG_MODE_SELF_TEST:
+    result = writeRegMag(AK8963_CNTL1, 0b00011000);
+    break;
+  default:
+    DEBUG_LOG("Wrong mode specified {%.2X}\r\n", mode);
+    return false;
+  }
+
+  if (!result)
+  {
+    return false;
+  }
+  HAL_Delay(10);
+  return true;
+}
+
+void MPU9250::magCalibration()
+{
+  DEBUG_LOG("Hard and Soft Iron effect compensation\r\n");
+  float X_max = -99999, X_min = 99999, Y_max = -99999, Y_min = 99999, Z_max = -99999, Z_min = 99999;
+  uint8_t data[7];
+  uint8_t state = 0;  
+  /* Hard Iron effect compensation */
+  for (uint32_t i = 0; i < 50; ++i)
+  {
+
+    do
+    {
+      readRegMag(AK8963_ST1, &state);
+    } while (!(state & 0x01));
+
+    readRegMag(AK8963_HXL, &data[0], 7);
+    float Mx_Raw = ((data[1] << 8) | data[0]);
+    float My_Raw = ((data[3] << 8) | data[2]);
+    float Mz_Raw = ((data[5] << 8) | data[4]);
+
+    if (Mx_Raw > X_max)
+      X_max = Mx_Raw;
+    if (My_Raw > Y_max)
+      Y_max = My_Raw;
+    if (Mz_Raw > Z_max)
+      Z_max = Mz_Raw;
+
+    if (Mx_Raw < X_min)
+      X_min = Mx_Raw;
+    if (My_Raw < Y_min)
+      Y_min = My_Raw;
+    if (Mz_Raw < Z_min)
+      Z_min = Mz_Raw;
+
+    HAL_Delay(10);
+  }
+
+  magOffsetX = (X_max + X_min) / 2;
+  magOffsetY = (Y_max + Y_min) / 2;
+  magOffsetZ = (Z_max + Z_min) / 2;
+
+  /* Soft Iron effect compensation */
+  float delta_x = (X_max - X_min) / 2;
+  float delta_y = (Y_max - Y_min) / 2;
+  float delta_z = (Z_max - Z_min) / 2;
+
+  float delta = (delta_x + delta_y + delta_z) / 3;
+
+  mScaleX = delta / delta_x;
+  mScaleY = delta / delta_y;
+  mScaleZ = delta / delta_z;
+  DEBUG_LOG("Offsets [X %f, Y %f, Z %f]\r\n", magOffsetX, magOffsetY, magOffsetZ);
+  DEBUG_LOG("Scale [X %f, Y %f, Z %f]\r\n", mScaleX, mScaleY, mScaleZ);
+}
+
+bool MPU9250::magSelfTest()
+{
+  if (!magSetMode(MAG_MODE_PD))
+  {
+    return false;
+  }
+
+  if (!writeRegMag(AK8963_ASTC, 0b01000000))
+  {
+    return false;
+  }
+
+  if (!magSetMode(MAG_MODE_SELF_TEST))
+  {
+    return false;
+  }
+
+  uint8_t data[7];
+  uint8_t state = 0;
+  do
+  {
+    readRegMag(AK8963_ST1, &state);
+  } while (!(state & 0x01));
+
+  axes a = {0};
+  readRegMag(AK8963_HXL, &data[0], 7);
+  float Mx_Raw = ((data[1] << 8) | data[0]);
+  float My_Raw = ((data[3] << 8) | data[2]);
+  float Mz_Raw = ((data[5] << 8) | data[4]);
+  /* Calculate uT (micro Tesla) value for XYZ axis */
+  a.x = Mx_Raw * corrX;
+  a.y = My_Raw * corrY;
+  a.z = Mz_Raw * corrZ;
+
+  if (!writeRegMag(AK8963_ASTC, 0))
+  {
+    return false;
+  }
+  if (!magSetMode(MAG_MODE_PD))
+  {
+    return false;
+  }
+  DEBUG_LOG("Self Test: %.4f %.4f %.4f\r\n", a.x, a.y, a.z);
+  return true;
 }
 
 bool MPU9250::initMag()
@@ -51,6 +193,8 @@ bool MPU9250::initMag()
     return false;
   }
 
+  magRST();
+
   // Case 2: Who am i test
   uint8_t wai = 0;
   readRegMag(AK8963_WIA, &wai);
@@ -61,87 +205,59 @@ bool MPU9250::initMag()
   }
 
   DEBUG_LOG("AK8963 is detected [%#.2X]\r\n", wai);
-
-  uint8_t adjData[3] = {0};
-  readRegMag(AK8963_ASAX, adjData, 3);
-  adjX = (((adjData[0] - 128.0) * 0.5)/128.0) + 1;
-  adjY = (((adjData[1] - 128.0) * 0.5)/128.0) + 1;
-  adjZ = (((adjData[2] - 128.0) * 0.5)/128.0) + 1;
-
-  DEBUG_LOG("FuseROM %.4f %.4f %.4f\r\n", adjX, adjY, adjZ);
-
-
-#ifdef MPU_CALIBRATE
-  DEBUG_LOG("Started magnetometer calibration\r\n");
-  float X_max = -99999, X_min = 99999, Y_max = -99999, Y_min = 99999, Z_max = -99999, Z_min = 99999;
-
-  /* Hard Iron effect compensation */
-  for (size_t i = 0; i < 2; ++i)
+  magSetMode(MAG_MODE_PD);
+  // Entering FUSE rom read state
+  if (!magSetMode(MAG_MODE_FUSE_ROM))
   {
-    auto axes = readMag();
+    return false;
+  }
+  HAL_Delay(10);
+  uint8_t fuseRom[3] = {0};
+  if (!readRegMag(AK8963_ASAX, &fuseRom[0], 3))
+  {
+    return false;
+  }
+  corrX = (((fuseRom[0] - 128.0) * 0.5) / 128) + 1;
+  corrY = (((fuseRom[1] - 128.0) * 0.5) / 128) + 1;
+  corrZ = (((fuseRom[2] - 128.0) * 0.5) / 128) + 1;
 
-    if (axes.x > X_max)
-      X_max = axes.x;
-    if (axes.y > Y_max)
-      Y_max = axes.y;
-    if (axes.z > Z_max)
-      Z_max = axes.z;
+  DEBUG_LOG("Corrections:\r\nX=%.4f\r\nY=%.4f\r\nZ=%.4f\r\n", corrX, corrY, corrZ);
 
-    if (axes.x < X_min)
-      X_min = axes.x;
-    if (axes.y < Y_min)
-      Y_min = axes.y;
-    if (axes.z < Z_min)
-      Z_min = axes.z;
-
-    HAL_Delay(20);
+  magSelfTest();  
+  // Entering Continous mode, 8Hz
+  magSetMode(MAG_MODE_PD);
+  if (!magSetMode(MAG_MODE_CONT_8HZ))
+  {
+    return false;
   }
 
-  float X_offset = (X_max + X_min) / 2;
-  float Y_offset = (Y_max + Y_min) / 2;
-  float Z_offset = (Z_max + Z_min) / 2;
+  magCalibration();
+  
 
-  /* Soft Iron effect compensation */
-  // float delta_x = (X_max - X_min) / 2;
-  // float delta_y = (Y_max - Y_min) / 2;
-  // float delta_z = (Z_max - Z_min) / 2;
-
-  // float delta = (delta_x + delta_y + delta_z) / 3;
-
-  // float mMultx = delta / delta_x;
-  // float mMulty = delta / delta_y;
-  // float mMultz = delta / delta_z;
-  DEBUG_LOG("MAG calibration finished. Offsets [X %f, Y %f, Z %f]\r\n", X_offset, Y_offset, Z_offset);
-#endif
-
+  DEBUG_LOG("Mag is ready\r\n");
   return true;
 }
 
 axes MPU9250::readMag()
 {
-  uint8_t data[8];
-
-  /* Check status */
-  readRegMag(AK8963_ST1, data, 8);
+  uint8_t data[7];
+  uint8_t state = 0;
+  do
+  {
+    readRegMag(AK8963_ST1, &state);
+  } while (!(state & 0x01));
 
   axes result = {0};
-  if (data[0] & 0x01)
-  {
-    DEBUG_LOG("Data is ready\r\n");    
-    float Mx_Raw = ((int16_t)data[2] << 8) | data[1];
-    float My_Raw = ((int16_t)data[4] << 8) | data[3];
-    float Mz_Raw = ((int16_t)data[6] << 8) | data[5];
+  readRegMag(AK8963_HXL, &data[0], 7);
+  float Mx_Raw = ((data[1] << 8) | data[0]) - magOffsetX;
+  float My_Raw = ((data[3] << 8) | data[2]) - magOffsetY;
+  float Mz_Raw = ((data[5] << 8) | data[4]) - magOffsetZ;
+  /* Calculate uT (micro Tesla) value for XYZ axis */
+  result.x = Mx_Raw * corrX * gSensF * mScaleX;
+  result.y = My_Raw * corrY * gSensF * mScaleY;
+  result.z = Mz_Raw * corrZ * gSensF * mScaleZ;
+  result.z = result.z * -1;
 
-    result.x = (float)Mx_Raw * mMult;
-    result.y = (float)Mz_Raw * mMult;
-    result.z = (float)My_Raw * mMult;
-
-    DEBUG_LOG("Magnetometer %.4f, %.4f, %.4f\r\n", result.x, result.y, result.z);
-    return result;
-  }
-  uint8_t cntl1 = 0;
-  readRegMag(AK8963_CNTL1, &cntl1, 1);
-  DEBUG_LOG("MAG is not ready, mode = 0%.8b [%.8b]\r\n", cntl1, data[0]);
   return result;
 }
 
@@ -152,15 +268,16 @@ float MPU9250::getAzimuth()
   float Yf = ax.y;
   float Zf = ax.z;
   float norm = sqrtf(Xf * Xf + Yf * Yf + Zf * Zf);
-  if (norm == 0.0f)
+  if (!norm)
   {
+    return -1;
   }
   norm = 1.0f / norm;
   Xf *= norm;
   Yf *= norm;
   Zf *= norm;
 
-  // DEBUG_LOG("X=%f Y=%f Z=%f\r\n", Xf, Yf, Zf);
+  DEBUG_LOG("X=%f Y=%f Z=%f\r\n", Xf, Yf, Zf);
   float az = 0.0;
   if (Yf > 0)
   {

@@ -5,21 +5,17 @@ MPU9250::MPU9250(I2C_HandleTypeDef *dev)
 {
   i2c = dev;
   _ok = false;
-  aMult = 0;
-  gMult = 0;
-  mMult = 0;
-  // reset();
+  corrX = 0;
+  corrY = 0;
+  corrZ = 0;  
 
-  _ok = initAcc();
-  _ok = initMag();
-  
   /* Calculate multiplicators */
   aMult = 2.0f / 32768.0f;
   gMult = 250.0f / 32768.0f;
-  mMult = 10.0f * 4912.0f / 32768.0f;
-  aKalman.reset(new kalmanFilter);
-  gKalman.reset(new kalmanFilter);
-  mKalman.reset(new kalmanFilter);
+  gSensF = 10.0f * 4912.0f / 32768.0f;
+
+  _ok = initAcc();
+  _ok = initMag();  
 }
 
 MPU9250::~MPU9250()
@@ -128,4 +124,26 @@ float kalmanFilter::updateEstimate(float mea)
   _last_estimate = _current_estimate;
 
   return _current_estimate;
+}
+
+dimKalm::dimKalm()
+{
+  _x.reset(new kalmanFilter);
+  _y.reset(new kalmanFilter);
+  _z.reset(new kalmanFilter);
+}
+
+float dimKalm::x(float newx)
+{
+  return _x->updateEstimate(newx);
+}
+
+float dimKalm::y(float newy)
+{
+  return _y->updateEstimate(newy);
+}
+
+float dimKalm::z(float newz)
+{
+  return _z->updateEstimate(newz);
 }

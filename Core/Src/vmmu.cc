@@ -6,20 +6,20 @@
 // This code is in the public domain.
 //----------------------------------------------------------------
 
-//Modified to complain with this platform and C++11 compiler
+// Modified to complain with this platform and C++11 compiler
 
 #include <vmmu.h>
 #include <stdio.h>
 #include <trace.h>
 #include <cstring>
 
-
 typedef uint32_t Align;
 
 uint32_t alloc_counter = 0;
 uint32_t free_counter = 0;
 
-union mem_header_union {
+union mem_header_union
+{
   struct
   {
     // Pointer to the next block in the free list
@@ -51,37 +51,42 @@ static mem_header_t *freep = 0;
 static uint8_t pool[POOL_SIZE];
 static uint32_t pool_free_pos = 0;
 
-void vmmu_init()
+#ifdef __cplusplus
+extern "C"
 {
-  DEBUG_LOG("Memory pool size: %u\r\n", POOL_SIZE);
-  memset(pool, 0, sizeof pool);
-  base.s.next = 0;
-  base.s.size = 0;
-  freep = 0;
-  pool_free_pos = 0;
+#endif
+  void vmmu_init()
+  {
+    DEBUG_LOG("Memory pool size: %u\r\n", POOL_SIZE);
+    memset(pool, 0, sizeof pool);
+    base.s.next = 0;
+    base.s.size = 0;
+    freep = 0;
+    pool_free_pos = 0;
+  }
+#ifdef __cplusplus
 }
+#endif
 
 void print_memstat()
 {
 #ifdef DEBUG_MEMMGR_SUPPORT_STATS
   mem_header_t *p;
 
-  DEBUG_LOG("------ Memory manager stats ------\n\n");
-  DEBUG_LOG("Pool: free_pos = %lu (%lu bytes left)\n\n", pool_free_pos,
-            POOL_SIZE - pool_free_pos);
+  DEBUG_LOG("------ Memory manager stats ------\r\n");
+  DEBUG_LOG("Pool: free_pos = %lu (%lu bytes left)\r\n", pool_free_pos, POOL_SIZE - pool_free_pos);
 
-  DEBUG_LOG("Allocated %lu times, freed %lu times\n", alloc_counter, free_counter);
+  DEBUG_LOG("Allocated %lu times, freed %lu times\r\n", alloc_counter, free_counter);
 
   p = (mem_header_t *)pool;
 
   while (p < (mem_header_t *)(pool + pool_free_pos))
   {
-    DEBUG_LOG("  * Addr: 0x%8X; Size: %8X\n", p, (uint32_t)p->s.size);
-
+    DEBUG_LOG("  * Addr: 0x%8p; Size: %8X\r\n", (void*)p, (unsigned)p->s.size);
     p += p->s.size;
   }
 
-  DEBUG_LOG("\nFree list:\n\n");
+  DEBUG_LOG("\r\nFree list:\r\n");
 
   if (freep)
   {
@@ -89,21 +94,18 @@ void print_memstat()
 
     for (;;)
     {
-      DEBUG_LOG("  * Addr: 0x%8X; Size: %8lu; Next: 0x%8X\n", p,
-                (uint32_t)p->s.size, p->s.next);
-
+      DEBUG_LOG("  * Addr: 0x%8p; Size: %8lu; Next: 0x%8p\r\n", (void*)p, (uint32_t)p->s.size, (void*)p->s.next);
       p = p->s.next;
-
       if (p == freep)
         break;
     }
   }
   else
   {
-    DEBUG_LOG("Empty\n");
+    DEBUG_LOG("Empty\r\n");
   }
 
-  DEBUG_LOG("\n");
+  DEBUG_LOG("\r\n");
 #endif // DEBUG_MEMMGR_SUPPORT_STATS
 }
 

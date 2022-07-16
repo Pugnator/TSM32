@@ -30,7 +30,7 @@ Magnetic field strength: 52788.7 nT
 #define MPU9250_I2C_ADDR 0xD0
 #define MPU9250_I2C_ADDR_MAG 0x0C << 1
 
-typedef union axes
+typedef struct axes
 {
   float x;
   float y;
@@ -38,7 +38,17 @@ typedef union axes
 
 } axes;
 
-/// 0 0 0 BIT MODE3 MODE2 MODE1 MODE0
+typedef enum
+{
+  MAG_MODE_PD,
+  MAG_MODE_SINGLE,
+  MAG_MODE_CONT_8HZ,
+  MAG_MODE_CONT_100HZ,
+  MAG_MODE_SELF_TEST,
+  MAG_MODE_FUSE_ROM,
+}magMode;
+
+
 #define AKM_CONT_MODE_8 0b0001001
 #define AKM_PWDWN_MODE 0b0000000
 #define AKM_RESET 0b0000001
@@ -59,6 +69,23 @@ private:
   float _last_estimate;
   float _kalman_gain;
 };
+
+class dimKalm
+{
+  public:
+  dimKalm();
+  ~dimKalm(){};
+
+  float x(float);
+  float y(float);
+  float z(float);
+
+  private:
+  std::unique_ptr<kalmanFilter> _x;
+  std::unique_ptr<kalmanFilter> _y;
+  std::unique_ptr<kalmanFilter> _z;
+};
+
 
 class MPU9250
 {
@@ -90,24 +117,32 @@ private:
   bool writeRegMag(uint8_t reg, uint8_t *byte, size_t len);
   bool writeRegMag(uint8_t reg, uint8_t &&byte);
   bool readRegMag(uint8_t reg, uint8_t *byte, size_t len = 1);
-  void resetMag();
+  bool magRST();  
+  bool magSetMode(magMode mode); 
+  void magCalibration();
+  bool magSelfTest();
 
   void reset();
   bool initAcc();
   bool initMag();
 
-  I2C_HandleTypeDef *i2c;
-
-  std::unique_ptr<kalmanFilter> aKalman;
-  std::unique_ptr<kalmanFilter> gKalman;
-  std::unique_ptr<kalmanFilter> mKalman;
+  I2C_HandleTypeDef *i2c;  
 
   bool _ok;
+
+  float corrX;
+  float corrY;
+  float corrZ;
+  float magOffsetX;
+  float magOffsetY;
+  float magOffsetZ;
+  float mScaleX;
+  float mScaleY;
+  float mScaleZ;
+
+
   float aMult;
   float gMult;
-  float mMult;
+  float gSensF;
 
-  float adjX;
-  float adjY;
-  float adjZ;
 };
