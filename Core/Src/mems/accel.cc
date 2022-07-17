@@ -4,6 +4,7 @@ bool MPU9250::initAcc()
 {
   if (HAL_OK != HAL_I2C_IsDeviceReady(i2c, MPU9250_I2C_ADDR, 10, 100))  
   {
+    I2C_ClearBusyFlagErratum(i2c, 1000);
     DEBUG_LOG("Accelerometer is not online\r\n");
     return false;
   }
@@ -85,9 +86,10 @@ bool MPU9250::initAcc()
   // Set interrupt pin active high, push-pull, hold interrupt pin level HIGH until interrupt cleared,
   // clear on read of INT_STATUS, and enable I2C_BYPASS_EN so additional chips
   // can join the I2C bus and all can be controlled by the Arduino as master
-  
+  //0010 0010
   writeRegMpu(MPU9250_INT_PIN_CFG, 0x22);  
-  writeRegMpu(MPU9250_INT_ENABLE, 0x02);
+  //01000000
+  writeRegMpu(MPU9250_INT_ENABLE, 0);
   DEBUG_LOG("MPU is up\r\n");
   return true;
 }

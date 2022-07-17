@@ -7,7 +7,7 @@ MPU9250::MPU9250(I2C_HandleTypeDef *dev)
   _ok = false;
   corrX = 0;
   corrY = 0;
-  corrZ = 0;  
+  corrZ = 0;
 
   /* Calculate multiplicators */
   aMult = 2.0f / 32768.0f;
@@ -15,7 +15,12 @@ MPU9250::MPU9250(I2C_HandleTypeDef *dev)
   gSensF = 10.0f * 4912.0f / 32768.0f;
 
   _ok = initAcc();
-  _ok = initMag();  
+  _ok = initMag();
+  if (!_ok)
+  {
+    DEBUG_LOG("I2C bus issue.\r\nRebooting the system.\r\n");
+    NVIC_SystemReset();
+  }
 }
 
 MPU9250::~MPU9250()
@@ -51,7 +56,7 @@ bool MPU9250::writeRegMpu(uint8_t reg, uint8_t *byte, size_t len)
 bool MPU9250::writeRegMpu(uint8_t reg, uint8_t &&byte)
 {
   uint8_t temp = byte;
-  uint8_t *data = &temp;  
+  uint8_t *data = &temp;
 
   if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR, reg, 1, data, 1, 1000) != HAL_OK)
   {
@@ -104,46 +109,31 @@ void MPU9250::scanBus()
   {
     if (HAL_OK == HAL_I2C_IsDeviceReady(i2c, i, 10, 100))
     {
-      DEBUG_LOG("IIC device found at address %#.2X\r\n", i);      
+      DEBUG_LOG("IIC device found at address %#.2X\r\n", i);
     }
   }
 }
 
-kalmanFilter::kalmanFilter(float mea_e, float est_e, float q)
+float MPU9250::filter(float newVal)
 {
-  _err_measure = mea_e;
-  _err_estimate = est_e;
-  _q = q;
-}
+  float dt = 0.15;
+  float sigma_process = 3.0;
+  float sigma_noise = 0.7;
 
-float kalmanFilter::updateEstimate(float mea)
-{
-  float _kalman_gain = _err_estimate / (_err_estimate + _err_measure);
-  _current_estimate = _last_estimate + _kalman_gain * (mea - _last_estimate);
-  _err_estimate = (1.0 - _kalman_gain) * _err_estimate + fabs(_last_estimate - _current_estimate) * _q;
-  _last_estimate = _current_estimate;
-
-  return _current_estimate;
-}
-
-dimKalm::dimKalm()
-{
-  _x.reset(new kalmanFilter);
-  _y.reset(new kalmanFilter);
-  _z.reset(new kalmanFilter);
-}
-
-float dimKalm::x(float newx)
-{
-  return _x->updateEstimate(newx);
-}
-
-float dimKalm::y(float newy)
-{
-  return _y->updateEstimate(newy);
-}
-
-float dimKalm::z(float newz)
-{
-  return _z->updateEstimate(newz);
+  static float xk_1, vk_1, a, b;
+  static float xk, vk, rk;
+  static float xm;
+  float lambda = (float)sigma_process * dt * dt / sigma_noise;
+  float r = (4 + lambda - (float)sqrt(8 * lambda + lambda * lambda)) / 4;
+  a = (float)1 - r * r;
+  b = (float)2 * (2 - a) - 4 * (float)sqrt(1 - a);
+  xm = newVal;
+  xk = xk_1 + ((float) vk_1 * dt );
+  vk = vk_1;
+  rk = xm - xk;
+  xk += (float)a * rk;
+  vk += (float)( b * rk ) / dt;
+  xk_1 = xk;
+  vk_1 = vk;
+  return xk_1;
 }

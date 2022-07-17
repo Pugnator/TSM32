@@ -55,6 +55,46 @@ extern "C"
     HAL_UART_Transmit(&huart2, reinterpret_cast<uint8_t *>(&character), 1, 100);
   }
 
+  // TO USE: addr2line -e ./bin/program.elf -a 0x8002327 [GDB: p/x pc when it hit for(;;)]
+  void memory_dump(uint32_t *stackAddress)
+  {
+    Print("***Crash dump initiated***\n");
+
+    /*
+   These are volatile to try and prevent the compiler/linker optimising them
+   away as the variables never actually get used.  If the debugger won't show the
+   values of the variables, make them global my moving their declaration outside
+   of this function.
+   */
+    volatile uint32_t r0 = stackAddress[0];
+    volatile uint32_t r1 = stackAddress[1];
+    volatile uint32_t r2 = stackAddress[2];
+    volatile uint32_t r3 = stackAddress[3];
+    volatile uint32_t r12 = stackAddress[4];
+    /* Link register. */
+    volatile uint32_t lr = stackAddress[5];
+    /* Program counter. */
+    volatile uint32_t pc = stackAddress[6];
+    /* Program status register. */
+    volatile uint32_t psr = stackAddress[7];
+
+    PrintF("Dumping CPU registers...\r\n");
+
+    char registers[128];
+    uint32_t written;
+    DEBUG_LOG("R0:  0x%08X\nR1:  0x%08X\nR2:  0x%08X\nR3:  0x%08X\nR12: 0x%08X\r\n",
+              r0, r1, r2, r3, r12);
+
+    DEBUG_LOG("LR:  0x%08X\nPC:  0x%08X\nPSR: 0x%08X\r\n", lr, pc, psr);
+    die();
+  }
+
+  void die()
+  {
+    for (;;)
+      ;
+  }
+
 #ifdef __cplusplus
 }
 #endif

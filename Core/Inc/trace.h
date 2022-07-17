@@ -25,3 +25,13 @@
 #else
 #error Define USE_SEGGER_RTT_TRACE USE_SWO_TRACE or USE_UART2_TRACE
 #endif
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+void dump_registers(int r0, int r1, int r2, int r3);
+void die();
+#ifdef __cplusplus
+}
+#endif

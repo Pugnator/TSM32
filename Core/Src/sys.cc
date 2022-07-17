@@ -47,7 +47,7 @@ void __wrap___aeabi_unwind_cpp_pr0()
     ;
 }
 
-#ifdef USE_STATIC_ALLOC
+
 void *operator new(size_t n)
 {
   void *const p = stalloc(n);
@@ -64,4 +64,3 @@ void operator delete(void *p, unsigned int)
 {
     stfree(p);
 }
-#endif

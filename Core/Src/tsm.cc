@@ -18,18 +18,15 @@ extern "C"
     uwTick += uwTickFreq;
   }
 
-#define DS2401_READ_ROM_COMMAND 0x33
-#define DS2401_FAMILY_CODE 0x01
-
   void tsmRunApp()
-  {    
+  {
     uint32_t id[3] = {0};
     getCPUid(id, STM32F4_t);
     DEBUG_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n", id[0], id[1], id[2], VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
-    DWT_Init();    
+    DWT_Init();
 
     kalmanInit(2, 2, 0.01);
-    
+
     /*Battery watchdog*/
     HAL_ADC_Start(&hadc1);
     HAL_ADC_Start_IT(&hadc1);
@@ -46,10 +43,12 @@ extern "C"
     blinkerRightSideOff();
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
-    std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);    
+    std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);
+    float az = 0;
+    uint32_t azCount = 0;
     while (1)
     {
-      //blinkerWorker(); 
+      // blinkerWorker();
       /*
       if (messageCollected)
       {
@@ -58,13 +57,18 @@ extern "C"
         messageCollected = false;
       }
       */
-           
-      if(mpu->ok())
+
+      if (mpu->ok())
       {
-        //mpu->getAzimuth();
-      }
-      
-      HAL_Delay(2000);      
+        az += mpu->getAzimuth();
+        azCount++;
+        if (100 == azCount)
+        {
+          az /= 100;
+          DEBUG_LOG("\rAZ=%.1f\r", az);
+          azCount = 0;
+        }
+      }     
     }
   }
 

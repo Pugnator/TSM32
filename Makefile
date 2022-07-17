@@ -101,6 +101,7 @@ CPP_SOURCES =  \
 	Core/Src/1wire.cc \
 	Core/Src/tsm.cc \
 	Core/Src/sys.cc \
+	Core/Src/eeprom.cc \
 	Core/Src/dwtdelay.cc \
 	Core/Src/printf.cc \
 	Core/Src/trace.cc\
@@ -188,9 +189,9 @@ CSTD := c11 -pedantic
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
-CFLAGS+= $(MCU) --std=$(CSTD) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -fno-strict-aliasing
+CFLAGS+= $(MCU) --std=$(CSTD) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -fno-strict-aliasing -mtpcs-frame -mtpcs-leaf-frame  -fno-omit-frame-pointer
 
-CXXFLAGS+= $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -flto -fno-exceptions -fno-rtti -fno-strict-aliasing
+CXXFLAGS+= $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -flto -fno-exceptions -fno-rtti -fno-strict-aliasing -mtpcs-frame -mtpcs-leaf-frame  -fno-omit-frame-pointer
 CXXFLAGS += --std=$(CXXSTD) -Wall -D_GNU_SOURCE
 
 

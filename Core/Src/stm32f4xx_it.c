@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_it.c
-  * @brief   Interrupt Service Routines.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    stm32f4xx_it.c
+ * @brief   Interrupt Service Routines.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2022 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
@@ -69,12 +69,12 @@ extern TIM_HandleTypeDef htim9;
 /*           Cortex-M4 Processor Interruption and Exception Handlers          */
 /******************************************************************************/
 /**
-  * @brief This function handles Non maskable interrupt.
-  */
+ * @brief This function handles Non maskable interrupt.
+ */
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
-  Print("NMI_Handler");
+  DEBUG_LOG("NMI_Handler");
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
   while (1)
@@ -84,12 +84,21 @@ void NMI_Handler(void)
 }
 
 /**
-  * @brief This function handles Hard fault interrupt.
-  */
+ * @brief This function handles Hard fault interrupt.
+ */
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-  Print("HardFault_Handler");
+  DEBUG_LOG("HardFault happened");
+  __asm volatile(
+      " tst lr, #4                                                \n"
+      " ite eq                                                    \n"
+      " mrseq r0, msp                                             \n"
+      " mrsne r0, psp                                             \n"
+      " ldr r1, [r0, #24]                                         \n"
+      " ldr r2, handler1_address_const                            \n"
+      " bx r2                                                     \n"
+      " handler1_address_const: .word memory_dump    \n");
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -99,12 +108,21 @@ void HardFault_Handler(void)
 }
 
 /**
-  * @brief This function handles Memory management fault.
-  */
+ * @brief This function handles Memory management fault.
+ */
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
-  Print("MemManage_Handler");
+  DEBUG_LOG("MemManage Handler");
+  __asm volatile(
+      " tst lr, #4                                                \n"
+      " ite eq                                                    \n"
+      " mrseq r0, msp                                             \n"
+      " mrsne r0, psp                                             \n"
+      " ldr r1, [r0, #24]                                         \n"
+      " ldr r2, handler2_address_const                            \n"
+      " bx r2                                                     \n"
+      " handler2_address_const: .word memory_dump    \n");
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
   {
@@ -114,12 +132,21 @@ void MemManage_Handler(void)
 }
 
 /**
-  * @brief This function handles Pre-fetch fault, memory access fault.
-  */
+ * @brief This function handles Pre-fetch fault, memory access fault.
+ */
 void BusFault_Handler(void)
 {
   /* USER CODE BEGIN BusFault_IRQn 0 */
-  Print("BusFault_Handler");
+  DEBUG_LOG("BusFault Handler");
+  __asm volatile(
+      " tst lr, #4                                                \n"
+      " ite eq                                                    \n"
+      " mrseq r0, msp                                             \n"
+      " mrsne r0, psp                                             \n"
+      " ldr r1, [r0, #24]                                         \n"
+      " ldr r2, handler3_address_const                            \n"
+      " bx r2                                                     \n"
+      " handler3_address_const: .word memory_dump    \n");
   /* USER CODE END BusFault_IRQn 0 */
   while (1)
   {
@@ -129,12 +156,21 @@ void BusFault_Handler(void)
 }
 
 /**
-  * @brief This function handles Undefined instruction or illegal state.
-  */
+ * @brief This function handles Undefined instruction or illegal state.
+ */
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
-  Print("UsageFault_Handler");
+  DEBUG_LOG("UsageFault Handler");
+  __asm volatile(
+      " tst lr, #4                                                \n"
+      " ite eq                                                    \n"
+      " mrseq r0, msp                                             \n"
+      " mrsne r0, psp                                             \n"
+      " ldr r1, [r0, #24]                                         \n"
+      " ldr r2, handler4_address_const                            \n"
+      " bx r2                                                     \n"
+      " handler4_address_const: .word memory_dump    \n");
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
   {
@@ -144,8 +180,8 @@ void UsageFault_Handler(void)
 }
 
 /**
-  * @brief This function handles System service call via SWI instruction.
-  */
+ * @brief This function handles System service call via SWI instruction.
+ */
 void SVC_Handler(void)
 {
   /* USER CODE BEGIN SVCall_IRQn 0 */
@@ -157,8 +193,8 @@ void SVC_Handler(void)
 }
 
 /**
-  * @brief This function handles Debug monitor.
-  */
+ * @brief This function handles Debug monitor.
+ */
 void DebugMon_Handler(void)
 {
   /* USER CODE BEGIN DebugMonitor_IRQn 0 */
@@ -170,8 +206,8 @@ void DebugMon_Handler(void)
 }
 
 /**
-  * @brief This function handles Pendable request for system service.
-  */
+ * @brief This function handles Pendable request for system service.
+ */
 void PendSV_Handler(void)
 {
   /* USER CODE BEGIN PendSV_IRQn 0 */
@@ -183,8 +219,8 @@ void PendSV_Handler(void)
 }
 
 /**
-  * @brief This function handles System tick timer.
-  */
+ * @brief This function handles System tick timer.
+ */
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
@@ -204,8 +240,8 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles ADC1 global interrupt.
-  */
+ * @brief This function handles ADC1 global interrupt.
+ */
 void ADC_IRQHandler(void)
 {
   /* USER CODE BEGIN ADC_IRQn 0 */
@@ -218,8 +254,8 @@ void ADC_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles EXTI line[9:5] interrupts.
-  */
+ * @brief This function handles EXTI line[9:5] interrupts.
+ */
 void EXTI9_5_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
@@ -232,12 +268,12 @@ void EXTI9_5_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles TIM1 break interrupt and TIM9 global interrupt.
-  */
+ * @brief This function handles TIM1 break interrupt and TIM9 global interrupt.
+ */
 void TIM1_BRK_TIM9_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_BRK_TIM9_IRQn 0 */
-  
+
   /* USER CODE END TIM1_BRK_TIM9_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);
   HAL_TIM_IRQHandler(&htim9);
@@ -247,8 +283,8 @@ void TIM1_BRK_TIM9_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles EXTI line[15:10] interrupts.
-  */
+ * @brief This function handles EXTI line[15:10] interrupts.
+ */
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
@@ -261,8 +297,8 @@ void EXTI15_10_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles TIM5 global interrupt.
-  */
+ * @brief This function handles TIM5 global interrupt.
+ */
 void TIM5_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM5_IRQn 0 */
@@ -275,8 +311,8 @@ void TIM5_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles TIM6 global interrupt and DAC channel underrun error interrupt.
-  */
+ * @brief This function handles TIM6 global interrupt and DAC channel underrun error interrupt.
+ */
 void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
