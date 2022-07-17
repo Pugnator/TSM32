@@ -89,7 +89,7 @@ bool MPU9250::initAcc()
   //0010 0010
   writeRegMpu(MPU9250_INT_PIN_CFG, 0x22);  
   //01000000
-  writeRegMpu(MPU9250_INT_ENABLE, 0);
+  writeRegMpu(MPU9250_INT_ENABLE, 0x2);
   DEBUG_LOG("MPU is up\r\n");
   return true;
 }

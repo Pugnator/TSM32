@@ -311,8 +311,7 @@ float MPU9250::getAzimuth()
   Xf *= norm;
   Yf *= norm;
   Zf *= norm;
-
-  // DEBUG_LOG("X=%f Y=%f Z=%f\r\n", Xf, Yf, Zf);
+  
   float az = 0.0;
   if (Yf > 0)
   {
@@ -333,6 +332,5 @@ float MPU9250::getAzimuth()
     az -= 360.0f;
   }
   //DEBUG_LOG("\rX=%.4f Y=%.4f Z=%.4f  AZ=%.4f\r", Xf, Yf, Zf, az);  
-  return filter(az);
-  // return az;
+  return filter(az);  
 }

@@ -119,7 +119,7 @@ extern "C"
       DEBUG_LOG("Both switches was ON for %ums\r\n", pressTime);
       leftButtonState = true;
       rightButtonState = true;
-      blinkerHazardToggle();
+      hazardToggle();
       waitLongPress = true;
       // stopTim9();
       startTim9();
@@ -130,7 +130,7 @@ extern "C"
       stopTim9();
       DEBUG_LOG("LT pressed for %u\r\n", pressTime);
       leftButtonState = true;
-      blinkerLeftsideToggle();
+      leftSideToggle();
       waitLongPress = true;
       startTim9();
     }
@@ -140,7 +140,7 @@ extern "C"
       stopTim9();
       DEBUG_LOG("RT pressed for %u\r\n", pressTime);
       rightButtonState = true;
-      blinkerRightsideToggle();
+      rightSideToggle();
       waitLongPress = true;
       startTim9();
     }

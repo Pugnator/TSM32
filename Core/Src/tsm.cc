@@ -1,9 +1,11 @@
 #include "tsm.h"
+#include "settings.h"
+
 #include "mpu.h"
 #include "usart.h"
 #include "j1850.h"
 #include <stdio.h>
-#include "1wire.h"
+#include "dwtdelay.h"
 #include "id.h"
 #include "vmmu.h"
 #include <memory>
@@ -39,8 +41,8 @@ extern "C"
     /*Starter enable*/
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
 
-    blinkerLeftSideOff();
-    blinkerRightSideOff();
+    leftSideOff();
+    rightSideOff();
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
     std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);
@@ -48,16 +50,6 @@ extern "C"
     uint32_t azCount = 0;
     while (1)
     {
-      // blinkerWorker();
-      /*
-      if (messageCollected)
-      {
-        printFrameJ1850();
-        messageReset();
-        messageCollected = false;
-      }
-      */
-
       if (mpu->ok())
       {
         az += mpu->getAzimuth();
@@ -68,7 +60,46 @@ extern "C"
           DEBUG_LOG("\rAZ=%.1f\r", az);
           azCount = 0;
         }
-      }     
+      }
+
+      if (!hazardEnabled && !leftEnabled && !rightEnabled)
+      {
+        continue;
+      }
+
+      if (overtakeMode && OVERTAKE_BLINK_COUNT <= blink_counter)
+      {
+        blinkerOff();
+        overtakeMode = false;
+        leftEnabled = false;
+        rightEnabled = false;
+        hazardEnabled = false;
+        blink_counter = 0;
+        continue;
+      }
+
+      if (!blink_pause)
+      {
+        blink_counter++;
+        blinkerOn();
+      }
+      else
+      {
+        blinkerOff();
+      }
+
+      blink_pause = !blink_pause;
+
+      /*
+      if (messageCollected)
+      {
+        printFrameJ1850();
+        messageReset();
+        messageCollected = false;
+      }
+
+
+      */
     }
   }
 

@@ -37,26 +37,26 @@ extern "C"
 
     extern bool leftEnabled;
     extern bool rightEnabled;
-    extern bool hazardEnabled;
+    extern bool hazardEnabled;    
     extern bool overtakeMode;
+    extern bool blink_pause;
+    extern uint32_t blink_counter;
 
-    void blinkerLeftSideOff();
-    void blinkerLeftsideToggle();
-    void blinkerRightSideOff();
-    void blinkerRightsideToggle();
+    void leftSideOff();
+    void leftSideToggle();
+    void rightSideOff();
+    void rightSideToggle();   
+    
     void blinkerOff();
-    void blinkerHazardToggle();
-    void blinkerWorker();
+    void blinkerOn();
+    void hazardToggle();    
 
-    void enable_starter();
-    void disable_starter();
+    void enableStarter();
+    void disableStarter();
 
     void kalmanInit(float mea_e, float est_e, float q);
     float updateEstimate(float mea);
-
-
-    void DWT_Init();
-    void DWT_Delay(uint32_t us);
+    
 
 #ifdef __cplusplus
 }

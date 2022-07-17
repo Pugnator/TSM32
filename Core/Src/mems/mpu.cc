@@ -94,15 +94,6 @@ bool MPU9250::ready()
   return false;
 }
 
-void MPU9250::printall()
-{
-  while (!ready())
-    ;
-  readAccel();
-  readGyro();
-  readMag();
-}
-
 void MPU9250::scanBus()
 {
   for (size_t i = 0; i < 0xFF; i++)

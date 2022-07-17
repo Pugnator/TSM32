@@ -67,13 +67,11 @@ public:
   bool ok();
   bool ready();
 
-  void printall();
-
   void selfTest();
 
   bool readAccel();
   axes readMag();
-  bool readGyro();
+  axes readGyro();
 
   float getAzimuth();
 

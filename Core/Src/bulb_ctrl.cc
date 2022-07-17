@@ -27,7 +27,7 @@ extern "C"
         stopped_voltage_count = 0;
         if (100 < running_voltage_count++)
         {
-          disable_starter();
+          disableStarter();
           SIDEMARK_BRIGHTNESS = 10;
         }
       }
@@ -36,7 +36,7 @@ extern "C"
         running_voltage_count = 0;
         if (100 < stopped_voltage_count++)
         {
-          enable_starter();
+          enableStarter();
           SIDEMARK_BRIGHTNESS = 0;
         }
       }

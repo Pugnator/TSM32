@@ -103,11 +103,11 @@ int main(void)
   /* USER CODE BEGIN 2 */
   DWT_Init();
   vmmu_init();
+  tsmRunApp();
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */  
-  tsmRunApp();
+  /* USER CODE BEGIN WHILE */    
 
   while (1)
   {

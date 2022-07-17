@@ -1,9 +1,9 @@
 #include "mpu.h"
 
-bool MPU9250::readGyro()
+axes MPU9250::readGyro()
 {
   uint8_t data[6];
-
+  axes result = {0};
   readRegMpu(MPU9250_GYRO_XOUT_H, data, 6);
 
   float Gx_Raw = ((int16_t)data[0] << 8) | data[1];
@@ -14,5 +14,5 @@ bool MPU9250::readGyro()
   float Gy = Gy_Raw * gMult;
   float Gz = Gz_Raw * gMult;
   DEBUG_LOG("Gyro %.4f, %.4f, %.4f\r\n", Gx, Gy, Gz);
-  return true;
+  return result;
 }
