@@ -68,8 +68,6 @@ void Error_Handler(void);
 #define J1850RX_GPIO_Port GPIOA
 #define MPU_AD0_Pin GPIO_PIN_6
 #define MPU_AD0_GPIO_Port GPIOA
-#define DALLAS_Pin GPIO_PIN_4
-#define DALLAS_GPIO_Port GPIOC
 #define LED_Pin GPIO_PIN_0
 #define LED_GPIO_Port GPIOB
 #define RT_BUTTON_Pin GPIO_PIN_12

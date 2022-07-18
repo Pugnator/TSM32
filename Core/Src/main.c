@@ -100,6 +100,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM9_Init();
   MX_USART2_UART_Init();
+  MX_TIM11_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init();
   vmmu_init();
@@ -107,7 +108,7 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */    
+  /* USER CODE BEGIN WHILE */
 
   while (1)
   {

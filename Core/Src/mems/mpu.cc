@@ -107,9 +107,9 @@ void MPU9250::scanBus()
 
 float MPU9250::filter(float newVal)
 {
-  float dt = 0.15;
-  float sigma_process = 3.0;
-  float sigma_noise = 0.7;
+  float dt = 0.05;
+  float sigma_process = 5.0;
+  float sigma_noise = 2.0;
 
   static float xk_1, vk_1, a, b;
   static float xk, vk, rk;

@@ -55,7 +55,7 @@ void *operator new(size_t n)
   return p;
 }
 
-void operator delete(void *p) // or delete(void *, std::size_t)
+void operator delete(void *p)
 {
   stfree(p);
 }

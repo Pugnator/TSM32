@@ -4,11 +4,8 @@
 #include "tim.h"
 #include "adc.h"
 #include "gpio.h"
-//#include "dma.h"
 #include "stdint.h"
 #include <stdbool.h>
-#include <SEGGER_RTT.h>
-
 #include "trace.h"
 
 /**
@@ -19,8 +16,6 @@
 #define STM32_UUID ((uint32_t *)0x1FFF7A10)
 
 #define USE_STATIC_ALLOC
-
-#define MIN_PRESS_TIME 250
 
 #define LEFT_PWM_OUT (TIM1->CCR3)
 #define RIGHT_PWM_OUT (TIM1->CCR4)
@@ -39,8 +34,8 @@ extern "C"
     extern bool rightEnabled;
     extern bool hazardEnabled;    
     extern bool overtakeMode;
-    extern bool blink_pause;
-    extern uint32_t blink_counter;
+    extern bool blink_pause;    
+    extern uint32_t blink_counter;    
 
     void leftSideOff();
     void leftSideToggle();

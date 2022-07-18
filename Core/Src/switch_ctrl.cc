@@ -1,6 +1,8 @@
 #include "tsm.h"
+#include "settings.h"
 #include "j1850.h"
 #include "dwtdelay.h"
+#include "mpu.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -11,8 +13,7 @@ extern "C"
   static bool rightButtonState = true;
 
   static bool waitLongPress = false;
-  static uint32_t longPressCounter = 0;
-
+  static uint32_t longPressCounter = 0;  
   uint32_t triggerTime = 0;
 
   inline void sendMessage();
@@ -58,6 +59,12 @@ extern "C"
 
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
+    if (TIM11 == htim->Instance)
+    {     
+      az = ahrs->getAzimuth();
+      return;
+    }
+
     if (TIM6 != htim->Instance && TIM9 != htim->Instance)
     {
       return;
@@ -120,8 +127,7 @@ extern "C"
       leftButtonState = true;
       rightButtonState = true;
       hazardToggle();
-      waitLongPress = true;
-      // stopTim9();
+      waitLongPress = true;      
       startTim9();
     }
     /* if left button is still pressed */

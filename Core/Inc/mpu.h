@@ -3,8 +3,8 @@
 #include "i2c.h"
 #include "trace.h"
 #include "i2c_er.h"
-#include <math.h>
 #include "mpudefs.h"
+#include <math.h>
 #include <memory>
 
 // The missile knows where it is because it knows where it's not.
@@ -16,9 +16,9 @@ Inclination: 71° 37'
 Magnetic field strength: 52788.7 nT
 */
 
-//Moscow
+// Moscow
 //#define MAGNETIC_DECLINATION 11.0f
-//Belgrade
+// Belgrade
 #define MAGNETIC_DECLINATION 5.35f
 
 #define G_TO_MS2 9.8115
@@ -33,6 +33,8 @@ Magnetic field strength: 52788.7 nT
 #define MPU9250_I2C_ADDR_MAG 0x0C << 1
 
 #define AK8963_CALIBRATION_LOOPS 10
+extern float az;
+extern float initialAzimuth;
 
 typedef struct axes
 {
@@ -50,8 +52,7 @@ typedef enum
   MAG_MODE_CONT_100HZ,
   MAG_MODE_SELF_TEST,
   MAG_MODE_FUSE_ROM,
-}magMode;
-
+} magMode;
 
 #define AKM_CONT_MODE_8 0b0001001
 #define AKM_PWDWN_MODE 0b0000000
@@ -78,15 +79,15 @@ public:
   void scanBus();
 
 private:
-  bool writeRegMpu(uint8_t reg, uint8_t *byte, size_t len);  
+  bool writeRegMpu(uint8_t reg, uint8_t *byte, size_t len);
   bool writeRegMpu(uint8_t reg, uint8_t &&byte);
   bool readRegMpu(uint8_t reg, uint8_t *byte, size_t len = 1);
 
   bool writeRegMag(uint8_t reg, uint8_t *byte, size_t len);
   bool writeRegMag(uint8_t reg, uint8_t &&byte);
   bool readRegMag(uint8_t reg, uint8_t *byte, size_t len = 1);
-  bool magRST();  
-  bool magSetMode(magMode mode); 
+  bool magRST();
+  bool magSetMode(magMode mode);
   void magCalibration();
   bool magSelfTest();
 
@@ -95,10 +96,8 @@ private:
   bool initMag();
 
   float filter(float val);
-  
 
   bool _ok;
-
   float corrX;
   float corrY;
   float corrZ;
@@ -111,7 +110,9 @@ private:
 
   float aMult;
   float gMult;
-  float gSensF;  
+  float gSensF;
 
-  I2C_HandleTypeDef *i2c;  
+  I2C_HandleTypeDef *i2c;
 };
+
+extern std::unique_ptr<MPU9250> ahrs;

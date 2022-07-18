@@ -1,4 +1,5 @@
 #include "mpu.h"
+#include <memory>
 
 bool MPU9250::initAcc()
 {

@@ -1,4 +1,5 @@
 #include "tsm.h"
+#include "mpu.h"
 #include "settings.h"
 
 #ifdef __cplusplus
@@ -32,6 +33,7 @@ extern "C"
     }
     else
     {
+      initialAzimuth = -1;
       leftSideOff();
     }
   }
@@ -60,6 +62,7 @@ extern "C"
     }
     else
     {
+      initialAzimuth = -1;
       rightSideOff();
     }
   }
@@ -116,18 +119,17 @@ extern "C"
     if (hazardEnabled)
     {
       LEFT_PWM_OUT = 0;
-      RIGHT_PWM_OUT = 0;      
+      RIGHT_PWM_OUT = 0;
     }
     else if (leftEnabled)
     {
-      LEFT_PWM_OUT = 0;      
+      LEFT_PWM_OUT = 0;
     }
     else if (rightEnabled)
     {
-      RIGHT_PWM_OUT = 0;      
+      RIGHT_PWM_OUT = 0;
     }
     HAL_Delay(TURN_OFF_DELAY);
-
   }
 
 #ifdef __cplusplus

@@ -1,6 +1,5 @@
 #include "tsm.h"
 #include "settings.h"
-
 #include "mpu.h"
 #include "usart.h"
 #include "j1850.h"
@@ -9,6 +8,13 @@
 #include "id.h"
 #include "vmmu.h"
 #include <memory>
+#include <math.h>
+
+#define ENABLED
+
+std::unique_ptr<MPU9250> ahrs;
+float initialAzimuth = -1;
+float az = 0;
 
 #ifdef __cplusplus
 extern "C"
@@ -24,9 +30,11 @@ extern "C"
   {
     uint32_t id[3] = {0};
     getCPUid(id, STM32F4_t);
-    DEBUG_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n", id[0], id[1], id[2], VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
-    DWT_Init();
+    DEBUG_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
+              id[0], id[1], id[2],
+              VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
+    DWT_Init();
     kalmanInit(2, 2, 0.01);
 
     /*Battery watchdog*/
@@ -45,23 +53,16 @@ extern "C"
     rightSideOff();
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
-    std::unique_ptr<MPU9250> mpu = std::make_unique<MPU9250>(&hi2c1);
-    float az = 0;
-    uint32_t azCount = 0;
-    while (1)
+    // Start AHRS
+    ahrs.reset(new MPU9250(&hi2c1));
+    if (ahrs->ok())
     {
-      if (mpu->ok())
-      {
-        az += mpu->getAzimuth();
-        azCount++;
-        if (100 == azCount)
-        {
-          az /= 100;
-          DEBUG_LOG("\rAZ=%.1f\r", az);
-          azCount = 0;
-        }
-      }
-
+      HAL_TIM_Base_Start_IT(&htim11);
+    }
+    
+    while (1)
+    {   
+#ifdef ENABLED
       if (!hazardEnabled && !leftEnabled && !rightEnabled)
       {
         continue;
@@ -88,6 +89,26 @@ extern "C"
         blinkerOff();
       }
 
+      if (initialAzimuth == -1)
+      {
+        initialAzimuth = az;
+        DEBUG_LOG("Turning at AZ=%.1f\r\n", initialAzimuth);
+      }
+      if (!overtakeMode && initialAzimuth != -1)
+      {
+        if (fabs(initialAzimuth - az) > 25)
+        {
+          DEBUG_LOG("\r\nTurned at AZ=%.1f\r\n", az);
+          blinkerOff();
+          overtakeMode = false;
+          leftEnabled = false;
+          rightEnabled = false;
+          hazardEnabled = false;
+          blink_counter = 0;
+          initialAzimuth = -1;
+        }
+      }
+
       blink_pause = !blink_pause;
 
       /*
@@ -100,6 +121,7 @@ extern "C"
 
 
       */
+#endif
     }
   }
 
