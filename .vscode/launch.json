@@ -7,15 +7,15 @@
     {
       "name": "STM32 Debug",
       "cwd": "${workspaceRoot}",
-      "executable": "${workspaceRoot}/build/firmware.elf",
+      "executable": "${workspaceRoot}\\build\\TSM_410.elf",
       "request": "launch",
       "type": "cortex-debug",
-      "device": "STM32F103C8",
+      "device": "STM32F410RB",
       "servertype": "jlink",
-      "interface": "jtag",
-      "runToMain": true,
+      "interface": "swd",
+      "runToEntryPoint": "main",
       "serialNumber": "",
-      "serverpath": "C:/Program Files (x86)/SEGGER/JLink/JLinkGDBServerCL.exe",
+      "serverpath": "C:\\Program Files\\SEGGER\\JLink_V766c\\JLinkGDBServerCL.exe",
     }
   ]
 }

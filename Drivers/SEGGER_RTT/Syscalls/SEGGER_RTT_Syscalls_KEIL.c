@@ -1,9 +1,9 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*       (c) 2014 - 2017  SEGGER Microcontroller GmbH & Co. KG        *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -21,20 +21,10 @@
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
-* conditions are met:                                                *
+* condition is met:                                                  *
 *                                                                    *
 * o Redistributions of source code must retain the above copyright   *
-*   notice, this list of conditions and the following disclaimer.    *
-*                                                                    *
-* o Redistributions in binary form must reproduce the above          *
-*   copyright notice, this list of conditions and the following      *
-*   disclaimer in the documentation and/or other materials provided  *
-*   with the distribution.                                           *
-*                                                                    *
-* o Neither the name of SEGGER Microcontroller GmbH & Co. KG         *
-*   nor the names of its contributors may be used to endorse or      *
-*   promote products derived from this software without specific     *
-*   prior written permission.                                        *
+*   notice, this condition and the following disclaimer.             *
 *                                                                    *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
 * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
@@ -52,17 +42,19 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       RTT version: 6.16                                           *
+*       RTT version: 7.68a                                           *
 *                                                                    *
 **********************************************************************
+
 ---------------------------END-OF-HEADER------------------------------
 File    : RTT_Syscalls_KEIL.c
 Purpose : Retargeting module for KEIL MDK-CM3.
           Low-level functions for using printf() via RTT
-Revision: $Rev: 4351 $
+Revision: $Rev: 24316 $
+Notes   : (1) https://wiki.segger.com/Keil_MDK-ARM#RTT_in_uVision
 ----------------------------------------------------------------------
 */
-#ifdef __CC_ARM
+#if (defined __CC_ARM) || (defined __ARMCC_VERSION)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,7 +69,9 @@ Revision: $Rev: 4351 $
 *
 **********************************************************************
 */
+#if __ARMCC_VERSION < 6000000
 #pragma import(__use_no_semihosting)
+#endif
 
 #ifdef _MICROLIB
   #pragma import(__use_full_stdio)
@@ -102,9 +96,11 @@ Revision: $Rev: 4351 $
 *
 **********************************************************************
 */
+#if __ARMCC_VERSION < 5000000
 //const char __stdin_name[]  = "STDIN";
 const char __stdout_name[] = "STDOUT";
 const char __stderr_name[] = "STDERR";
+#endif
 
 /*********************************************************************
 *
@@ -198,7 +194,8 @@ int _sys_write(FILEHANDLE hFile, const unsigned char * pBuffer, unsigned NumByte
 
   (void)Mode;
   if (hFile == STDOUT) {
-    return NumBytes - SEGGER_RTT_Write(0, (const char*)pBuffer, NumBytes);
+    SEGGER_RTT_Write(0, (const char*)pBuffer, NumBytes);
+		return 0;
   }
   return r;
 }
@@ -373,6 +370,25 @@ void _sys_exit(int ReturnCode) {
   (void)ReturnCode;
   while (1);  // Not implemented
 }
+
+#if __ARMCC_VERSION >= 5000000
+/*********************************************************************
+*
+*       stdout_putchar
+*
+*  Function description:
+*    Put a character to the stdout
+*
+*  Parameters:
+*    ch    - Character to output
+*  
+*
+*/
+int stdout_putchar(int ch) {
+  (void)ch;
+  return ch;  // Not implemented
+}
+#endif
 
 #endif
 /*************************** End of file ****************************/

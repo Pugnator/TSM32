@@ -13,7 +13,7 @@ extern "C"
   static bool rightButtonState = true;
 
   static bool waitLongPress = false;
-  static uint32_t longPressCounter = 0;  
+  static uint32_t longPressCounter = 0;
   uint32_t triggerTime = 0;
 
   inline void sendMessage();
@@ -60,7 +60,7 @@ extern "C"
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     if (TIM11 == htim->Instance)
-    {     
+    {
       az = ahrs->getAzimuth();
       return;
     }
@@ -123,11 +123,11 @@ extern "C"
     /* if both buttons are pressed */
     if (LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED)
     {
-      DEBUG_LOG("Both switches was ON for %ums\r\n", pressTime);
+      DEBUG_LOG("Both switches was ON for %ums\r\n", pressTime);      
       leftButtonState = true;
       rightButtonState = true;
       hazardToggle();
-      waitLongPress = true;      
+      waitLongPress = true;
       startTim9();
     }
     /* if left button is still pressed */

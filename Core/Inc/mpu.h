@@ -73,7 +73,7 @@ public:
   bool readAccel();
   axes readMag();
   axes readGyro();
-
+  
   float getAzimuth();
 
   void scanBus();

@@ -1,9 +1,9 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*       (c) 2014 - 2017  SEGGER Microcontroller GmbH & Co. KG        *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -21,20 +21,10 @@
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
-* conditions are met:                                                *
+* condition is met:                                                  *
 *                                                                    *
 * o Redistributions of source code must retain the above copyright   *
-*   notice, this list of conditions and the following disclaimer.    *
-*                                                                    *
-* o Redistributions in binary form must reproduce the above          *
-*   copyright notice, this list of conditions and the following      *
-*   disclaimer in the documentation and/or other materials provided  *
-*   with the distribution.                                           *
-*                                                                    *
-* o Neither the name of SEGGER Microcontroller GmbH & Co. KG         *
-*   nor the names of its contributors may be used to endorse or      *
-*   promote products derived from this software without specific     *
-*   prior written permission.                                        *
+*   notice, this condition and the following disclaimer.             *
 *                                                                    *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
 * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
@@ -52,20 +42,31 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       RTT version: 6.16                                           *
+*       RTT version: 7.68a                                           *
 *                                                                    *
 **********************************************************************
+
 ---------------------------END-OF-HEADER------------------------------
 File    : SEGGER_RTT_Syscalls_IAR.c
 Purpose : Low-level functions for using printf() via RTT in IAR.
-          To use RTT for printf output, include this file in your 
+          To use RTT for printf output, include this file in your
           application and set the Library Configuration to Normal.
-Revision: $Rev: 4351 $
+Revision: $Rev: 24316 $
 ----------------------------------------------------------------------
 */
 #ifdef __IAR_SYSTEMS_ICC__
 
-#include <yfuns.h>
+//
+// Since IAR EWARM V8 and EWRX V4, yfuns.h is considered as deprecated and LowLevelIOInterface.h
+// shall be used instead. To not break any compatibility with older compiler versions, we have a
+// version check in here.
+//
+#if ((defined __ICCARM__) && (__VER__ >= 8000000)) || ((defined __ICCRX__)  && (__VER__ >= 400))
+  #include <LowLevelIOInterface.h>
+#else
+  #include <yfuns.h>
+#endif
+
 #include "SEGGER_RTT.h"
 #pragma module_name = "?__write"
 

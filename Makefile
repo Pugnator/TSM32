@@ -174,6 +174,7 @@ AS_INCLUDES =
 C_INCLUDES =  \
 -ICore/Inc \
 -IDrivers/CMSIS/Include \
+-IDrivers/SEGGER_RTT/Config \
 -IDrivers/SEGGER_RTT/RTT \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \

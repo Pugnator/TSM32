@@ -87,10 +87,10 @@ bool MPU9250::initAcc()
   // Set interrupt pin active high, push-pull, hold interrupt pin level HIGH until interrupt cleared,
   // clear on read of INT_STATUS, and enable I2C_BYPASS_EN so additional chips
   // can join the I2C bus and all can be controlled by the Arduino as master
-  //0010 0010
-  writeRegMpu(MPU9250_INT_PIN_CFG, 0x22);  
-  //01000000
-  writeRegMpu(MPU9250_INT_ENABLE, 0x2);
+  //00000010
+  writeRegMpu(MPU9250_INT_PIN_CFG, 0x2);  
+  //00010001
+  writeRegMpu(MPU9250_INT_ENABLE, 0);
   DEBUG_LOG("MPU is up\r\n");
   return true;
 }

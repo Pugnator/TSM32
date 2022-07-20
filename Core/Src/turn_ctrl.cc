@@ -76,11 +76,17 @@ extern "C"
 
   void hazardToggle()
   {
-    DEBUG_LOG("Hazard toggle\r\n");
+    DEBUG_LOG("Hazard toggle [%u]\r\n", hazardEnabled);
     hazardEnabled = !hazardEnabled;
     if (!hazardEnabled)
     {
+      initialAzimuth = -1;
       blinkerOff();
+      overtakeMode = false;
+      leftEnabled = false;
+      rightEnabled = false;
+      hazardEnabled = false;
+      blink_counter = 0;
     }
   }
 

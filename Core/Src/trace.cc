@@ -1,6 +1,8 @@
 #include "tsm.h"
 #include <stdio.h>
 #include "usart.h"
+#include "trace.h"
+#include "SEGGER_RTT.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -52,12 +54,21 @@ extern "C"
 
   void _putchar(char character)
   {
-    HAL_UART_Transmit(&huart2, reinterpret_cast<uint8_t *>(&character), 1, 100);
+#if defined(USE_SEGGER_RTT_TRACE)
+  SEGGER_RTT_PutChar(LOGGING_CHANNEL, character);
+#elif defined(USE_SWO_TRACE)
+  #error  SWO TRACE is not implemented yet.
+#elif defined(USE_UART2_TRACE)
+  HAL_UART_Transmit(&huart2, reinterpret_cast<uint8_t *>(&character), 1, 100);
+#else
+#error Define USE_SEGGER_RTT_TRACE USE_SWO_TRACE or USE_UART2_TRACE
+#endif
   }
 
   // TO USE: addr2line -e ./bin/program.elf -a 0x8002327 [GDB: p/x pc when it hit for(;;)]
   void memory_dump(uint32_t *stackAddress)
   {
+  #ifdef MEMDMP
     Print("***Crash dump initiated***\n");
 
     /*
@@ -86,6 +97,7 @@ extern "C"
               r0, r1, r2, r3, r12);
 
     DEBUG_LOG("LR:  0x%08X\nPC:  0x%08X\nPSR: 0x%08X\r\n", lr, pc, psr);
+    #endif
     die();
   }
 
