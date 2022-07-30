@@ -88,7 +88,7 @@ extern "C"
       {
         blinkerOff();
       }
-
+/*
       if (initialAzimuth == -1)
       {
         initialAzimuth = az;
@@ -108,6 +108,7 @@ extern "C"
           initialAzimuth = -1;
         }
       }
+      */
 
       blink_pause = !blink_pause;
 

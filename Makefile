@@ -89,7 +89,7 @@ Core/Src/system_stm32f4xx.c \
 Core/Src/usart.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
 
-# C sources
+#CPP sources
 CPP_SOURCES =  \
 	Core/Src/bulb_ctrl.cc \
 	Core/Src/starter_ctrl.cc \

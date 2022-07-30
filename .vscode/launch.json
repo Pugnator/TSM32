@@ -15,7 +15,7 @@
       "interface": "swd",
       "runToEntryPoint": "main",
       "serialNumber": "",
-      "serverpath": "C:\\Program Files\\SEGGER\\JLink_V766c\\JLinkGDBServerCL.exe",
+      "serverpath": "C:\\Program Files\\SEGGER\\JLink\\JLinkGDBServerCL.exe",
     }
   ]
 }
