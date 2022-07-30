@@ -1,7 +1,6 @@
 # STM32 TSM for Harleys
 
-Hi! You're here because of your broken TSM or may be you want to get rid of it and still have your dashboard working. Or may be you want to have some custom turn modes for your **Sportie**.
-It was created for my Harley Sportster 2004 but I bet it will work with Harleys of the same generation. Refer to  [Sportsterpedia](http://sportsterpedia.com/doku.php) for more information.
+I made this one for my 2004 Sportster but I bet it will work with Harleys of the same generation. Refer to  [Sportsterpedia](http://sportsterpedia.com/doku.php) for more information.
 
 > **Note:** The **TSM32** is still work in progress. I have almost no time to investigate the proto Harley uses and use it as is. In search of DIY guys who needs such a device too.
 
@@ -14,9 +13,9 @@ It's a custom PCB, firmware for *STM32F103* and 3D enclosure model to build your
 ##  What works
 
 * Starter control
-* Blinker on and off, long press to do 3 blinks (kinda overtake mode)
+* Blinker on and off, overtake mode
 * Hazard mode
-* MPU9250 support
+* MPU9250 I2C support
 * J1850 read mostly works
 
 
@@ -25,6 +24,7 @@ It's a custom PCB, firmware for *STM32F103* and 3D enclosure model to build your
 * Auto turn off
 * J1850 transfer is not tested yet
 * J1850 check engine reset
+* TSM password store
 
 ## How to build
 

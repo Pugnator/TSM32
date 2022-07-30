@@ -185,6 +185,7 @@ void UsageFault_Handler(void)
   */
 void SVC_Handler(void)
 {
+  DEBUG_LOG("SVC_Handler Handler");
   /* USER CODE BEGIN SVCall_IRQn 0 */
 
   /* USER CODE END SVCall_IRQn 0 */
@@ -198,6 +199,7 @@ void SVC_Handler(void)
   */
 void DebugMon_Handler(void)
 {
+  DEBUG_LOG("DebugMon_Handler Handler");
   /* USER CODE BEGIN DebugMonitor_IRQn 0 */
 
   /* USER CODE END DebugMonitor_IRQn 0 */
@@ -211,6 +213,7 @@ void DebugMon_Handler(void)
   */
 void PendSV_Handler(void)
 {
+  DEBUG_LOG("PendSV_Handler Handler");
   /* USER CODE BEGIN PendSV_IRQn 0 */
 
   /* USER CODE END PendSV_IRQn 0 */

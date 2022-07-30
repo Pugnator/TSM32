@@ -13,8 +13,9 @@ extern "C"
   bool rightEnabled = false;
   bool hazardEnabled = false;
   bool overtakeMode = false;
-  bool blink_pause = false;
-  uint32_t blink_counter = 0;
+  bool blinkPause = false;
+  
+  uint32_t blinkCounter = 0;
 
   void leftSideToggle()
   {
@@ -24,8 +25,8 @@ extern "C"
     }
 
     DEBUG_LOG("Left Side toggle\r\n");
-    blink_pause = false;
-    blink_counter = 0;
+    blinkPause = false;
+    blinkCounter = 0;
     leftEnabled = !leftEnabled;
     if (leftEnabled)
     {
@@ -53,8 +54,8 @@ extern "C"
     }
 
     DEBUG_LOG("Right Side toggle\r\n");
-    blink_counter = 0;
-    blink_pause = false;
+    blinkCounter = 0;
+    blinkPause = false;
     rightEnabled = !rightEnabled;
     if (rightEnabled)
     {
@@ -80,13 +81,12 @@ extern "C"
     hazardEnabled = !hazardEnabled;
     if (!hazardEnabled)
     {
+      DEBUG_LOG("Turning off the hazard\r\n");
       initialAzimuth = -1;
-      blinkerOff();
+      leftSideOff();
+      rightSideOff();
       overtakeMode = false;
-      leftEnabled = false;
-      rightEnabled = false;
-      hazardEnabled = false;
-      blink_counter = 0;
+      blinkCounter = 0;
     }
   }
 

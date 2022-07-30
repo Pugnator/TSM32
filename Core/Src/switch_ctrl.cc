@@ -21,8 +21,8 @@ extern "C"
   void printButtStates()
   {
     DEBUG_LOG(
-      "States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
-                rightButtonState ? "ON" : "OFF", leftButtonState ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
+        "States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
+        rightButtonState ? "ON" : "OFF", leftButtonState ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
   }
 
   static void stopTim9()
@@ -108,8 +108,8 @@ extern "C"
       }
       else
       {
-        DEBUG_LOG("Short press\r\n");  
-        printButtStates();      
+        DEBUG_LOG("Short press\r\n");
+        printButtStates();
         overtakeMode = true;
       }
       stopTim9();
@@ -124,7 +124,7 @@ extern "C"
     // too quick press - skip
     if (MIN_PRESS_TIME >= pressTime)
     {
-      DEBUG_LOG("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);     
+      DEBUG_LOG("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
       rightButtonState = true;
       leftButtonState = true;
       return;
@@ -132,8 +132,8 @@ extern "C"
     /* if both buttons are pressed */
     if (LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED)
     {
-      DEBUG_LOG("Both switches was ON for %ums\r\n", pressTime);   
-      printButtStates();   
+      DEBUG_LOG("Both switches were ON for %ums\r\n", pressTime);
+      printButtStates();
       leftButtonState = true;
       rightButtonState = true;
       hazardToggle();

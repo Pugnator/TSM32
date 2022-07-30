@@ -19,6 +19,7 @@ MPU9250::MPU9250(I2C_HandleTypeDef *dev)
   if (!_ok)
   {
     DEBUG_LOG("I2C bus issue.\r\nRebooting the system.\r\n");
+    HAL_Delay(1000);
     NVIC_SystemReset();
   }
 }

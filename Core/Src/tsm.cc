@@ -68,27 +68,27 @@ extern "C"
         continue;
       }
 
-      if (overtakeMode && OVERTAKE_BLINK_COUNT <= blink_counter)
+      if (overtakeMode && OVERTAKE_BLINK_COUNT <= blinkCounter)
       {
         blinkerOff();
         overtakeMode = false;
         leftEnabled = false;
         rightEnabled = false;
         hazardEnabled = false;
-        blink_counter = 0;
+        blinkCounter = 0;
         continue;
       }
 
-      if (!blink_pause)
+      if (!blinkPause)
       {
-        blink_counter++;
+        blinkCounter++;
         blinkerOn();
       }
       else
       {
         blinkerOff();
       }
-/*
+#ifdef USE_MEMS
       if (initialAzimuth == -1)
       {
         initialAzimuth = az;
@@ -108,20 +108,20 @@ extern "C"
           initialAzimuth = -1;
         }
       }
-      */
+#endif
 
-      blink_pause = !blink_pause;
+      blinkPause = !blinkPause;
 
-      /*
+#ifdef USE_J1850
       if (messageCollected)
       {
         printFrameJ1850();
         messageReset();
         messageCollected = false;
       }
+#endif
 
 
-      */
 #endif
     }
   }
