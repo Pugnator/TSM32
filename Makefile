@@ -188,7 +188,6 @@ CSTD := c11 -pedantic
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
 CFLAGS+= $(MCU) --std=$(CSTD) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -fno-strict-aliasing -mtpcs-frame -mtpcs-leaf-frame  -fno-omit-frame-pointer
-
 CXXFLAGS+= $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -flto -fno-exceptions -fno-rtti -fno-strict-aliasing -mtpcs-frame -mtpcs-leaf-frame  -fno-omit-frame-pointer
 CXXFLAGS += --std=$(CXXSTD) -Wall -D_GNU_SOURCE
 
@@ -203,7 +202,6 @@ CFLAGS += -DVERSION_BUILD_DATE=\""$(BUILD_DATE)\"" \
 CXXFLAGS += -DVERSION_BUILD_DATE=\""$(BUILD_DATE)\"" \
           -DVERSION_TAG=\""$(BUILD_TAG)\"" \
           -DVERSION_BUILD=\""$(BUILD_INFO)\""
-
 
 #######################################
 # LDFLAGS

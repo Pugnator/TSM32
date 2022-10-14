@@ -13,6 +13,8 @@
 #include <trace.h>
 #include <cstring>
 
+//#define MEMORY_ALLOC_DEBUG
+
 typedef uint32_t Align;
 
 uint32_t alloc_counter = 0;

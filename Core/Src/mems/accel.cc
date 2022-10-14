@@ -1,6 +1,8 @@
 #include "mpu.h"
 #include <memory>
 
+static uint8_t data[8];
+
 bool MPU9250::initAcc()
 {
   if (HAL_OK != HAL_I2C_IsDeviceReady(i2c, MPU9250_I2C_ADDR, 10, 100))  
@@ -96,8 +98,7 @@ bool MPU9250::initAcc()
 }
 
 bool MPU9250::readAccel()
-{
-  uint8_t data[8];
+{  
   /* Read accelerometer data */
   readRegMpu(MPU9250_ACCEL_XOUT_H, data, 6);
 
@@ -106,12 +107,12 @@ bool MPU9250::readAccel()
   float Az_Raw = ((int16_t)data[4] << 8) | data[5];
 
   uint16_t _temp = (data[6] << 8 | data[7]);
-  float temp = ((_temp - 21) / 333.87) + 21;
-  DEBUG_LOG("Temp = %.2f\r\n", temp);
+  float temp = ((_temp - 21.0f) / 333.87f) + 21.0f;
+  //DEBUG_LOG("Temp = %.2f\r\n", temp);
 
   float Ax = (float)Ax_Raw * aMult;
   float Ay = (float)Ay_Raw * aMult;
   float Az = (float)Az_Raw * aMult;
-  DEBUG_LOG("Acc %.4f, %.4f, %.4f\r\n", Ax, Ay, Az);
+  DEBUG_LOG("\rAcc %.4f, %.4f, %.4f", Ax, Ay, Az);
   return true;
 }

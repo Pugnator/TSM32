@@ -10,7 +10,7 @@
 #include <memory>
 #include <math.h>
 
-#define ENABLED
+//#define ENABLED
 
 std::unique_ptr<MPU9250> ahrs;
 float initialAzimuth = -1;
@@ -61,7 +61,11 @@ extern "C"
     }
     
     while (1)
-    {   
+    { 
+      *((char*)0)  = 0;
+      
+      ahrs->readAccel();
+      HAL_Delay(100);      
 #ifdef ENABLED
       if (!hazardEnabled && !leftEnabled && !rightEnabled)
       {

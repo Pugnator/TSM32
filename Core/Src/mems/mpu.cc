@@ -15,7 +15,7 @@ MPU9250::MPU9250(I2C_HandleTypeDef *dev)
   gSensF = 10.0f * 4912.0f / 32768.0f;
 
   _ok = initAcc();
-  _ok = initMag();
+  _ok = initMag();  
   if (!_ok)
   {
     DEBUG_LOG("I2C bus issue.\r\nRebooting the system.\r\n");
