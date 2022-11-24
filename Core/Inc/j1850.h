@@ -2,55 +2,56 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-typedef union j1850Header
-{
-  struct
+  typedef union j1850Header
   {
-    uint8_t spectype : 2;
-    uint8_t mode : 1;
-    uint8_t ifr : 1;
-    uint8_t type : 1;
-    uint8_t priority : 3;
-  }ctx;
-  uint8_t header;
-} j1850Header;
+    struct
+    {
+      uint8_t spectype : 2;
+      uint8_t mode : 1;
+      uint8_t ifr : 1;
+      uint8_t type : 1;
+      uint8_t priority : 3;
+    } ctx;
+    uint8_t header;
+  } j1850Header;
 
-typedef enum sourceType
-{
-  ECM = 0x10,
-  GAUGE = 0x10,
-  TSM = 0x40,
-  RPM = 0x1B,
-  SPEED = 0x29,
-  BLINKER = 0xDA,
-  MIL = 0x88,
-  GEAR = 0x3b,
-  TEMP = 0x49,
-  ODO = 0x69,
-  FUEL = 0x83,
-  NET = 0xFE,
-  SECURITY = 0x93,
-  VSC = 0x63,
-  ENGSTAT = 0xFF
+  typedef enum sourceType
+  {
+    ECM = 0x10,
+    GAUGE = 0x10,
+    TSM = 0x40,
+    RPM = 0x1B,
+    SPEED = 0x29,
+    BLINKER = 0xDA,
+    MIL = 0x88,
+    GEAR = 0x3b,
+    TEMP = 0x49,
+    ODO = 0x69,
+    FUEL = 0x83,
+    NET = 0xFE,
+    SECURITY = 0x93,
+    VSC = 0x63,
+    ENGSTAT = 0xFF
 
-} sourceType;
+  } sourceType;
 
 #define PAYLOAD_SIZE 64
 
-extern uint8_t payloadJ1850[PAYLOAD_SIZE];
-extern uint8_t sendBufJ1850[PAYLOAD_SIZE];
-extern size_t sendBufLen;
-extern volatile uint8_t byteCounter;
-extern volatile bool messageCollected;
-extern volatile bool rxQueryNotEmpty;
+  extern uint8_t payloadJ1850[PAYLOAD_SIZE];
+  extern uint8_t sendBufJ1850[PAYLOAD_SIZE];
+  extern size_t sendBufLen;
+  extern volatile uint8_t byteCounter;
+  extern volatile bool messageCollected;
+  extern volatile bool rxQueryNotEmpty;
 
-void printFrameJ1850();
-void sendCommandJ1850(const uint8_t *data, size_t size);
-uint8_t j1850Crc(uint8_t *msg_buf, int8_t nbytes);
-void messageReset();
+  void printFrameJ1850();
+  void sendCommandJ1850(const uint8_t *data, size_t size);
+  uint8_t j1850Crc(uint8_t *msg_buf, int8_t nbytes);
+  void messageReset();
 
 // define J1850 VPW timing requirements in accordance with SAE J1850 standard
 // all width times in us

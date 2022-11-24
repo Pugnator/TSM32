@@ -14,7 +14,7 @@ extern "C"
   bool hazardEnabled = false;
   bool overtakeMode = false;
   bool blinkPause = false;
-  
+
   uint32_t blinkCounter = 0;
 
   void leftSideToggle()

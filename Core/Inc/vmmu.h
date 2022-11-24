@@ -64,14 +64,13 @@
 
 #define DEBUG_MEMMGR_SUPPORT_STATS
 
-#define FREE(x) stfree((void*)x)
+#define FREE(x) stfree((void *)x)
 #define ALLOC(x) stalloc(x)
-#define POOL_SIZE 16*1024
-//Will destroy all allocated memory
+#define POOL_SIZE 16 * 1024
+// Will destroy all allocated memory
 #define EMERGENCY_MEM_POOL_FLUSH vmmu_init()
 
 #define MIN_POOL_ALLOC_QUANTAS 8
-
 
 // Initialize the memory manager. This function should be called
 // only once in the beginning of the program.
@@ -80,22 +79,22 @@
 extern "C"
 {
 #endif
-void vmmu_init();
+  void vmmu_init();
 #ifdef __cplusplus
 }
 #endif
 // 'malloc' clone
 //
-void* stalloc(uint32_t nbytes);
+void *stalloc(uint32_t nbytes);
 
 // 'free' clone
 //
-void stfree(void* ap);
+void stfree(void *ap);
 
 // Prints statistics about the current state of the memory
 // manager
 //
 void print_memstat(void);
 
-//How much memory left
+// How much memory left
 uint32_t get_free_memory(void);

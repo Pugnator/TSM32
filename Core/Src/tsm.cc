@@ -59,13 +59,13 @@ extern "C"
     {
       HAL_TIM_Base_Start_IT(&htim11);
     }
-    
+
     while (1)
-    { 
-      *((char*)0)  = 0;
-      
+    {
+      *((char *)0) = 0;
+
       ahrs->readAccel();
-      HAL_Delay(100);      
+      HAL_Delay(100);
 #ifdef ENABLED
       if (!hazardEnabled && !leftEnabled && !rightEnabled)
       {
@@ -124,7 +124,6 @@ extern "C"
         messageCollected = false;
       }
 #endif
-
 
 #endif
     }

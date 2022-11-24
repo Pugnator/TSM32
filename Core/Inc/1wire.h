@@ -28,33 +28,28 @@
 #ifndef ONEWIRE_H
 #define ONEWIRE_H
 
-
 #define BOOL int
 #define FALSE 0
-#define TRUE  1
-
+#define TRUE 1
 
 // You can exclude CRC checks altogether by defining this to 0
 #ifndef ONEWIRE_CRC
 #define ONEWIRE_CRC 1
 #endif
 
-
-
-#define ONEWIRE_CMD_SEARCH      0xF0
-#define ONEWIRE_CMD_SELECT      0x55
-#define ONEWIRE_CMD_SKIP        0xCC
-
+#define ONEWIRE_CMD_SEARCH 0xF0
+#define ONEWIRE_CMD_SELECT 0x55
+#define ONEWIRE_CMD_SKIP 0xCC
 
 typedef struct
 {
-    GPIO_TypeDef         *pPort;                // used port
-    uint16_t              bPin;                 // pin (binary coded ex. 1000b => pin 3)
+    GPIO_TypeDef *pPort; // used port
+    uint16_t bPin;       // pin (binary coded ex. 1000b => pin 3)
 
-    __IO uint32_t        *pModeReg;             // Port mode register (input, output,...)
-    uint32_t              modeRegMask;          // Mask for mode register to set input, output,...
-    uint32_t              modeInputMask;        // mask to set pin as input (floating)  to be written to the port mode register
-    uint32_t              modeOutputMaske;      // mask to set pin as open drain output to be written to the port mode register
+    __IO uint32_t *pModeReg;  // Port mode register (input, output,...)
+    uint32_t modeRegMask;     // Mask for mode register to set input, output,...
+    uint32_t modeInputMask;   // mask to set pin as input (floating)  to be written to the port mode register
+    uint32_t modeOutputMaske; // mask to set pin as open drain output to be written to the port mode register
 } ONE_WIRE_PIN;
 
 typedef struct
@@ -89,4 +84,3 @@ uint8_t CalcCRC8(uint8_t *addr, uint8_t len);
 #endif
 
 #endif
-

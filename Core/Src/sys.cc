@@ -43,21 +43,20 @@ extern "C"
 
 void __wrap___aeabi_unwind_cpp_pr0()
 {
-  for (;;)
-    ;
+    for (;;)
+        ;
 }
-
 
 void *operator new(size_t n)
 {
-  void *const p = stalloc(n);
-  // handle p == 0
-  return p;
+    void *const p = stalloc(n);
+    // handle p == 0
+    return p;
 }
 
 void operator delete(void *p)
 {
-  stfree(p);
+    stfree(p);
 }
 
 void operator delete(void *p, unsigned int)

@@ -238,7 +238,7 @@ bool MPU9250::initMag()
     return false;
   }
   DEBUG_LOG("AK8963 is detected\r\n");
-  
+
   magSetMode(MAG_MODE_PD);
   // Entering FUSE rom read state
   if (!magSetMode(MAG_MODE_FUSE_ROM))
@@ -311,7 +311,7 @@ float MPU9250::getAzimuth()
   Xf *= norm;
   Yf *= norm;
   Zf *= norm;
-  
+
   float az = 0.0;
   if (Yf > 0)
   {
@@ -331,6 +331,6 @@ float MPU9250::getAzimuth()
   {
     az -= 360.0f;
   }
-  //DEBUG_LOG("\rX=%.4f Y=%.4f Z=%.4f  AZ=%.4f\r", Xf, Yf, Zf, az);  
-  return filter(az);  
+  // DEBUG_LOG("\rX=%.4f Y=%.4f Z=%.4f  AZ=%.4f\r", Xf, Yf, Zf, az);
+  return filter(az);
 }

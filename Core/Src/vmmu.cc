@@ -84,7 +84,7 @@ void print_memstat()
 
   while (p < (mem_header_t *)(pool + pool_free_pos))
   {
-    DEBUG_LOG("  * Addr: 0x%8p; Size: %8X\r\n", (void*)p, (unsigned)p->s.size);
+    DEBUG_LOG("  * Addr: 0x%8p; Size: %8X\r\n", (void *)p, (unsigned)p->s.size);
     p += p->s.size;
   }
 
@@ -96,7 +96,7 @@ void print_memstat()
 
     for (;;)
     {
-      DEBUG_LOG("  * Addr: 0x%8p; Size: %8lu; Next: 0x%8p\r\n", (void*)p, (uint32_t)p->s.size, (void*)p->s.next);
+      DEBUG_LOG("  * Addr: 0x%8p; Size: %8lu; Next: 0x%8p\r\n", (void *)p, (uint32_t)p->s.size, (void *)p->s.next);
       p = p->s.next;
       if (p == freep)
         break;

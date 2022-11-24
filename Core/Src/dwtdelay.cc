@@ -24,49 +24,50 @@
 #include "dwtdelay.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/**
- * Initialization routine.
- * You might need to enable access to DWT registers on Cortex-M7
- *   DWT->LAR = 0xC5ACCE55
- */
-void DWT_Init()
-{
-  if (!(CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk))
+  /**
+   * Initialization routine.
+   * You might need to enable access to DWT registers on Cortex-M7
+   *   DWT->LAR = 0xC5ACCE55
+   */
+  void DWT_Init()
   {
-    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-    DWT->CYCCNT = 0;
-    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    if (!(CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk))
+    {
+      CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+      DWT->CYCCNT = 0;
+      DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    }
   }
-}
 
 #if DWT_DELAY_NEWBIE
-/**
- * If you are a newbie and see magic in DWT_Delay, consider this more
- * illustrative function, where you explicitly determine a counter
- * value when delay should stop while keeping things in bounds of uint32.
- */
-void DWT_Delay(uint32_t us) // microseconds
-{
-  uint32_t startTick = DWT->CYCCNT,
-           targetTick = DWT->CYCCNT + us * (SystemCoreClock / 1000000);
+  /**
+   * If you are a newbie and see magic in DWT_Delay, consider this more
+   * illustrative function, where you explicitly determine a counter
+   * value when delay should stop while keeping things in bounds of uint32.
+   */
+  void DWT_Delay(uint32_t us) // microseconds
+  {
+    uint32_t startTick = DWT->CYCCNT,
+             targetTick = DWT->CYCCNT + us * (SystemCoreClock / 1000000);
 
-  // Must check if target tick is out of bounds and overflowed
-  if (targetTick > startTick)
-  {
-    // Not overflowed
-    while (DWT->CYCCNT < targetTick)
-      ;
+    // Must check if target tick is out of bounds and overflowed
+    if (targetTick > startTick)
+    {
+      // Not overflowed
+      while (DWT->CYCCNT < targetTick)
+        ;
+    }
+    else
+    {
+      // Overflowed
+      while (DWT->CYCCNT > startTick || DWT->CYCCNT < targetTick)
+        ;
+    }
   }
-  else
-  {
-    // Overflowed
-    while (DWT->CYCCNT > startTick || DWT->CYCCNT < targetTick)
-      ;
-  }
-}
 #else
 /**
  * Delay routine itself.

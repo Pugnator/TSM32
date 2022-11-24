@@ -26,11 +26,12 @@
 #define DWT_DELAY_NEWBIE 0
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-void DWT_Init(void);
-void DWT_Delay(uint32_t us);
+  void DWT_Init(void);
+  void DWT_Delay(uint32_t us);
 #ifdef __cplusplus
 }
 #endif

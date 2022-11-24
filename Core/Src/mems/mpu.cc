@@ -15,7 +15,7 @@ MPU9250::MPU9250(I2C_HandleTypeDef *dev)
   gSensF = 10.0f * 4912.0f / 32768.0f;
 
   _ok = initAcc();
-  _ok = initMag();  
+  _ok = initMag();
   if (!_ok)
   {
     DEBUG_LOG("I2C bus issue.\r\nRebooting the system.\r\n");
@@ -120,11 +120,11 @@ float MPU9250::filter(float newVal)
   a = (float)1 - r * r;
   b = (float)2 * (2 - a) - 4 * (float)sqrt(1 - a);
   xm = newVal;
-  xk = xk_1 + ((float) vk_1 * dt );
+  xk = xk_1 + ((float)vk_1 * dt);
   vk = vk_1;
   rk = xm - xk;
   xk += (float)a * rk;
-  vk += (float)( b * rk ) / dt;
+  vk += (float)(b * rk) / dt;
   xk_1 = xk;
   vk_1 = vk;
   return xk_1;
