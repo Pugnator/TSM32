@@ -56,5 +56,6 @@
     "typeinfo": "cpp",
     "trace.h": "c"
   },
-  "C_Cpp.errorSquiggles": "Disabled"
+  "C_Cpp.errorSquiggles": "Disabled",
+  "cmake.configureOnOpen": false
 }

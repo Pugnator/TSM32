@@ -22,45 +22,45 @@
 #define __TIM_H__
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-  /* USER CODE BEGIN Includes */
+/* USER CODE BEGIN Includes */
 
-  /* USER CODE END Includes */
+/* USER CODE END Includes */
 
-  extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim1;
 
-  extern TIM_HandleTypeDef htim5;
+extern TIM_HandleTypeDef htim5;
 
-  extern TIM_HandleTypeDef htim6;
+extern TIM_HandleTypeDef htim6;
 
-  extern TIM_HandleTypeDef htim9;
+extern TIM_HandleTypeDef htim9;
 
-  extern TIM_HandleTypeDef htim11;
+extern TIM_HandleTypeDef htim11;
 
-  /* USER CODE BEGIN Private defines */
+/* USER CODE BEGIN Private defines */
 
-  /* USER CODE END Private defines */
+/* USER CODE END Private defines */
 
-  void MX_TIM1_Init(void);
-  void MX_TIM5_Init(void);
-  void MX_TIM6_Init(void);
-  void MX_TIM9_Init(void);
-  void MX_TIM11_Init(void);
+void MX_TIM1_Init(void);
+void MX_TIM5_Init(void);
+void MX_TIM6_Init(void);
+void MX_TIM9_Init(void);
+void MX_TIM11_Init(void);
 
-  void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
-  /* USER CODE BEGIN Prototypes */
+/* USER CODE BEGIN Prototypes */
 
-  /* USER CODE END Prototypes */
+/* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* __TIM_H__ */
+

@@ -149,6 +149,16 @@ extern "C"
     return ~crc_reg; // Return CRC
   }
 
+  /*
+  The pulse duration (the time between the falling and rising edges of the pulse) is calculated and compared to various predefined thresholds. 
+  If the pulse duration falls within the range for a "Start Of Frame" pulse, the messageStarted flag is set to true and the LED is toggled.
+
+  If the messageStarted flag is true, the pulse duration is compared to the ranges for "long" and "short" pulses. 
+  If the pulse duration falls within the range for a "long" pulse, a 0 is added to the current byte being constructed in the payloadJ1850 buffer. 
+  If the pulse duration falls within the range for a "short" pulse, a 1 is added to the current byte. 
+  The byteCounter and bitCounter variables are used to keep track of the current position in the payloadJ1850 buffer. 
+  If the pulse duration does not fall within any of the predefined ranges, a message is printed indicating that an unknown signal was received.
+  */
   static inline void onFallingEdge(TIM_HandleTypeDef *htim)
   {
     fallEdgeTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
@@ -185,6 +195,17 @@ extern "C"
     }
   }
 
+  /*
+  If the message has not started yet, the function returns early.
+  Otherwise, the pulse duration (the time between the falling and rising edges of the pulse)
+  is calculated and compared to various predefined thresholds. Depending on which threshold the pulse duration falls within,
+  different actions are taken, such as logging the pulse duration and resetting the messageStarted flag to false.
+
+  The function parses the pulse durations to extract data bits from the J1850 message.
+  If the pulse duration falls within the range for a "long" pulse, a 1 is added to the current byte being constructed in the payloadJ1850 buffer.
+  If the pulse duration falls within the range for a "short" pulse, a 0 is added to the current byte.
+  The byteCounter and bitCounter variables are used to keep track of the current position in the payloadJ1850 buffer.
+  */
   static inline void onRisingEdge(TIM_HandleTypeDef *htim)
   {
     riseEdgeTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);

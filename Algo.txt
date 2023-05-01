@@ -1,0 +1,25 @@
+The MPU9250 is an inertial measurement unit (IMU) that can measure acceleration, angular velocity, and magnetic field. To detect if a motorcycle turns, you can use the angular velocity 
+data from the gyroscope in the IMU. Specifically, you can use the data from the z-axis of the gyroscope, which measures rotation around the vertical axis.
+
+One algorithm you can consider using is a threshold-based approach. This involves setting a threshold for the angular velocity and then determining 
+if the motorcycle has turned based on whether the angular velocity exceeds the threshold.
+
+Another algorithm you can consider is a Kalman filter. Kalman filter is a widely used algorithm to estimate the state of a dynamic system from a series 
+of incomplete and noisy measurements. In this case, you can use the angular velocity data from the gyroscope to estimate the angular position of the motorcycle and determine if it has turned.
+
+A third algorithm is using the complementary filter. Complementary filter is a technique to combine the data from accelerometer and gyroscope to get more accurate results.
+These are just a few examples of algorithms that you can use to detect if a motorcycle turns using the MPU9250 IMU. 
+
+
+Using a magnetometer to compute a vehicle's movement vector can be challenging as the magnetometer measures the Earth's magnetic field, 
+which can be affected by various factors such as the vehicle's location, the presence of nearby metallic objects, and the Earth's magnetic field itself.
+
+One way to compute a vehicle's movement vector using a magnetometer is to use a technique called dead reckoning. 
+Dead reckoning involves using the magnetometer to measure the vehicle's heading and integrating the data over time to estimate the vehicle's position. 
+This approach requires a good calibration of the magnetometer and a proper treatment of the magnetic disturbances.
+
+Another way to compute a vehicle's movement vector using a magnetometer is to use the magnetometer data in combination with data from other sensors such as an accelerometer and a gyroscope. 
+This approach is called sensor fusion, it involves combining data from multiple sensors to improve the accuracy and robustness of the movement vector estimate. A Kalman filter is a common algorithm to achieve sensor fusion.
+
+A third way is to use the data from a GPS receiver to correct the movement vector estimate obtained from the magnetometer. 
+This approach is called GPS/INS integration, it involves using the GPS receiver to obtain the vehicle's position and velocity and then using that data to correct the estimate obtained from the magnetometer.
