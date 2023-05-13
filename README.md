@@ -1,6 +1,10 @@
 # STM32 TSM for Harleys
 
-This project provides a custom replacement for the stock TSM on Harley motorcycles. The firmware is designed to work with the 2004 Sportster model, but may also be compatible with other Harleys from the same generation. Refer to  [Sportsterpedia](http://sportsterpedia.com/doku.php) for more information.
+This project provides a custom replacement for the stock TSM on Harley motorcycles.  
+The firmware is designed to work with the 2004 Sportster model, but may also be compatible with other Harleys from the same generation.  
+Refer to  [Sportsterpedia](http://sportsterpedia.com/doku.php) for more information.  
+
+![PCB](tsm.jpg)
 
 ## Description
 

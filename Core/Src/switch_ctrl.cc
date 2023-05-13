@@ -15,7 +15,7 @@ extern "C"
   static uint32_t longPressCounter = 0;
   uint32_t triggerTime = 0;
 
-  void printButtStates()
+  void printStates()
   {
     DEBUG_LOG(
         "States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
@@ -71,14 +71,15 @@ extern "C"
   */
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
-    // Accelerometer update
 #ifdef MEMS_ENABLED
+    // Accelerometer update
     if (TIM11 == htim->Instance)
     {
       az = ahrs->getAzimuth();
       return;
     }
 #endif
+
 #ifdef J1850_ENABLED
     // J1850 service timer, 200us
     if (TIM6 == htim->Instance)
@@ -93,81 +94,83 @@ extern "C"
       return;
     }
 #endif
-    if (TIM9 != htim->Instance)
-    {
-      return;
-    }
 
-    uint32_t eventTime = HAL_GetTick();
-    uint32_t pressTime = eventTime - triggerTime;
-
-    if (waitLongPress)
+#if BLINKER_ENABLED
+    if (TIM9 == htim->Instance)
     {
-      if (longPressCounter++ != 3)
+      uint32_t eventTime = HAL_GetTick();
+      uint32_t pressTime = eventTime - triggerTime;
+
+      if (waitLongPress)
       {
+        DEBUG_LOG("Witinging for a long press\r\n");
+        if (longPressCounter++ != 3)
+        {
+          return;
+        }
+
+        if (LEFT_BUTTON == PRESSED || RIGHT_BUTTON == PRESSED)
+        {
+          DEBUG_LOG("Long press for %ums\r\n", pressTime);
+          printStates();
+          overtakeMode = false;
+        }
+        else
+        {
+          DEBUG_LOG("Short press\r\n");
+          printStates();
+          overtakeMode = true;
+        }
+        stopTim9();
+
+        waitLongPress = false;
+        leftButtonEvent = false;
+        rightButtonEvent = false;
+        longPressCounter = 0;
         return;
       }
 
-      if (LEFT_BUTTON == PRESSED || RIGHT_BUTTON == PRESSED)
+      // too quick press - skip
+      if (MIN_PRESS_TIME > pressTime)
       {
-        DEBUG_LOG("Long press for %ums\r\n", pressTime);
-        printButtStates();
-        overtakeMode = false;
+        DEBUG_LOG("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
+        rightButtonEvent = false;
+        leftButtonEvent = false;
+        return;
       }
-      else
+      /* if both buttons are pressed */
+      if (LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED)
       {
-        DEBUG_LOG("Short press\r\n");
-        printButtStates();
-        overtakeMode = true;
+        DEBUG_LOG("Both switches were ON for %ums\r\n", pressTime);
+        printStates();
+        leftButtonEvent = false;
+        rightButtonEvent = false;
+        hazardToggle();
+        waitLongPress = true;
+        startTim9();
       }
-      stopTim9();
-
-      waitLongPress = false;
-      leftButtonEvent = false;
-      rightButtonEvent = false;
-      longPressCounter = 0;
-      return;
+      /* if left button is still pressed */
+      else if (!hazardEnabled && LEFT_BUTTON == PRESSED)
+      {
+        stopTim9();
+        DEBUG_LOG("LT pressed for %u\r\n", pressTime);
+        leftButtonEvent = false;
+        leftSideToggle();
+        waitLongPress = true;
+        startTim9();
+      }
+      /* if right button is still pressed */
+      else if (!hazardEnabled && RIGHT_BUTTON == PRESSED)
+      {
+        stopTim9();
+        DEBUG_LOG("RT pressed for %u\r\n", pressTime);
+        rightButtonEvent = false;
+        rightSideToggle();
+        waitLongPress = true;
+        startTim9();
+      }
     }
-
-    // too quick press - skip
-    if (MIN_PRESS_TIME > pressTime)
-    {
-      DEBUG_LOG("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
-      rightButtonEvent = false;
-      leftButtonEvent = false;
-      return;
-    }
-    /* if both buttons are pressed */
-    if (LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED)
-    {
-      DEBUG_LOG("Both switches were ON for %ums\r\n", pressTime);
-      printButtStates();
-      leftButtonEvent = false;
-      rightButtonEvent = false;
-      hazardToggle();
-      waitLongPress = true;
-      startTim9();
-    }
-    /* if left button is still pressed */
-    else if (!hazardEnabled && LEFT_BUTTON == PRESSED)
-    {
-      stopTim9();
-      DEBUG_LOG("LT pressed for %u\r\n", pressTime);
-      leftButtonEvent = false;
-      leftSideToggle();
-      waitLongPress = true;
-      startTim9();
-    }
-    /* if right button is still pressed */
-    else if (!hazardEnabled && RIGHT_BUTTON == PRESSED)
-    {
-      stopTim9();
-      DEBUG_LOG("RT pressed for %u\r\n", pressTime);
-      rightButtonEvent = false;
-      rightSideToggle();
-      waitLongPress = true;
-      startTim9();
-    }
+#endif
   }
 
 #ifdef __cplusplus

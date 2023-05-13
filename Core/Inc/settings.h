@@ -15,7 +15,7 @@
 /** \brief Parameter for a kalman filter */
 #define AZIMUTH_AVERAGE_COUNT 2
 
-#define BLINKER_ENABLED 0
+#define BLINKER_ENABLED 1
 #define J1850_ENABLED 0
 #define MEMS_ENABLED 0
 #define STARTER_LOCK_ON 1
