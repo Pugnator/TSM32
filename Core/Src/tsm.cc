@@ -10,8 +10,6 @@
 #include <memory>
 #include <math.h>
 
-//#define ENABLED
-
 std::unique_ptr<MPU9250> ahrs;
 float initialAzimuth = -1;
 float az = 0;
@@ -34,7 +32,7 @@ extern "C"
               id[0], id[1], id[2],
               VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
-    DWT_Init();
+    
     kalmanInit(2, 2, 0.01);
 
     /*Battery watchdog*/
@@ -47,26 +45,26 @@ extern "C"
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
     /*Starter enable*/
+
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
     leftSideOff();
     rightSideOff();
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
+#if MEMS_ENABLED
     // Start AHRS
     ahrs.reset(new MPU9250(&hi2c1));
     if (ahrs->ok())
     {
+      //Start autoupdate
       HAL_TIM_Base_Start_IT(&htim11);
     }
+#endif
 
     while (1)
     {
-      *((char *)0) = 0;
-
-      ahrs->readAccel();
-      HAL_Delay(100);
-#ifdef ENABLED
+#if BLINKER_ENABLED
       if (!hazardEnabled && !leftEnabled && !rightEnabled)
       {
         continue;
@@ -92,7 +90,11 @@ extern "C"
       {
         blinkerOff();
       }
-#ifdef USE_MEMS
+
+      blinkPause = !blinkPause;
+#endif
+
+#if MEMS_ENABLED
       if (initialAzimuth == -1)
       {
         initialAzimuth = az;
@@ -108,23 +110,19 @@ extern "C"
           leftEnabled = false;
           rightEnabled = false;
           hazardEnabled = false;
-          blink_counter = 0;
+          blinkCounter = 0;
           initialAzimuth = -1;
         }
       }
 #endif
 
-      blinkPause = !blinkPause;
-
-#ifdef USE_J1850
+#if J1850_ENABLED
       if (messageCollected)
       {
         printFrameJ1850();
         messageReset();
         messageCollected = false;
       }
-#endif
-
 #endif
     }
   }

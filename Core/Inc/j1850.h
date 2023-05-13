@@ -52,6 +52,7 @@ extern "C"
   void sendCommandJ1850(const uint8_t *data, size_t size);
   uint8_t j1850Crc(uint8_t *msg_buf, int8_t nbytes);
   void messageReset();
+  void j1850SendMessage();
 
 // define J1850 VPW timing requirements in accordance with SAE J1850 standard
 // all width times in us

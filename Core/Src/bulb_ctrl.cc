@@ -9,7 +9,7 @@ extern "C"
   static uint32_t running_voltage_count = 0;
   static uint32_t stopped_voltage_count = 0;
 
-  uint8_t SIDEMARK_BRIGHTNESS = 10;
+  uint8_t SIDEMARK_BRIGHTNESS = 10;  
 
   void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   {
@@ -25,7 +25,7 @@ extern "C"
       if (ADC_13V_VALUE <= k)
       {
         stopped_voltage_count = 0;
-        if (100 < running_voltage_count++)
+        if (ADC_STABLE_COUNT < running_voltage_count++)
         {
           disableStarter();
           SIDEMARK_BRIGHTNESS = 10;
@@ -34,7 +34,7 @@ extern "C"
       else
       {
         running_voltage_count = 0;
-        if (100 < stopped_voltage_count++)
+        if (ADC_STABLE_COUNT < stopped_voltage_count++)
         {
           enableStarter();
           SIDEMARK_BRIGHTNESS = 0;

@@ -15,13 +15,15 @@
 /** \brief Parameter for a kalman filter */
 #define AZIMUTH_AVERAGE_COUNT 2
 
-#define J1850_ENABLED 1
+#define BLINKER_ENABLED 0
+#define J1850_ENABLED 0
 #define MEMS_ENABLED 0
 #define STARTER_LOCK_ON 1
 
 #define ADC_10V_VALUE 2865
 #define ADC_13V_VALUE 3722
 #define ADC_14_3V_VALUE 4095
+#define ADC_STABLE_COUNT 1000
 
 #ifdef __cplusplus
 extern "C"

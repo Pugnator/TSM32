@@ -4,8 +4,8 @@
 #define LOGGING_CHANNEL 0
 #define NDEBUG
 
-#define USE_UART2_TRACE
-//#define USE_SEGGER_RTT_TRACE
+//#define USE_UART2_TRACE
+#define USE_SEGGER_RTT_TRACE
 
 #ifdef NDEBUG
 #define DEBUG_LOG PrintF

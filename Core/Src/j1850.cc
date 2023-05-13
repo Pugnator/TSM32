@@ -2,6 +2,7 @@
 #include "j1850.h"
 #include <string.h>
 #include <assert.h>
+#include "dwtdelay.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -298,6 +299,60 @@ extern "C"
     }
     assert(byteCounter < PAYLOAD_SIZE);
   }
+
+  void j1850SendMessage()
+  {
+    bool bitActive = false;
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+    DWT_Delay(TX_SOF);
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+    for (size_t i = 0; i < sendBufLen; i++)
+    {
+      size_t bit = 7;
+      uint8_t temp = sendBufJ1850[i];
+      while (bit >= 0)
+      {
+        if (temp & 0x01)
+        {
+          // 1
+          // DEBUG_LOG("bit %d is 1\n", bit);
+          if (bitActive)
+          {
+            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+            DWT_Delay(TX_SHORT);
+          }
+          else
+          {
+            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+            DWT_Delay(TX_LONG);
+          }
+        }
+        else
+        {
+          // 0
+          // DEBUG_LOG("bit %d is 0\n", bit);
+          if (bitActive)
+          {
+            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+            DWT_Delay(TX_LONG);
+          }
+          else
+          {
+            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+            DWT_Delay(TX_SHORT);
+          }
+        }
+
+        bit--;
+        bitActive = !bitActive;
+        temp = temp >> 1;
+      }
+    }
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+    rxQueryNotEmpty = false;
+    sendBufLen = 0;
+  }
+
 
 #ifdef __cplusplus
 }

@@ -1,7 +1,6 @@
 #include "tsm.h"
 #include "settings.h"
 #include "j1850.h"
-#include "dwtdelay.h"
 #include "mpu.h"
 
 #ifdef __cplusplus
@@ -9,20 +8,18 @@ extern "C"
 {
 #endif
 
-  static bool leftButtonState = true;
-  static bool rightButtonState = true;
+  static bool leftButtonEvent = false;
+  static bool rightButtonEvent = false;
 
   static bool waitLongPress = false;
   static uint32_t longPressCounter = 0;
   uint32_t triggerTime = 0;
 
-  inline void sendMessage();
-
   void printButtStates()
   {
     DEBUG_LOG(
         "States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
-        rightButtonState ? "ON" : "OFF", leftButtonState ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
+        rightButtonEvent ? "ON" : "OFF", leftButtonEvent ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
   }
 
   static void stopTim9()
@@ -48,35 +45,41 @@ extern "C"
       DEBUG_LOG("MPU Interrupt!\r\n");
       return;
     }
+
     triggerTime = HAL_GetTick();
-    DEBUG_LOG("Button pressed at %u [L=%u R=%u]\r\n", triggerTime, leftButtonState, rightButtonState);
-    if (GPIO_Pin == LT_BUTTON_Pin && leftButtonState)
+    DEBUG_LOG("Button pressed at %u [L=%u R=%u]\r\n", triggerTime, leftButtonEvent, rightButtonEvent);
+    if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
     {
       startTim9();
-      leftButtonState = false;
-      DEBUG_LOG("Left switch\r\n");
+      leftButtonEvent = true;
+      DEBUG_LOG("Left switch activated\r\n");
     }
-    else if (GPIO_Pin == RT_BUTTON_Pin && rightButtonState)
+    else if (GPIO_Pin == RT_BUTTON_Pin && !rightButtonEvent)
     {
       startTim9();
-      rightButtonState = false;
-      DEBUG_LOG("Right switch\r\n");
+      rightButtonEvent = true;
+      DEBUG_LOG("Right switch activated\r\n");
     }
   }
 
+  /*
+    TIM1  - PWM, bulbs
+    TIM5  - J1850 capture
+    TIM6  - J1850 - EOF timer
+    TIM9  - Blinker delay timer
+    TIM11 - MPU update
+  */
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
+    // Accelerometer update
+#ifdef MEMS_ENABLED
     if (TIM11 == htim->Instance)
     {
       az = ahrs->getAzimuth();
       return;
     }
-
-    if (TIM6 != htim->Instance && TIM9 != htim->Instance)
-    {
-      return;
-    }
-
+#endif
+#ifdef J1850_ENABLED
     // J1850 service timer, 200us
     if (TIM6 == htim->Instance)
     {
@@ -84,9 +87,14 @@ extern "C"
       HAL_GPIO_TogglePin(J1850TX_GPIO_Port, J1850TX_Pin);
       if (rxQueryNotEmpty)
       {
-        sendMessage();
+        j1850SendMessage();
       }
       HAL_TIM_Base_Stop_IT(&htim6);
+      return;
+    }
+#endif
+    if (TIM9 != htim->Instance)
+    {
       return;
     }
 
@@ -115,18 +123,18 @@ extern "C"
       stopTim9();
 
       waitLongPress = false;
-      leftButtonState = true;
-      rightButtonState = true;
+      leftButtonEvent = false;
+      rightButtonEvent = false;
       longPressCounter = 0;
       return;
     }
 
     // too quick press - skip
-    if (MIN_PRESS_TIME >= pressTime)
+    if (MIN_PRESS_TIME > pressTime)
     {
       DEBUG_LOG("Press time [%ums] is less than required [%ums], ignoring event\r\n", pressTime, MIN_PRESS_TIME);
-      rightButtonState = true;
-      leftButtonState = true;
+      rightButtonEvent = false;
+      leftButtonEvent = false;
       return;
     }
     /* if both buttons are pressed */
@@ -134,8 +142,8 @@ extern "C"
     {
       DEBUG_LOG("Both switches were ON for %ums\r\n", pressTime);
       printButtStates();
-      leftButtonState = true;
-      rightButtonState = true;
+      leftButtonEvent = false;
+      rightButtonEvent = false;
       hazardToggle();
       waitLongPress = true;
       startTim9();
@@ -145,7 +153,7 @@ extern "C"
     {
       stopTim9();
       DEBUG_LOG("LT pressed for %u\r\n", pressTime);
-      leftButtonState = true;
+      leftButtonEvent = false;
       leftSideToggle();
       waitLongPress = true;
       startTim9();
@@ -155,64 +163,11 @@ extern "C"
     {
       stopTim9();
       DEBUG_LOG("RT pressed for %u\r\n", pressTime);
-      rightButtonState = true;
+      rightButtonEvent = false;
       rightSideToggle();
       waitLongPress = true;
       startTim9();
     }
-  }
-
-  inline void sendMessage()
-  {
-    bool bitActive = false;
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-    DWT_Delay(TX_SOF);
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-    for (size_t i = 0; i < sendBufLen; i++)
-    {
-      size_t bit = 7;
-      uint8_t temp = sendBufJ1850[i];
-      while (bit >= 0)
-      {
-        if (temp & 0x01)
-        {
-          // 1
-          // DEBUG_LOG("bit %d is 1\n", bit);
-          if (bitActive)
-          {
-            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-            DWT_Delay(TX_SHORT);
-          }
-          else
-          {
-            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-            DWT_Delay(TX_LONG);
-          }
-        }
-        else
-        {
-          // 0
-          // DEBUG_LOG("bit %d is 0\n", bit);
-          if (bitActive)
-          {
-            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-            DWT_Delay(TX_LONG);
-          }
-          else
-          {
-            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-            DWT_Delay(TX_SHORT);
-          }
-        }
-
-        bit--;
-        bitActive = !bitActive;
-        temp = temp >> 1;
-      }
-    }
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-    rxQueryNotEmpty = false;
-    sendBufLen = 0;
   }
 
 #ifdef __cplusplus
