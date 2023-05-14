@@ -2,12 +2,12 @@
 #include "printf.h"
 
 #define LOGGING_CHANNEL 0
-#define NDEBUG
+//#define NDEBUG
 
 //#define USE_UART2_TRACE
 #define USE_SEGGER_RTT_TRACE
 
-#ifdef NDEBUG
+#ifndef NDEBUG
 #define DEBUG_LOG PrintF
 #else
 #define DEBUG_LOG(...)

@@ -8,8 +8,12 @@
 #define PWM_DUTY_DELAY 10
 /** \brief time for a bulb to be on */
 #define TURN_OFF_DELAY 200
+/** \brief Max free run of a timer */
+#define MAX_PRESS_WAIT_TIME 2000
 /** \brief de-bounce value */
-#define MIN_PRESS_TIME 250
+#define DEBOUNCE_MIN_TIME 100
+/** \brief  Time considered as a long press*/
+#define LONG_PRESS_TIME 1000
 /** \brief number of blinks before auto-off */
 #define OVERTAKE_BLINK_COUNT 5
 /** \brief Parameter for a kalman filter */

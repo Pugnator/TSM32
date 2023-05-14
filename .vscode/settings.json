@@ -54,7 +54,9 @@
     "stdexcept": "cpp",
     "streambuf": "cpp",
     "typeinfo": "cpp",
-    "trace.h": "c"
+    "trace.h": "c",
+    "numbers": "cpp",
+    "span": "cpp"
   },
   "C_Cpp.errorSquiggles": "Disabled",
   "cmake.configureOnOpen": false

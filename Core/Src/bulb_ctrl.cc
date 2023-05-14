@@ -22,7 +22,7 @@ extern "C"
 
       uint32_t k = (uint32_t)updateEstimate(HAL_ADC_GetValue(&hadc1));
 
-      if (ADC_13V_VALUE <= k)
+      if (ADC_13V_VALUE < k)
       {
         stopped_voltage_count = 0;
         if (ADC_STABLE_COUNT < running_voltage_count++)

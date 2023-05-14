@@ -17,13 +17,13 @@
 
 #define USE_STATIC_ALLOC
 
-#define LEFT_PWM_OUT (TIM1->CCR3)
-#define RIGHT_PWM_OUT (TIM1->CCR4)
-
 #define LEFT_BUTTON (HAL_GPIO_ReadPin(LT_BUTTON_GPIO_Port, LT_BUTTON_Pin))
 #define RIGHT_BUTTON (HAL_GPIO_ReadPin(RT_BUTTON_GPIO_Port, RT_BUTTON_Pin))
 #define PRESSED (GPIO_PIN_RESET)
 #define DEPRESSED (GPIO_PIN_SET)
+
+#define LEFT_PWM_OUT (TIM1->CCR3)
+#define RIGHT_PWM_OUT (TIM1->CCR4)
 
 #ifdef __cplusplus
 extern "C"
