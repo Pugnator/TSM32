@@ -9,15 +9,15 @@
 extern "C"
 {
 #endif
-  
-  #define TIM9_PERIOD 110
-  #define LONG_PRESS_COUNT (LONG_PRESS_TIME/TIM9_PERIOD)
+
+#define TIM9_PERIOD 110
+#define LONG_PRESS_COUNT (LONG_PRESS_TIME / TIM9_PERIOD)
 
   /** \brief Left button processing event triggered */
   static std::atomic_bool leftButtonEvent(false);
   /** \brief Right button processing event triggered */
   static std::atomic_bool rightButtonEvent(false);
-  
+
   /** \brief We're waiting for a long press */
   static bool waitLongPress = false;
 
@@ -26,17 +26,6 @@ extern "C"
   /** \brief How many timer events passed with a button pressed */
   static uint32_t longPressCounter = 0;
   uint32_t triggerTime = 0;
-
-  static uint32_t leftButtonClickCount = 0;
-  static uint32_t rightButtonClickCount = 0;
-  static uint32_t toggleButtonClickCount = 0;
-
-  void printStates()
-  {
-    DEBUG_LOG(
-        "States:\r\nRight %s\r\nLeft %s\r\nOvertake %s\r\nWaiting for Long Press: %s\r\nLong Press counter %u\r\n",
-        rightButtonEvent ? "ON" : "OFF", leftButtonEvent ? "ON" : "OFF", overtakeMode ? "ON" : "OFF", waitLongPress ? "ON" : "OFF", longPressCounter);
-  }
 
   static void stopTim9()
   {
@@ -64,6 +53,7 @@ extern "C"
     }
 
     triggerTime = HAL_GetTick();
+#if BLINKER_ENABLED
     if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
     {
       startTim9();
@@ -76,6 +66,7 @@ extern "C"
       rightButtonEvent = true;
       DEBUG_LOG("Right switch activated.\r\n");
     }
+#endif
   }
 
   void resetEvent()
@@ -96,16 +87,15 @@ extern "C"
   */
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
-#ifdef MEMS_ENABLED
+#if MEMS_ENABLED
     // Accelerometer update
     if (TIM11 == htim->Instance)
     {
-      az = ahrs->getAzimuth();
       return;
     }
 #endif
 
-#ifdef J1850_ENABLED
+#if J1850_ENABLED
     // J1850 service timer, 200us
     if (TIM6 == htim->Instance)
     {
@@ -147,7 +137,7 @@ extern "C"
           overtakeMode = true;
           resetEvent();
           return;
-        }        
+        }
 
         if (longPressCounter++ != LONG_PRESS_COUNT)
         {
@@ -161,13 +151,11 @@ extern "C"
             RIGHT_BUTTON == GPIO_PIN_RESET)
         {
           DEBUG_LOG("Long press detected after %ums.\r\n", pressTime);
-          printStates();
           overtakeMode = false;
         }
         else
         {
           DEBUG_LOG("Short press.\r\n");
-          printStates();
           overtakeMode = true;
         }
 
@@ -221,7 +209,7 @@ extern "C"
         return;
       }
 
-      //no condition was met.
+      // no condition was met.
       resetEvent();
     }
 #endif

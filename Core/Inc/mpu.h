@@ -38,17 +38,17 @@ Magnetic field strength: 52788.7 nT
 */
 
 // Moscow
-//#define MAGNETIC_DECLINATION 11.0f
+// #define MAGNETIC_DECLINATION 11.0f
 // Belgrade
-#define MAGNETIC_DECLINATION 5.35f
+#define MAGNETIC_DECLINATION 4.27f
 
 #define G_TO_MS2 9.8115
 #define DEG_TO_RAD (M_PI / 180.0f)
 #define RAD_TO_DEG (180.0f / M_PI)
-#define FREQUENCY 125                                    // интервал сэмплирования = 8 мс
-#define GYRO_SENSITIVITY 65.5                            // чувствительность гироскопа (см. datasheet Gyro_Sensitivity)
-#define SENS_TO_DEG (1 / (GYRO_SENSITIVITY * FREQUENCY)) // макрос преобразования показаний датчика в градусы
-#define SENS_TO_RAD SENS_TO_DEG *DEG_TO_RAD              // макрос преобразования показаний датчика в радианы
+#define FREQUENCY 125
+#define GYRO_SENSITIVITY 65.5
+#define SENS_TO_DEG (1 / (GYRO_SENSITIVITY * FREQUENCY))
+#define SENS_TO_RAD SENS_TO_DEG *DEG_TO_RAD
 
 #define MPU9250_I2C_ADDR 0xD0
 #define MPU9250_I2C_ADDR_MAG 0x0C << 1
@@ -95,7 +95,8 @@ public:
   axes readMag();
   axes readGyro();
 
-  float getAzimuth();
+  float getHeadingAngle();
+  bool magSelfTest();
 
   void scanBus();
 
@@ -110,7 +111,6 @@ private:
   bool magRST();
   bool magSetMode(magMode mode);
   void magCalibration();
-  bool magSelfTest();
 
   void reset();
   bool initAcc();

@@ -166,7 +166,9 @@ bool MPU9250::magSelfTest()
 {
   uint8_t data[7];
   uint8_t state = 0;
-  float x, y, z;
+  float x = 0;
+  float y = 0;
+  float z = 0;
   for (size_t i = 0; i < 100; i++)
   {
     if (!magSetMode(MAG_MODE_PD))
@@ -207,9 +209,9 @@ bool MPU9250::magSelfTest()
   {
     return false;
   }
-  x /= 100;
-  y /= 100;
-  z /= 100;
+  x /= 100.0;
+  y /= 100.0;
+  z /= 100.0;
   DEBUG_LOG("Self Test: %.4f %.4f %.4f\r\n", x, y, z);
   return true;
 }
@@ -295,7 +297,7 @@ axes MPU9250::readMag()
   return result;
 }
 
-float MPU9250::getAzimuth()
+float MPU9250::getHeadingAngle()
 {
   auto ax = readMag();
   float Xf = ax.x;

@@ -32,7 +32,7 @@ extern "C"
     __HAL_TIM_SET_COUNTER(&htim6, 0);
     HAL_TIM_Base_Start_IT(&htim6);
   }
-
+#if J1850_ENABLED
   const char *sourceToStr(sourceType type)
   {
     switch (type)
@@ -151,13 +151,13 @@ extern "C"
   }
 
   /*
-  The pulse duration (the time between the falling and rising edges of the pulse) is calculated and compared to various predefined thresholds. 
+  The pulse duration (the time between the falling and rising edges of the pulse) is calculated and compared to various predefined thresholds.
   If the pulse duration falls within the range for a "Start Of Frame" pulse, the messageStarted flag is set to true and the LED is toggled.
 
-  If the messageStarted flag is true, the pulse duration is compared to the ranges for "long" and "short" pulses. 
-  If the pulse duration falls within the range for a "long" pulse, a 0 is added to the current byte being constructed in the payloadJ1850 buffer. 
-  If the pulse duration falls within the range for a "short" pulse, a 1 is added to the current byte. 
-  The byteCounter and bitCounter variables are used to keep track of the current position in the payloadJ1850 buffer. 
+  If the messageStarted flag is true, the pulse duration is compared to the ranges for "long" and "short" pulses.
+  If the pulse duration falls within the range for a "long" pulse, a 0 is added to the current byte being constructed in the payloadJ1850 buffer.
+  If the pulse duration falls within the range for a "short" pulse, a 1 is added to the current byte.
+  The byteCounter and bitCounter variables are used to keep track of the current position in the payloadJ1850 buffer.
   If the pulse duration does not fall within any of the predefined ranges, a message is printed indicating that an unknown signal was received.
   */
   static inline void onFallingEdge(TIM_HandleTypeDef *htim)
@@ -263,6 +263,7 @@ extern "C"
     Print("\r\n##########################\r\n");
     rxQueryNotEmpty = true;
   }
+#endif
 
   void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
   {
@@ -270,7 +271,7 @@ extern "C"
     {
       return;
     }
-
+#if J1850_ENABLED
     // Wait for message to be processed
     if (messageCollected)
     {
@@ -298,10 +299,12 @@ extern "C"
       byteCounter++;
     }
     assert(byteCounter < PAYLOAD_SIZE);
+#endif
   }
 
   void j1850SendMessage()
   {
+#if J1850_ENABLED
     bool bitActive = false;
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
     DWT_Delay(TX_SOF);
@@ -351,8 +354,8 @@ extern "C"
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
     rxQueryNotEmpty = false;
     sendBufLen = 0;
+#endif
   }
-
 
 #ifdef __cplusplus
 }

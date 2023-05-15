@@ -37,6 +37,18 @@ extern "C"
     {
         return 0;
     }
+
+    ssize_t _read_r(void *reent, int fd, void *buf, size_t nbytes)
+    {
+        // Dummy implementation that always returns -1 (indicating an error)
+        return -1;
+    }
+
+    off_t _lseek_r(void *reent, int fd, off_t offset, int whence)
+    {
+        // Dummy implementation that always returns -1 (indicating an error)
+        return -1;
+    }
 #ifdef __cplusplus
 }
 #endif

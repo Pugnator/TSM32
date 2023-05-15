@@ -9,10 +9,10 @@
 #include "vmmu.h"
 #include <memory>
 #include <math.h>
+#include "eeprom.h"
 
-std::unique_ptr<MPU9250> ahrs;
-float initialAzimuth = -1;
-float az = 0;
+#include "stm32f4xx_hal_flash.h"
+#include "stm32f4xx_hal_flash_ex.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -32,7 +32,6 @@ extern "C"
               id[0], id[1], id[2],
               VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
-    
     kalmanInit(2, 2, 0.01);
 
     /*Battery watchdog*/
@@ -52,18 +51,23 @@ extern "C"
     leftSideOff();
     rightSideOff();
 
+
 #if MEMS_ENABLED
+    std::unique_ptr<MPU9250> ahrs;
     // Start AHRS
     ahrs.reset(new MPU9250(&hi2c1));
     if (ahrs->ok())
     {
-      //Start autoupdate
+      //ahrs->magSelfTest();
+      // Start autoupdate
       HAL_TIM_Base_Start_IT(&htim11);
     }
 #endif
 
     while (1)
     {
+      HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+      HAL_Delay(500);
 #if BLINKER_ENABLED
       if (!hazardEnabled && !leftEnabled && !rightEnabled)
       {
@@ -95,25 +99,8 @@ extern "C"
 #endif
 
 #if MEMS_ENABLED
-      if (initialAzimuth == -1)
-      {
-        initialAzimuth = az;
-        DEBUG_LOG("Turning at AZ=%.1f\r\n", initialAzimuth);
-      }
-      if (!overtakeMode && initialAzimuth != -1)
-      {
-        if (fabs(initialAzimuth - az) > 25)
-        {
-          DEBUG_LOG("\r\nTurned at AZ=%.1f\r\n", az);
-          blinkerOff();
-          overtakeMode = false;
-          leftEnabled = false;
-          rightEnabled = false;
-          hazardEnabled = false;
-          blinkCounter = 0;
-          initialAzimuth = -1;
-        }
-      }
+      auto az = ahrs->getHeadingAngle();
+      DEBUG_LOG("Turning at AZ=%.1f\r\n", az);
 #endif
 
 #if J1850_ENABLED
