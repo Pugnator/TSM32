@@ -1,9 +1,9 @@
 #include "mpu.h"
 
-axes MPU9250::readGyro()
+Axis3D MPU9250::readGyro()
 {
   uint8_t data[6];
-  axes result = {0};
+  Axis3D result = {0};
   readRegMpu(MPU9250_GYRO_XOUT_H, data, 6);
 
   float Gx_Raw = ((int16_t)data[0] << 8) | data[1];

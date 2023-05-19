@@ -1,6 +1,6 @@
 #include "tsm.h"
 #include <stdio.h>
-#include "usart.h"
+//#include "usart.h"
 #include "trace.h"
 #include "SEGGER_RTT.h"
 

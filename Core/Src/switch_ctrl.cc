@@ -3,8 +3,6 @@
 #include "j1850.h"
 #include "mpu.h"
 
-#include <atomic>
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -14,9 +12,9 @@ extern "C"
 #define LONG_PRESS_COUNT (LONG_PRESS_TIME / TIM9_PERIOD)
 
   /** \brief Left button processing event triggered */
-  static std::atomic_bool leftButtonEvent(false);
+  static bool leftButtonEvent = false;
   /** \brief Right button processing event triggered */
-  static std::atomic_bool rightButtonEvent(false);
+  static bool rightButtonEvent = false;
 
   /** \brief We're waiting for a long press */
   static bool waitLongPress = false;
@@ -25,7 +23,7 @@ extern "C"
   static uint32_t timerHitCounter = 0;
   /** \brief How many timer events passed with a button pressed */
   static uint32_t longPressCounter = 0;
-  uint32_t triggerTime = 0;
+  volatile uint32_t startTime = 0;
 
   static void stopTim9()
   {
@@ -52,19 +50,20 @@ extern "C"
       return;
     }
 
-    triggerTime = HAL_GetTick();
 #if BLINKER_ENABLED
+    startTime = HAL_GetTick();
+
     if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
     {
       startTim9();
       leftButtonEvent = true;
-      DEBUG_LOG("Left switch activated.\r\n");
+      DEBUG_LOG("[%u] Left switch activated.\r\n", startTime);
     }
     else if (GPIO_Pin == RT_BUTTON_Pin && !rightButtonEvent)
     {
       startTim9();
       rightButtonEvent = true;
-      DEBUG_LOG("Right switch activated.\r\n");
+      DEBUG_LOG("[%u] Right switch activated.\r\n", startTime);
     }
 #endif
   }
@@ -72,6 +71,7 @@ extern "C"
   void resetEvent()
   {
     stopTim9();
+    timerHitCounter = 0;
     waitLongPress = false;
     leftButtonEvent = false;
     rightButtonEvent = false;
@@ -114,13 +114,19 @@ extern "C"
     if (TIM9 == htim->Instance)
     {
       timerHitCounter++;
-      uint32_t eventTime = HAL_GetTick();
-      uint32_t pressTime = eventTime - triggerTime;
-      DEBUG_LOG("Button wait event at %u, L = %u, R = %u.\r\n", pressTime,
+      uint32_t currentTime = HAL_GetTick();
+      if (startTime > currentTime)
+      {
+        DEBUG_LOG("Shouldn't happen. The event is in the past. %u (trigger) > %u (now)\r\n", startTime, currentTime);
+        resetEvent();
+        return;
+      }
+      uint32_t pressDuration = currentTime - startTime;
+      DEBUG_LOG("[%u] %u since the click [%u], L = %u, R = %u.\r\n", currentTime, pressDuration, startTime,
                 LEFT_BUTTON,
                 RIGHT_BUTTON);
 
-      if (MAX_PRESS_WAIT_TIME <= pressTime)
+      if (MAX_PRESS_WAIT_TIME <= pressDuration)
       {
         DEBUG_LOG("Button wait timeout, resetting the event.\r\n");
 
@@ -150,7 +156,7 @@ extern "C"
         if (LEFT_BUTTON == GPIO_PIN_RESET ||
             RIGHT_BUTTON == GPIO_PIN_RESET)
         {
-          DEBUG_LOG("Long press detected after %ums.\r\n", pressTime);
+          DEBUG_LOG("Long press detected after %ums.\r\n", pressDuration);
           overtakeMode = false;
         }
         else
@@ -164,17 +170,16 @@ extern "C"
       }
 
       // too quick press - skip
-      if (DEBOUNCE_MIN_TIME >= pressTime)
+      if (DEBOUNCE_MIN_TIME >= pressDuration)
       {
-        DEBUG_LOG("Bounce detected: T=[%ums].\r\n", pressTime, DEBOUNCE_MIN_TIME);
+        DEBUG_LOG("Bounce detected: T=[%ums].\r\n", pressDuration, DEBOUNCE_MIN_TIME);
         return;
       }
       /* if both buttons are pressed */
       if (LEFT_BUTTON == GPIO_PIN_RESET &&
           RIGHT_BUTTON == GPIO_PIN_RESET)
       {
-        DEBUG_LOG("Both switches were ON for %ums.\r\n", pressTime);
-        printStates();
+        DEBUG_LOG("Both switches were ON for %ums.\r\n", pressDuration);
         leftButtonEvent = false;
         rightButtonEvent = false;
         hazardToggle();
@@ -187,7 +192,7 @@ extern "C"
                LEFT_BUTTON == GPIO_PIN_RESET)
       {
         stopTim9();
-        DEBUG_LOG("LT was pressed for %u.\r\n", pressTime);
+        DEBUG_LOG("LT was pressed for %u.\r\n", pressDuration);
         leftButtonEvent = false;
         leftSideToggle();
         // Check if it's a long press
@@ -200,7 +205,7 @@ extern "C"
                RIGHT_BUTTON == GPIO_PIN_RESET)
       {
         stopTim9();
-        DEBUG_LOG("RT was pressed for %u.\r\n", pressTime);
+        DEBUG_LOG("RT was pressed for %u.\r\n", pressDuration);
         rightButtonEvent = false;
         rightSideToggle();
         // Check if it's a long press

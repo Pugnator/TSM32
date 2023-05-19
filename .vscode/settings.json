@@ -56,8 +56,13 @@
     "typeinfo": "cpp",
     "trace.h": "c",
     "numbers": "cpp",
-    "span": "cpp"
+    "span": "cpp",
+    "vmmu.h": "c"
   },
   "C_Cpp.errorSquiggles": "Disabled",
-  "cmake.configureOnOpen": false
+  "cmake.configureOnOpen": false,
+  "workbench.colorCustomizations" : {
+    "terminal.foreground" : "#00FD61",
+    "terminal.background" : "#383737"
+},
 }

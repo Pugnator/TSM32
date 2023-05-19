@@ -1,25 +1,24 @@
 #include <math.h>
+#include "kalman.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+  KalmanFilter::KalmanFilter()
+  {
+    kalmanInit(2, 2, 0.01f);
+  }
 
-  static float _err_measure;
-  static float _err_estimate;
-  static float _q;
-  static float _current_estimate;
-  static float _last_estimate;
-  static float _kalman_gain;
-
-  void kalmanInit(float mea_e, float est_e, float q)
+  void KalmanFilter::kalmanInit(float mea_e, float est_e, float q)
   {
     _err_measure = mea_e;
     _err_estimate = est_e;
     _q = q;
   }
 
-  float updateEstimate(float mea)
+  float KalmanFilter::getEstimate()
+  {
+    return _current_estimate;
+  }
+
+  float KalmanFilter::updateEstimate(float mea)
   {
     _kalman_gain = _err_estimate / (_err_estimate + _err_measure);
     _current_estimate = _last_estimate + _kalman_gain * (mea - _last_estimate);
@@ -29,31 +28,27 @@ extern "C"
     return _current_estimate;
   }
 
-  void setMeasurementError(float mea_e)
+  void KalmanFilter::setMeasurementError(float mea_e)
   {
     _err_measure = mea_e;
   }
 
-  void setEstimateError(float est_e)
+  void KalmanFilter::setEstimateError(float est_e)
   {
     _err_estimate = est_e;
   }
 
-  void setProcessNoise(float q)
+  void KalmanFilter::setProcessNoise(float q)
   {
     _q = q;
   }
 
-  float getKalmanGain()
+  float KalmanFilter::getKalmanGain()
   {
     return _kalman_gain;
   }
 
-  float getEstimateError()
+  float KalmanFilter::getEstimateError()
   {
     return _err_estimate;
   }
-
-#ifdef __cplusplus
-}
-#endif

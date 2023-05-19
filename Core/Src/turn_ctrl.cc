@@ -34,7 +34,6 @@ extern "C"
     }
     else
     {
-      initialAzimuth = -1;
       leftSideOff();
     }
   }
@@ -63,7 +62,6 @@ extern "C"
     }
     else
     {
-      initialAzimuth = -1;
       rightSideOff();
     }
   }
@@ -82,7 +80,6 @@ extern "C"
     if (!hazardEnabled)
     {
       DEBUG_LOG("Turning off the hazard\r\n");
-      initialAzimuth = -1;
       leftSideOff();
       rightSideOff();
       overtakeMode = false;

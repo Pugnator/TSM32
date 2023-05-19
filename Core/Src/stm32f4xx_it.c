@@ -56,6 +56,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern DMA_HandleTypeDef hdma_adc1;
 extern ADC_HandleTypeDef hadc1;
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim5;
@@ -78,10 +79,9 @@ void NMI_Handler(void)
   DEBUG_LOG("NMI_Handler");
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
-  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
   while (1)
   {
-        
   }
   /* USER CODE END NonMaskableInt_IRQn 1 */
 }
@@ -92,7 +92,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
   DEBUG_LOG("HardFault happened");
   __asm volatile(
       " tst lr, #4                                                \n"
@@ -117,7 +117,7 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
-  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
   DEBUG_LOG("MemManage Handler");
   __asm volatile(
       " tst lr, #4                                                \n"
@@ -142,7 +142,7 @@ void MemManage_Handler(void)
 void BusFault_Handler(void)
 {
   /* USER CODE BEGIN BusFault_IRQn 0 */
-  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
   DEBUG_LOG("BusFault Handler");
   __asm volatile(
       " tst lr, #4                                                \n"
@@ -167,7 +167,7 @@ void BusFault_Handler(void)
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
-  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
   DEBUG_LOG("UsageFault Handler");
   __asm volatile(
       " tst lr, #4                                                \n"
@@ -342,6 +342,20 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
 
   /* USER CODE END TIM6_DAC_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 stream0 global interrupt.
+  */
+void DMA2_Stream0_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
+
+  /* USER CODE END DMA2_Stream0_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_adc1);
+  /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
+
+  /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

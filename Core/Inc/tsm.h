@@ -7,6 +7,12 @@
 #include "stdint.h"
 #include <stdbool.h>
 #include "trace.h"
+#include "settings.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 /**
  * The STM32 factory-programmed UUID memory.
@@ -25,10 +31,9 @@
 #define LEFT_PWM_OUT (TIM1->CCR3)
 #define RIGHT_PWM_OUT (TIM1->CCR4)
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+    extern bool stopAppExecuting;
+
+    void adcHandler();
 
     extern bool leftEnabled;
     extern bool rightEnabled;
@@ -36,6 +41,7 @@ extern "C"
     extern bool overtakeMode;
     extern bool blinkPause;
     extern uint32_t blinkCounter;
+    extern volatile uint32_t startTime;
 
     void leftSideOff();
     void leftSideToggle();
@@ -49,8 +55,10 @@ extern "C"
     void enableStarter();
     void disableStarter();
 
-    void kalmanInit(float mea_e, float est_e, float q);
-    float updateEstimate(float mea);
+    void workerLoop();    
+
+    extern uint32_t adcDMAbuffer[ADC_DMA_BUF_SIZE];
+    extern bool adcDMAcompleted;
 
 #ifdef __cplusplus
 }

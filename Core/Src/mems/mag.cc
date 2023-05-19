@@ -25,16 +25,23 @@ bool MPU9250::writeRegMag(uint8_t reg, uint8_t &&byte)
   return true;
 }
 
-bool MPU9250::readRegMag(uint8_t reg, uint8_t *byte, size_t len)
+bool MPU9250::readRegMag(uint8_t reg, uint8_t *byte, size_t len, uint32_t timeout_ms)
 {
-  if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, byte, len, 1000) != HAL_OK)
+  uint32_t start_time = HAL_GetTick();  // Record the start time
+
+  while (HAL_GetTick() - start_time < timeout_ms)
   {
-    I2C_ClearBusyFlagErratum(i2c, 1000);
-    DEBUG_LOG("Failed to read MAG\r\n");
-    return false;
+    if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, byte, len, 100) == HAL_OK)
+    {
+      return true;  // Read operation successful, return true
+    }
   }
-  return true;
+
+  I2C_ClearBusyFlagErratum(i2c, 1000);
+  DEBUG_LOG("Failed to read MAG\r\n");
+  return false;  // Timeout reached, return false
 }
+
 
 bool MPU9250::magRST()
 {
@@ -65,7 +72,8 @@ bool MPU9250::magSetMode(magMode mode)
     result = writeRegMag(AK8963_CNTL1, 0b00010010);
     break;
   case MAG_MODE_CONT_100HZ:
-    result = writeRegMag(AK8963_CNTL1, 0b00010110);
+    //result = writeRegMag(AK8963_CNTL1, 0b00010110);//100Hz 16bit
+    result = writeRegMag(AK8963_CNTL1, 0b00010010);//8Hz 16bit
     break;
   case MAG_MODE_SELF_TEST:
     result = writeRegMag(AK8963_CNTL1, 0b00011000);
@@ -95,7 +103,7 @@ void MPU9250::magCalibration()
   magOffsetX = 32768.000000;
   magOffsetY = 32768.000000;
   magOffsetZ = 32768.000000;
-  return;
+  
   DEBUG_LOG("Hard and Soft Iron effect compensation\r\n");
   magSetMode(MAG_MODE_PD);
   if (!magSetMode(MAG_MODE_CONT_100HZ))
@@ -124,7 +132,7 @@ void MPU9250::magCalibration()
     readRegMag(AK8963_HXL, &data[0], 7);
     float Mx_Raw = ((data[1] << 8) | data[0]);
     float My_Raw = ((data[3] << 8) | data[2]);
-    float Mz_Raw = ((data[5] << 8) | data[4]);
+    float Mz_Raw = ((data[5] << 8) | data[4]);    
 
     if (Mx_Raw > X_max)
       X_max = Mx_Raw;
@@ -160,60 +168,6 @@ void MPU9250::magCalibration()
   mScaleZ = delta / delta_z;
   DEBUG_LOG("Offsets [X %f, Y %f, Z %f]\r\n", magOffsetX, magOffsetY, magOffsetZ);
   DEBUG_LOG("Scale [X %f, Y %f, Z %f]\r\n", mScaleX, mScaleY, mScaleZ);
-}
-
-bool MPU9250::magSelfTest()
-{
-  uint8_t data[7];
-  uint8_t state = 0;
-  float x = 0;
-  float y = 0;
-  float z = 0;
-  for (size_t i = 0; i < 100; i++)
-  {
-    if (!magSetMode(MAG_MODE_PD))
-    {
-      return false;
-    }
-
-    if (!writeRegMag(AK8963_ASTC, 0b01000000))
-    {
-      return false;
-    }
-
-    if (!magSetMode(MAG_MODE_SELF_TEST))
-    {
-      return false;
-    }
-
-    do
-    {
-      readRegMag(AK8963_ST1, &state);
-    } while (!(state & 0x01));
-
-    readRegMag(AK8963_HXL, &data[0], 7);
-    float Mx_Raw = ((data[1] << 8) | data[0]);
-    float My_Raw = ((data[3] << 8) | data[2]);
-    float Mz_Raw = ((data[5] << 8) | data[4]);
-    /* Calculate uT (micro Tesla) value for XYZ axis */
-    x += (Mx_Raw * corrX);
-    y += (My_Raw * corrY);
-    z += (Mz_Raw * corrZ);
-
-    if (!writeRegMag(AK8963_ASTC, 0))
-    {
-      return false;
-    }
-  }
-  if (!magSetMode(MAG_MODE_PD))
-  {
-    return false;
-  }
-  x /= 100.0;
-  y /= 100.0;
-  z /= 100.0;
-  DEBUG_LOG("Self Test: %.4f %.4f %.4f\r\n", x, y, z);
-  return true;
 }
 
 bool MPU9250::initMag()
@@ -253,12 +207,12 @@ bool MPU9250::initMag()
   {
     return false;
   }
-  corrX = (((fuseRom[0] - 128.0) * 0.5) / 128) + 1;
-  corrY = (((fuseRom[1] - 128.0) * 0.5) / 128) + 1;
-  corrZ = (((fuseRom[2] - 128.0) * 0.5) / 128) + 1;
+  corrX = (((fuseRom[0] - 128.0f) * 0.5f) / 128.0f) + 1.0f;
+  corrY = (((fuseRom[1] - 128.0f) * 0.5f) / 128.0f) + 1.0f;
+  corrZ = (((fuseRom[2] - 128.0f) * 0.5f) / 128.0f) + 1.0f;
 
-  DEBUG_LOG("Corrections:\r\nX=%.4f\r\nY=%.4f\r\nZ=%.4f\r\n", corrX, corrY, corrZ);
-  magCalibration();
+  DEBUG_LOG("Factory corrections:\r\nX=%.4f\r\nY=%.4f\r\nZ=%.4f\r\n", corrX, corrY, corrZ);
+  
   // Entering Continous mode, 8Hz
   magSetMode(MAG_MODE_PD);
   if (!magSetMode(MAG_MODE_CONT_100HZ))
@@ -270,7 +224,7 @@ bool MPU9250::initMag()
   return true;
 }
 
-axes MPU9250::readMag()
+Axis3D MPU9250::readMag()
 {
   uint8_t data[7];
   uint8_t state = 0;
@@ -279,20 +233,34 @@ axes MPU9250::readMag()
     readRegMag(AK8963_ST1, &state);
   } while (!(state & 0x01));
 
-  axes result = {0};
+  Axis3D result = {0};
   readRegMag(AK8963_HXL, &data[0], 7);
   // Check if overflow occurred
+  
+  float Mx_Raw = ((int16_t)((int16_t)data[1] << 8) | data[0]);
+  float My_Raw = ((int16_t)((int16_t)data[3] << 8) | data[2]);
+  float Mz_Raw = ((int16_t)((int16_t)data[5] << 8) | data[4]);
+  
+  DEBUG_LOG("X, uT: %.4f.\r\n", Mx_Raw);
+  DEBUG_LOG("Y, uT: %.4f.\r\n", My_Raw);
+  DEBUG_LOG("Z, uT: %.4f.\r\n", Mz_Raw);
+
   if (data[6] & (1 << 3))
   {
-    DEBUG_LOG("Overflow\r\n");
+    DEBUG_LOG("Magnetic sensor overflow occurred\r\n");
   }
-  float Mx_Raw = ((int16_t)(data[1] << 8) | data[0]);
-  float My_Raw = ((int16_t)(data[3] << 8) | data[2]);
-  float Mz_Raw = ((int16_t)(data[5] << 8) | data[4]);
-  /* Calculate uT (micro Tesla) value for XYZ axis */
-  result.x = Mx_Raw * corrX * gSensF * mScaleX;
-  result.y = My_Raw * corrY * gSensF * mScaleY;
-  result.z = (Mz_Raw * corrZ * gSensF * mScaleZ) * -1;
+
+  /* Calculate uG value for XYZ axis */
+  
+  static const float mRes = 10.0*4912.0/32760.0; // Proper scale to return milliGauss
+  
+  result.x = Mx_Raw * corrX * mRes;
+  result.y = My_Raw * corrY * mRes;
+  result.z = Mz_Raw * corrZ * mRes;  
+
+  //mx = (float)magCount[0]*mRes*magCalibration[0] - magbias[0];
+   // my = (float)magCount[1]*mRes*magCalibration[1] - magbias[1];  
+   // mz = (float)magCount[2]*mRes*magCalibration[2] - magbias[2];   
 
   return result;
 }
@@ -304,11 +272,12 @@ float MPU9250::getHeadingAngle()
   float Yf = ax.y;
   float Zf = ax.z;
 
+  //Euclidean normalization
   float norm = sqrtf(Xf * Xf + Yf * Yf + Zf * Zf);
   if (!norm)
   {
     return -1;
-  }
+  }  
   norm = 1.0f / norm;
   Xf *= norm;
   Yf *= norm;
@@ -333,6 +302,6 @@ float MPU9250::getHeadingAngle()
   {
     az -= 360.0f;
   }
-  // DEBUG_LOG("\rX=%.4f Y=%.4f Z=%.4f  AZ=%.4f\r", Xf, Yf, Zf, az);
-  return filter(az);
+  //DEBUG_LOG("\rX=%.4f Y=%.4f Z=%.4f  AZ=%.4f\r", Xf, Yf, Zf, az);
+  return kalmanFilter(az);
 }

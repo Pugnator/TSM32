@@ -55,4 +55,5 @@ bool isLastStartupSucceeded()
 {
   auto result = eepromRead(0);
   DEBUG_LOG("Last Boot = 0x%X\r\n", result);
+  return true;
 }

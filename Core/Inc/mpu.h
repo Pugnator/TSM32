@@ -40,7 +40,7 @@ Magnetic field strength: 52788.7 nT
 // Moscow
 // #define MAGNETIC_DECLINATION 11.0f
 // Belgrade
-#define MAGNETIC_DECLINATION 4.27f
+#define MAGNETIC_DECLINATION +5.46f
 
 #define G_TO_MS2 9.8115
 #define DEG_TO_RAD (M_PI / 180.0f)
@@ -53,17 +53,17 @@ Magnetic field strength: 52788.7 nT
 #define MPU9250_I2C_ADDR 0xD0
 #define MPU9250_I2C_ADDR_MAG 0x0C << 1
 
-#define AK8963_CALIBRATION_LOOPS 10
+#define AK8963_CALIBRATION_LOOPS 1000
 extern float az;
 extern float initialAzimuth;
 
-typedef struct axes
+typedef struct Axis3D
 {
   float x;
   float y;
   float z;
 
-} axes;
+} Axis3D;
 
 typedef enum
 {
@@ -90,13 +90,13 @@ public:
   bool ready();
 
   void selfTest();
+  void magCalibration();
 
   bool readAccel();
-  axes readMag();
-  axes readGyro();
+  Axis3D readMag();
+  Axis3D readGyro();
 
-  float getHeadingAngle();
-  bool magSelfTest();
+  float getHeadingAngle();  
 
   void scanBus();
 
@@ -107,16 +107,16 @@ private:
 
   bool writeRegMag(uint8_t reg, uint8_t *byte, size_t len);
   bool writeRegMag(uint8_t reg, uint8_t &&byte);
-  bool readRegMag(uint8_t reg, uint8_t *byte, size_t len = 1);
+  bool readRegMag(uint8_t reg, uint8_t *byte, size_t len = 1, uint32_t timeout_ms = 1000);
   bool magRST();
   bool magSetMode(magMode mode);
-  void magCalibration();
+  
 
   void reset();
   bool initAcc();
   bool initMag();
 
-  float filter(float val);
+  float kalmanFilter(float val);
 
   bool _ok;
   float corrX;

@@ -106,7 +106,7 @@ void MPU9250::scanBus()
   }
 }
 
-float MPU9250::filter(float newVal)
+float MPU9250::kalmanFilter(float newVal)
 {
   float dt = 0.05;
   float sigma_process = 5.0;
@@ -129,3 +129,4 @@ float MPU9250::filter(float newVal)
   vk_1 = vk;
   return xk_1;
 }
+

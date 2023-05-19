@@ -1,28 +1,47 @@
 #include "tsm.h"
 #include "settings.h"
 #include "mpu.h"
-#include "usart.h"
 #include "j1850.h"
 #include <stdio.h>
-#include "dwtdelay.h"
 #include "id.h"
 #include "vmmu.h"
 #include <memory>
-#include <math.h>
-#include "eeprom.h"
+#include "kalman.h"
 
-#include "stm32f4xx_hal_flash.h"
-#include "stm32f4xx_hal_flash_ex.h"
+std::unique_ptr<kFilter> adcfilter;
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
+  bool stopAppExecuting = true;
+
   void HAL_IncTick(void)
   {
     uwTick += uwTickFreq;
   }
+  /*
+    static volatile uint8_t rxd1[32];
+    static volatile uint8_t rxd2[32];
+
+    void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
+    {
+      HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+      if (UartHandle->Instance == USART1)
+      {
+        DEBUG_LOG("UART1\r\n");
+        // HAL_UART_Transmit(&huart3, (uint8_t *)rxd, 1, 0xFFFF);
+        HAL_UART_Receive_IT(&huart1, (uint8_t *)rxd1, 1);
+      }
+      if (UartHandle->Instance == USART2)
+      {
+        DEBUG_LOG("UART2\r\n");
+        HAL_UART_Transmit(&huart2, (uint8_t *)rxd2, 1, 100);
+        HAL_UART_Receive_IT(&huart2, (uint8_t *)rxd2, 1);
+      }
+    }
+  */
 
   void tsmRunApp()
   {
@@ -32,10 +51,9 @@ extern "C"
               id[0], id[1], id[2],
               VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
-    kalmanInit(2, 2, 0.01);
-
     /*Battery watchdog*/
-    HAL_ADC_Start(&hadc1);
+    // HAL_ADC_Start(&hadc1);
+    HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, sizeof(adcDMAbuffer));
     HAL_ADC_Start_IT(&hadc1);
 
     /*J1850 logger*/
@@ -50,7 +68,7 @@ extern "C"
 
     leftSideOff();
     rightSideOff();
-
+    adcfilter.reset(new kFilter);
 
 #if MEMS_ENABLED
     std::unique_ptr<MPU9250> ahrs;
@@ -58,60 +76,13 @@ extern "C"
     ahrs.reset(new MPU9250(&hi2c1));
     if (ahrs->ok())
     {
-      //ahrs->magSelfTest();
       // Start autoupdate
       HAL_TIM_Base_Start_IT(&htim11);
     }
 #endif
-
-    while (1)
-    {
-      HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-      HAL_Delay(500);
-#if BLINKER_ENABLED
-      if (!hazardEnabled && !leftEnabled && !rightEnabled)
-      {
-        continue;
-      }
-
-      if (overtakeMode && OVERTAKE_BLINK_COUNT <= blinkCounter)
-      {
-        blinkerOff();
-        overtakeMode = false;
-        leftEnabled = false;
-        rightEnabled = false;
-        hazardEnabled = false;
-        blinkCounter = 0;
-        continue;
-      }
-
-      if (!blinkPause)
-      {
-        blinkCounter++;
-        blinkerOn();
-      }
-      else
-      {
-        blinkerOff();
-      }
-
-      blinkPause = !blinkPause;
-#endif
-
-#if MEMS_ENABLED
-      auto az = ahrs->getHeadingAngle();
-      DEBUG_LOG("Turning at AZ=%.1f\r\n", az);
-#endif
-
-#if J1850_ENABLED
-      if (messageCollected)
-      {
-        printFrameJ1850();
-        messageReset();
-        messageCollected = false;
-      }
-#endif
-    }
+    stopAppExecuting = false;
+    workerLoop();
+    DEBUG_LOG("Stop!\r\n");
   }
 
 #ifdef __cplusplus
