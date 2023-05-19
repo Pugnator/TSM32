@@ -23,7 +23,7 @@ extern "C"
   static uint32_t timerHitCounter = 0;
   /** \brief How many timer events passed with a button pressed */
   static uint32_t longPressCounter = 0;
-  volatile uint32_t startTime = 0;
+  static volatile uint32_t startTime = 0;
 
   static void stopTim9()
   {
@@ -38,20 +38,17 @@ extern "C"
     stopTim9();
     __HAL_TIM_CLEAR_FLAG(&htim9, TIM_SR_UIF);
     __HAL_TIM_SET_COUNTER(&htim9, 0);
+    startTime = HAL_GetTick();
     HAL_TIM_Base_Start_IT(&htim9);
   }
 
   void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
-
     if (GPIO_Pin == IMU_INT_Pin)
     {
       DEBUG_LOG("MPU Interrupt.\r\n");
       return;
-    }
-
-#if BLINKER_ENABLED
-    startTime = HAL_GetTick();
+    }    
 
     if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
     {
@@ -64,8 +61,7 @@ extern "C"
       startTim9();
       rightButtonEvent = true;
       DEBUG_LOG("[%u] Right switch activated.\r\n", startTime);
-    }
-#endif
+    }    
   }
 
   void resetEvent()

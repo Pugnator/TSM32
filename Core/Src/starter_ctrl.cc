@@ -12,7 +12,6 @@ extern "C"
   {
 #if STARTER_LOCK_ENABLE
     engineStarted = true;
-    DEBUG_LOG("Starter is disabled.\r\n");
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_RESET);
 
 #endif

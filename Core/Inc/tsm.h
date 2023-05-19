@@ -40,8 +40,7 @@ extern "C"
     extern bool hazardEnabled;
     extern bool overtakeMode;
     extern bool blinkPause;
-    extern uint32_t blinkCounter;
-    extern volatile uint32_t startTime;
+    extern uint32_t blinkCounter;    
 
     void leftSideOff();
     void leftSideToggle();
@@ -55,7 +54,11 @@ extern "C"
     void enableStarter();
     void disableStarter();
 
-    void workerLoop();    
+    void adcHandler();
+    void memsHandler();
+    void j1850Handler();
+    void blinkerHandler();
+    void workerLoop();
 
     extern uint32_t adcDMAbuffer[ADC_DMA_BUF_SIZE];
     extern bool adcDMAcompleted;
