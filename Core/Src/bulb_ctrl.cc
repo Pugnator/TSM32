@@ -9,8 +9,8 @@ extern "C"
 
   bool adcDMAcompleted = false;
   uint32_t adcDMAbuffer[ADC_DMA_BUF_SIZE];
-
-  uint8_t SIDEMARK_BRIGHTNESS = 10;
+  static volatile uint32_t voltageThresholdStartTime = 0;
+  static volatile bool overVoltage = false;
 
   void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   {
@@ -34,28 +34,57 @@ extern "C"
 
 void adcHandler()
 {
-  if (adcDMAcompleted)
+  if (!adcDMAcompleted)
   {
-    for (uint32_t i = 0; i < ADC_DMA_BUF_SIZE; i++)
+    return;
+  }
+
+  static uint32_t meanVoltage = 0;
+
+  for (uint32_t i = 0; i < ADC_DMA_BUF_SIZE; i++)
+  {
+    meanVoltage += adcDMAbuffer[i] & 0xFFF;
+  }
+
+  meanVoltage /= ADC_DMA_BUF_SIZE;
+  DEBUG_LOG("Mean voltage is %u\r\n", meanVoltage);
+
+  if (ADC_13V_VALUE < meanVoltage)
+  {
+    if (!overVoltage)
     {
-      adcfilter->updateEstimate(adcDMAbuffer[i] & 0xFFF);
+      overVoltage = true;
+      voltageThresholdStartTime = HAL_GetTick();
+      return;
     }
 
-    if (ADC_13V_VALUE < adcfilter->getEstimate())
+    if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
     {
       disableStarter();
 #if AUTO_LIGHT_ENABLE
-      SIDEMARK_BRIGHTNESS = DLR_BRIGHTNESS_VALUE;
+      currentSidemarkBrightness = DLR_BRIGHTNESS_VALUE;
+#else
+      currentSidemarkBrightness = 0;
 #endif
     }
-    else
+  }
+  else if (!leftEnabled && !rightEnabled) //we don't want to turn off sidemarks if blinkers are enabled
+  {
+    if (overVoltage)
+    {
+      overVoltage = false;
+      voltageThresholdStartTime = HAL_GetTick();
+      return;
+    }
+
+    if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
     {
       enableStarter();
-      SIDEMARK_BRIGHTNESS = 0;
+      currentSidemarkBrightness = 0;
     }
-    LEFT_PWM_OUT = leftEnabled ? LEFT_PWM_OUT : SIDEMARK_BRIGHTNESS;
-    RIGHT_PWM_OUT = rightEnabled ? RIGHT_PWM_OUT : SIDEMARK_BRIGHTNESS;
-    adcDMAcompleted = false;
-    HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, sizeof(adcDMAbuffer));
   }
+  LEFT_PWM_OUT = leftEnabled ? LEFT_PWM_OUT : currentSidemarkBrightness;
+  RIGHT_PWM_OUT = rightEnabled ? RIGHT_PWM_OUT : currentSidemarkBrightness;
+  adcDMAcompleted = false;
+  HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
 }

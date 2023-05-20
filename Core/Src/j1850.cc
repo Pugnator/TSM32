@@ -26,11 +26,11 @@ extern "C"
   uint8_t sendBufJ1850[PAYLOAD_SIZE] = {0};
   size_t sendBufLen = 0;
 
-  static void start_tim6()
+  static void startEOFtimer()
   {
-    __HAL_TIM_CLEAR_FLAG(&htim6, TIM_SR_UIF);
-    __HAL_TIM_SET_COUNTER(&htim6, 0);
-    HAL_TIM_Base_Start_IT(&htim6);
+    __HAL_TIM_CLEAR_FLAG(&J1850_EOF_TIMER, TIM_SR_UIF);
+    __HAL_TIM_SET_COUNTER(&J1850_EOF_TIMER, 0);
+    HAL_TIM_Base_Start_IT(&J1850_EOF_TIMER);
   }
 #if J1850_ENABLED
   const char *sourceToStr(sourceType type)
@@ -280,8 +280,8 @@ extern "C"
 
     if (isRisingEdge)
     {
-      __HAL_TIM_SET_COUNTER(&htim6, 0);
-      HAL_TIM_Base_Stop_IT(&htim6);
+      __HAL_TIM_SET_COUNTER(&J1850_EOF_TIMER, 0);
+      HAL_TIM_Base_Stop_IT(&J1850_EOF_TIMER);
       onRisingEdge(htim);
       isRisingEdge = false;
       __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_2, TIM_INPUTCHANNELPOLARITY_FALLING);
@@ -291,7 +291,7 @@ extern "C"
       onFallingEdge(htim);
       isRisingEdge = true;
       __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_2, TIM_INPUTCHANNELPOLARITY_RISING);
-      start_tim6();
+      startEOFtimer();
     }
     if (bitCounter == 8)
     {

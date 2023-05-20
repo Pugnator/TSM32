@@ -70,6 +70,8 @@ void Error_Handler(void);
 #define MPU_AD0_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_0
 #define LED_GPIO_Port GPIOB
+#define SDCARD_CS_Pin GPIO_PIN_2
+#define SDCARD_CS_GPIO_Port GPIOB
 #define RT_BUTTON_Pin GPIO_PIN_12
 #define RT_BUTTON_GPIO_Port GPIOB
 #define RT_BUTTON_EXTI_IRQn EXTI15_10_IRQn

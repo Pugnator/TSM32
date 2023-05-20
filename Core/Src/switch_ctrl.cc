@@ -12,34 +12,34 @@ extern "C"
 #define LONG_PRESS_COUNT (LONG_PRESS_TIME / TIM9_PERIOD)
 
   /** \brief Left button processing event triggered */
-  static bool leftButtonEvent = false;
+  static volatile bool leftButtonEvent = false;
   /** \brief Right button processing event triggered */
-  static bool rightButtonEvent = false;
+  static volatile bool rightButtonEvent = false;
 
   /** \brief We're waiting for a long press */
-  static bool waitLongPress = false;
+  static volatile bool waitLongPress = false;
 
   /** \brief Number of timer events passed */
-  static uint32_t timerHitCounter = 0;
+  static volatile uint32_t timerHitCounter = 0;
   /** \brief How many timer events passed with a button pressed */
-  static uint32_t longPressCounter = 0;
+  static volatile uint32_t longPressCounter = 0;
   static volatile uint32_t startTime = 0;
 
-  static void stopTim9()
+  static void stopBlinkerTimer()
   {
-    HAL_TIM_Base_Stop_IT(&htim9);
-    __HAL_TIM_SET_COUNTER(&htim9, 0);
-    __HAL_TIM_CLEAR_FLAG(&htim9, TIM_SR_UIF);
+    HAL_TIM_Base_Stop_IT(&BLINKER_TIMER);
+    __HAL_TIM_SET_COUNTER(&BLINKER_TIMER, 0);
+    __HAL_TIM_CLEAR_FLAG(&BLINKER_TIMER, TIM_SR_UIF);
     timerHitCounter = 0;
   }
 
-  static void startTim9()
+  static void startBlinkerTimer()
   {
-    stopTim9();
-    __HAL_TIM_CLEAR_FLAG(&htim9, TIM_SR_UIF);
-    __HAL_TIM_SET_COUNTER(&htim9, 0);
+    stopBlinkerTimer();
+    __HAL_TIM_CLEAR_FLAG(&BLINKER_TIMER, TIM_SR_UIF);
+    __HAL_TIM_SET_COUNTER(&BLINKER_TIMER, 0);
     startTime = HAL_GetTick();
-    HAL_TIM_Base_Start_IT(&htim9);
+    HAL_TIM_Base_Start_IT(&BLINKER_TIMER);
   }
 
   void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
@@ -52,13 +52,13 @@ extern "C"
 
     if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
     {
-      startTim9();
+      startBlinkerTimer();
       leftButtonEvent = true;
       DEBUG_LOG("[%u] Left switch activated.\r\n", startTime);
     }
     else if (GPIO_Pin == RT_BUTTON_Pin && !rightButtonEvent)
     {
-      startTim9();
+      startBlinkerTimer();
       rightButtonEvent = true;
       DEBUG_LOG("[%u] Right switch activated.\r\n", startTime);
     }    
@@ -66,7 +66,7 @@ extern "C"
 
   void resetEvent()
   {
-    stopTim9();
+    stopBlinkerTimer();
     timerHitCounter = 0;
     waitLongPress = false;
     leftButtonEvent = false;
@@ -78,22 +78,13 @@ extern "C"
     TIM1  - PWM, bulbs
     TIM5  - J1850 capture
     TIM6  - J1850 - EOF timer
-    TIM9  - Blinker delay timer
-    TIM11 - MPU update
+    TIM9  - Blinker delay timer    
   */
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
-#if MEMS_ENABLED
-    // Accelerometer update
-    if (TIM11 == htim->Instance)
-    {
-      return;
-    }
-#endif
-
 #if J1850_ENABLED
     // J1850 service timer, 200us
-    if (TIM6 == htim->Instance)
+    if (J1850_TIMER_INSTANCE == htim->Instance)
     {
       messageCollected = true;
       HAL_GPIO_TogglePin(J1850TX_GPIO_Port, J1850TX_Pin);
@@ -107,7 +98,7 @@ extern "C"
 #endif
 
 #if BLINKER_ENABLED
-    if (TIM9 == htim->Instance)
+    if (BLINKER_TIMER_INSTANCE == htim->Instance)
     {
       timerHitCounter++;
       uint32_t currentTime = HAL_GetTick();
@@ -180,33 +171,33 @@ extern "C"
         rightButtonEvent = false;
         hazardToggle();
         waitLongPress = true;
-        startTim9();
+        startBlinkerTimer();
         return;
       }
       /* if left button is still pressed */
       else if (!hazardEnabled &&
                LEFT_BUTTON == GPIO_PIN_RESET)
       {
-        stopTim9();
+        stopBlinkerTimer();
         DEBUG_LOG("LT was pressed for %u.\r\n", pressDuration);
         leftButtonEvent = false;
         leftSideToggle();
         // Check if it's a long press
         waitLongPress = true;
-        startTim9();
+        startBlinkerTimer();
         return;
       }
       /* if right button is still pressed */
       else if (!hazardEnabled &&
                RIGHT_BUTTON == GPIO_PIN_RESET)
       {
-        stopTim9();
+        stopBlinkerTimer();
         DEBUG_LOG("RT was pressed for %u.\r\n", pressDuration);
         rightButtonEvent = false;
         rightSideToggle();
         // Check if it's a long press
         waitLongPress = true;
-        startTim9();
+        startBlinkerTimer();
         return;
       }
 

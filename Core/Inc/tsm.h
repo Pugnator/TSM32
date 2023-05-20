@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include "trace.h"
 #include "settings.h"
+#include "assert.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -23,6 +24,11 @@ extern "C"
 
 #define USE_STATIC_ALLOC
 
+#define BLINKER_TIMER htim9
+#define BLINKER_TIMER_INSTANCE TIM9
+#define J1850_EOF_TIMER htim6
+#define J1850_TIMER_INSTANCE TIM6
+
 #define LEFT_BUTTON (HAL_GPIO_ReadPin(LT_BUTTON_GPIO_Port, LT_BUTTON_Pin))
 #define RIGHT_BUTTON (HAL_GPIO_ReadPin(RT_BUTTON_GPIO_Port, RT_BUTTON_Pin))
 #define PRESSED (GPIO_PIN_RESET)
@@ -31,6 +37,7 @@ extern "C"
 #define LEFT_PWM_OUT (TIM1->CCR3)
 #define RIGHT_PWM_OUT (TIM1->CCR4)
 
+    extern volatile uint8_t currentSidemarkBrightness;
     extern bool stopAppExecuting;
 
     void adcHandler();
@@ -40,7 +47,7 @@ extern "C"
     extern bool hazardEnabled;
     extern bool overtakeMode;
     extern bool blinkPause;
-    extern uint32_t blinkCounter;    
+    extern uint32_t blinkCounter;
 
     void leftSideOff();
     void leftSideToggle();

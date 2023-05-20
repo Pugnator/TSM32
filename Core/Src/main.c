@@ -21,8 +21,10 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
+#include "fatfs.h"
 #include "i2c.h"
 #include "rtc.h"
+#include "spi.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -101,6 +103,8 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM9_Init();
   MX_TIM11_Init();
+  MX_SPI1_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init();
   vmmu_init();

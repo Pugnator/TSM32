@@ -7,15 +7,14 @@ public:
   KalmanFilter();
   ~KalmanFilter(){};
 
-  float updateEstimate(float mea);
-  float getEstimate();
+  void configure(float measurementError, float estimateError, float noiseLevel);
+  float update(float measurement);
+  float estimate();
 
 private:
-  void kalmanInit(float mea_e, float est_e, float q);
-
-  void setMeasurementError(float mea_e);
-  void setEstimateError(float est_e);
-  void setProcessNoise(float q);
+  void setMeasurementError(float measurementError);
+  void setEstimateError(float estimateError);
+  void setProcessNoise(float noiseLevel);
   float getKalmanGain();
   float getEstimateError();
 
@@ -28,4 +27,3 @@ private:
 };
 
 typedef struct KalmanFilter kFilter;
-extern std::unique_ptr<kFilter> adcfilter;

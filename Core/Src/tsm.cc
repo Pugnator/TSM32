@@ -6,9 +6,8 @@
 #include "id.h"
 #include "vmmu.h"
 #include <memory>
-#include "kalman.h"
+#include "assert.h"
 
-std::unique_ptr<kFilter> adcfilter;
 
 #ifdef __cplusplus
 extern "C"
@@ -44,7 +43,7 @@ extern "C"
   */
 
   void tsmRunApp()
-  {
+  {    
     uint32_t id[3] = {0};
     getCPUid(id, STM32F4_t);
     DEBUG_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
@@ -53,7 +52,7 @@ extern "C"
 
     /*Battery watchdog*/
     // HAL_ADC_Start(&hadc1);
-    HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, sizeof(adcDMAbuffer));
+    HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
     HAL_ADC_Start_IT(&hadc1);
 
     /*J1850 logger*/
@@ -67,8 +66,7 @@ extern "C"
     HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
     leftSideOff();
-    rightSideOff();
-    adcfilter.reset(new kFilter);
+    rightSideOff();    
 
 #if MEMS_ENABLED
     std::unique_ptr<MPU9250> ahrs;

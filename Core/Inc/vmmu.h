@@ -66,7 +66,7 @@
 
 #define FREE(x) stfree((void *)x)
 #define ALLOC(x) stalloc(x)
-#define POOL_SIZE 16 * 1024
+#define POOL_SIZE 4 * 1024
 // Will destroy all allocated memory
 #define EMERGENCY_MEM_POOL_FLUSH vmmu_init()
 

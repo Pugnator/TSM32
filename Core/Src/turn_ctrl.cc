@@ -15,6 +15,12 @@ extern "C"
   bool overtakeMode = false;
   bool blinkPause = false;
 
+#if AUTO_LIGHT_ENABLE
+  uint8_t volatile currentSidemarkBrightness = DLR_BRIGHTNESS_VALUE;
+#else
+uint8_t volatile currentSidemarkBrightness = 0;
+#endif
+
   uint32_t blinkCounter = 0;
 
   void leftSideToggle()
@@ -42,7 +48,7 @@ extern "C"
   {
     DEBUG_LOG("Left side off\r\n");
     leftEnabled = false;
-    LEFT_PWM_OUT = 0;
+    LEFT_PWM_OUT = currentSidemarkBrightness;
   }
 
   void rightSideToggle()
@@ -70,7 +76,7 @@ extern "C"
   {
     DEBUG_LOG("Right side off\r\n");
     rightEnabled = false;
-    RIGHT_PWM_OUT = 0;
+    RIGHT_PWM_OUT = currentSidemarkBrightness;
   }
 
   void hazardToggle()
@@ -131,6 +137,7 @@ extern "C"
     else if (rightEnabled)
     {
       RIGHT_PWM_OUT = 0;
+      ;
     }
     HAL_Delay(TURN_OFF_DELAY);
   }
