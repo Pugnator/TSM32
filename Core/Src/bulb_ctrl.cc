@@ -47,7 +47,7 @@ void adcHandler()
   }
 
   meanVoltage /= ADC_DMA_BUF_SIZE;
-  DEBUG_LOG("Mean voltage is %u\r\n", meanVoltage);
+  //DEBUG_LOG("Mean voltage is %u\r\n", meanVoltage);
 
   if (ADC_13V_VALUE < meanVoltage)
   {

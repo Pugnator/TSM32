@@ -2,15 +2,29 @@
 #include "printf.h"
 
 #define LOGGING_CHANNEL 0
-//#define NDEBUG
+
 
 //#define USE_UART2_TRACE
 #define USE_SEGGER_RTT_TRACE
+#define LOG_LEVEL_INFO
 
-#ifndef NDEBUG
+
+#ifdef LOG_LEVEL_DEBUG
 #define DEBUG_LOG PrintF
 #else
 #define DEBUG_LOG(...)
+#endif
+
+#ifdef LOG_LEVEL_INFO
+#define INFO_LOG PrintF
+#else
+#define INFO_LOG(...)
+#endif
+
+#ifdef LOG_LEVEL_WARNING
+#define WARN_LOG PrintF
+#else
+#define WARN_LOG(...)
 #endif
 
 #define CPU_CORE_FREQUENCY_HZ 100000000

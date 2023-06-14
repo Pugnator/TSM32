@@ -36,7 +36,6 @@ extern "C"
     SECURITY = 0x93,
     VSC = 0x63,
     ENGSTAT = 0xFF
-
   } sourceType;
 
 #define PAYLOAD_SIZE 64
@@ -44,7 +43,7 @@ extern "C"
   extern uint8_t payloadJ1850[PAYLOAD_SIZE];
   extern uint8_t sendBufJ1850[PAYLOAD_SIZE];
   extern size_t sendBufLen;
-  extern volatile uint8_t byteCounter;
+  extern volatile uint8_t j1850RXCtr;
   extern volatile bool messageCollected;
   extern volatile bool rxQueryNotEmpty;
 

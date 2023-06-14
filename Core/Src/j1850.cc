@@ -15,7 +15,7 @@ extern "C"
   volatile bool messageStarted = false;
   volatile bool messageCollected = false;
   volatile bool rxQueryNotEmpty = false;
-  volatile uint8_t byteCounter = 0;
+  volatile uint8_t j1850RXCtr = 0;
   static volatile uint8_t bitCounter = 0;
   static volatile uint32_t frameCounter = 0;
   static volatile uint32_t badFrameCounter = 0;
@@ -68,18 +68,19 @@ extern "C"
 
   void printFrameJ1850()
   {
-    if (byteCounter <= 4)
+    if (j1850RXCtr <= 4)
     {
+      INFO_LOG("printFrameJ1850: byteCounter <= 4 [%u]\r\n", j1850RXCtr);
       return;
     }
-    uint8_t crc = j1850Crc(payloadJ1850, byteCounter - 1);
-    PrintF("Frame #%u [CRC: 0x%02X] %s\r\n", frameCounter, crc, crc == payloadJ1850[byteCounter - 1] ? "VALID" : "INVALID!");
-    for (uint8_t i = 0; i < byteCounter; i++)
+    uint8_t crc = j1850Crc(payloadJ1850, j1850RXCtr - 1);
+    INFO_LOG("Frame #%u [CRC: 0x%02X] %s\r\n", frameCounter, crc, crc == payloadJ1850[j1850RXCtr - 1] ? "VALID" : "INVALID!");
+    for (uint8_t i = 0; i < j1850RXCtr; i++)
     {
-      PrintF("0x%02X ", payloadJ1850[i]);
+      INFO_LOG("0x%02X ", payloadJ1850[i]);
     }
-    Print("\r\n");
-    if (crc != payloadJ1850[byteCounter - 1])
+    INFO_LOG("\r\n");
+    if (crc != payloadJ1850[j1850RXCtr - 1])
     {
       return;
     }
@@ -92,11 +93,11 @@ extern "C"
         if (D) Log.d(TAG, "DTC clear reply");
       } else
     */
-    PrintF("HEADER\r\nPriority: %u\r\n", h.ctx.priority);
-    PrintF("%u bytes header\r\n", h.ctx.type ? 1 : 3);
-    PrintF("Message to '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[1])));
-    PrintF("Message from '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[2])));
-    PrintF("*********************\r\n");
+    INFO_LOG("HEADER\r\nPriority: %u\r\n", h.ctx.priority);
+    INFO_LOG("%u bytes header\r\n", h.ctx.type ? 1 : 3);
+    INFO_LOG("Message to '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[1])));
+    INFO_LOG("Message from '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[2])));
+    INFO_LOG("*********************\r\n");
 
     if (frameCounter == 10)
     {
@@ -111,7 +112,7 @@ extern "C"
   {
     memset(payloadJ1850, 0, sizeof(payloadJ1850));
     bitCounter = 0;
-    byteCounter = 0;
+    j1850RXCtr = 0;
     messageStarted = false;
   }
 
@@ -160,18 +161,29 @@ extern "C"
   The byteCounter and bitCounter variables are used to keep track of the current position in the payloadJ1850 buffer.
   If the pulse duration does not fall within any of the predefined ranges, a message is printed indicating that an unknown signal was received.
   */
-  static inline void onFallingEdge(TIM_HandleTypeDef *htim)
+  static inline void onPassivePulse(TIM_HandleTypeDef *htim)
   {
     fallEdgeTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
 
-    uint32_t pulse = fallEdgeTime - riseEdgeTime;
+    // Check if it's an unrealisting time;
+    if (riseEdgeTime > fallEdgeTime)
+    {
+      DEBUG_LOG("Capture overflow\r\n");
+      return;
+    }
+
+    const uint32_t pulse = fallEdgeTime - riseEdgeTime;
     // Start of Frame
     if (pulse <= RX_SOF_MAX && pulse > RX_SOF_MIN)
     {
       frameCounter++;
-      PrintF("Start Of Frame, %uus\r\n", pulse);
+      DEBUG_LOG("Start Of Frame, %uus\r\n", pulse);
       HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
       messageStarted = true;
+      fallEdgeTime = 0;
+      __HAL_TIM_SET_COUNTER(&htim5, 0);
+
+      return;
     }
 
     if (!messageStarted)
@@ -183,16 +195,16 @@ extern "C"
     if (pulse <= RX_LONG_MAX && pulse > RX_LONG_MIN)
     {
       DEBUG_LOG("Active 0, %uus\r\n", pulse);
-      payloadJ1850[byteCounter] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
+      payloadJ1850[j1850RXCtr] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
     }
     else if (pulse <= RX_SHORT_MAX && pulse > RX_SHORT_MIN)
     {
       DEBUG_LOG("Active 1, %uus\r\n", pulse);
-      payloadJ1850[byteCounter] |= 1UL << (BIT_PER_BYTE - bitCounter++);
+      payloadJ1850[j1850RXCtr] |= 1UL << (BIT_PER_BYTE - bitCounter++);
     }
     else
     {
-      PrintF("Unknown signal. Active, %uus\r\n", pulse);
+      DEBUG_LOG("Unknown signal. Active, %uus\r\n", pulse);
     }
   }
 
@@ -207,7 +219,7 @@ extern "C"
   If the pulse duration falls within the range for a "short" pulse, a 0 is added to the current byte.
   The byteCounter and bitCounter variables are used to keep track of the current position in the payloadJ1850 buffer.
   */
-  static inline void onRisingEdge(TIM_HandleTypeDef *htim)
+  static inline void onActivePulse(TIM_HandleTypeDef *htim)
   {
     riseEdgeTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
 
@@ -216,35 +228,35 @@ extern "C"
       return;
     }
 
-    uint32_t pulse = riseEdgeTime - fallEdgeTime;
+    const uint32_t pulse = riseEdgeTime - fallEdgeTime;
     if (pulse > RX_IFS_MIN)
     {
-      PrintF("\r\nIFS, %uus\r\n", pulse);
+      DEBUG_LOG("\r\nIFS, %uus\r\n", pulse);
       messageStarted = false;
     }
     else if (pulse > RX_EOF_MIN)
     {
-      PrintF("\r\nEOF, %uus\r\n", pulse);
+      DEBUG_LOG("\r\nEOF, %uus\r\n", pulse);
       messageStarted = false;
     }
     else if (RX_EOD_MAX >= pulse && pulse > RX_EOD_MIN)
     {
-      PrintF("\r\nEOD, %uus\r\n", pulse);
+      DEBUG_LOG("\r\nEOD, %uus\r\n", pulse);
       messageStarted = false;
     }
     else if (RX_LONG_MAX >= pulse && pulse > RX_LONG_MIN)
     {
       DEBUG_LOG("Passive 1, %uus\r\n", pulse);
-      payloadJ1850[byteCounter] |= 1UL << (BIT_PER_BYTE - bitCounter++);
+      payloadJ1850[j1850RXCtr] |= 1UL << (BIT_PER_BYTE - bitCounter++);
     }
     else if (RX_SHORT_MAX >= pulse && pulse > RX_SHORT_MIN)
     {
       DEBUG_LOG("Passive 0, %uus\r\n", pulse);
-      payloadJ1850[byteCounter] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
+      payloadJ1850[j1850RXCtr] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
     }
     else
     {
-      PrintF("Unknown signal. Passive, %uus\r\n", pulse);
+      DEBUG_LOG("Unknown signal. Passive, %uus\r\n", pulse);
     }
   }
 
@@ -258,7 +270,7 @@ extern "C"
     Print("Sending message\r\n");
     for (uint8_t i = 0; i < sendBufLen; i++)
     {
-      PrintF("0x%02X ", sendBufJ1850[i]);
+      DEBUG_LOG("0x%02X ", sendBufJ1850[i]);
     }
     Print("\r\n##########################\r\n");
     rxQueryNotEmpty = true;
@@ -273,8 +285,10 @@ extern "C"
     }
 #if J1850_ENABLED
     // Wait for message to be processed
+
     if (messageCollected)
     {
+      DEBUG_LOG("The message is still in the queue. Ignore the new one\r\n");
       return;
     }
 
@@ -282,23 +296,29 @@ extern "C"
     {
       __HAL_TIM_SET_COUNTER(&J1850_EOF_TIMER, 0);
       HAL_TIM_Base_Stop_IT(&J1850_EOF_TIMER);
-      onRisingEdge(htim);
       isRisingEdge = false;
+      onActivePulse(htim);
       __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_2, TIM_INPUTCHANNELPOLARITY_FALLING);
     }
     else
     {
-      onFallingEdge(htim);
+      onPassivePulse(htim);
       isRisingEdge = true;
       __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_2, TIM_INPUTCHANNELPOLARITY_RISING);
+      // Start a check if it's the end of the frame
       startEOFtimer();
     }
     if (bitCounter == 8)
     {
+      DEBUG_LOG("J1850: the bit counter == 8 [0x%.2X]\r\n", payloadJ1850[j1850RXCtr]);
       bitCounter = 0;
-      byteCounter++;
+      j1850RXCtr++;
+      if (j1850RXCtr > PAYLOAD_SIZE)
+      {
+        DEBUG_LOG("J1850: frame is too large: %u\r\n", PAYLOAD_SIZE);
+        messageReset();
+      }
     }
-    assert(byteCounter < PAYLOAD_SIZE);
 #endif
   }
 

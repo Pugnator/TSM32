@@ -10,6 +10,9 @@
 #include "settings.h"
 #include "assert.h"
 
+extern bool stopAppExecuting;
+extern bool goOn;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -38,7 +41,6 @@ extern "C"
 #define RIGHT_PWM_OUT (TIM1->CCR4)
 
     extern volatile uint8_t currentSidemarkBrightness;
-    extern bool stopAppExecuting;
 
     void adcHandler();
 

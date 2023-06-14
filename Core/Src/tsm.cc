@@ -9,44 +9,23 @@
 #include "assert.h"
 
 
+bool stopAppExecuting = true;
+
 #ifdef __cplusplus
 extern "C"
 {
-#endif
-
-  bool stopAppExecuting = true;
+#endif  
 
   void HAL_IncTick(void)
   {
     uwTick += uwTickFreq;
   }
-  /*
-    static volatile uint8_t rxd1[32];
-    static volatile uint8_t rxd2[32];
-
-    void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
-    {
-      HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-      if (UartHandle->Instance == USART1)
-      {
-        DEBUG_LOG("UART1\r\n");
-        // HAL_UART_Transmit(&huart3, (uint8_t *)rxd, 1, 0xFFFF);
-        HAL_UART_Receive_IT(&huart1, (uint8_t *)rxd1, 1);
-      }
-      if (UartHandle->Instance == USART2)
-      {
-        DEBUG_LOG("UART2\r\n");
-        HAL_UART_Transmit(&huart2, (uint8_t *)rxd2, 1, 100);
-        HAL_UART_Receive_IT(&huart2, (uint8_t *)rxd2, 1);
-      }
-    }
-  */
 
   void tsmRunApp()
   {    
     uint32_t id[3] = {0};
     getCPUid(id, STM32F4_t);
-    DEBUG_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
+    INFO_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
               id[0], id[1], id[2],
               VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
