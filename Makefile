@@ -106,7 +106,7 @@ CPP_SOURCES =  \
 	Core/Src/turn_ctrl.cc \
 	Core/Src/switch_ctrl.cc \
 	Core/Src/kalman.cc \
-	Core/Src/j1850.cc \
+	Core/Src/j1850vpw.cc \
 	Core/Src/tsm.cc \
 	Core/Src/worker.cc \
 	Core/Src/sys.cc \
