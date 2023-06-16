@@ -8,13 +8,12 @@
 #include <memory>
 #include "assert.h"
 
-
 bool stopAppExecuting = true;
 
 #ifdef __cplusplus
 extern "C"
 {
-#endif  
+#endif
 
   void HAL_IncTick(void)
   {
@@ -22,12 +21,12 @@ extern "C"
   }
 
   void tsmRunApp()
-  {    
+  {
     uint32_t id[3] = {0};
     getCPUid(id, STM32F4_t);
     INFO_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
-              id[0], id[1], id[2],
-              VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
+             id[0], id[1], id[2],
+             VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
     /*Battery watchdog*/
     // HAL_ADC_Start(&hadc1);

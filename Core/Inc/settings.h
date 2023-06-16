@@ -4,6 +4,7 @@
 #define PWM_HAZARD_DUTY_STEP 5   // Increase to make a bulb turn on faster in hazard mode
 #define PWM_DUTY_DELAY 10        // Decrease to make a bulb turn on faster
 #define TURN_OFF_DELAY 200       // Time for which a bulb should remain on
+#define TURN_OFF_PAUSE 400      // Time for which a bulb should remain off after it was on
 #define MAX_PRESS_WAIT_TIME 2000 // Maximum amount of time a timer can run
 #define DEBOUNCE_MIN_TIME 100    // Minimum amount of time for which a button must be pressed to be considered a valid input
 #define LONG_PRESS_TIME 1000     // Duration after which a button press will be considered a "long press"
@@ -12,7 +13,7 @@
 #define DLR_BRIGHTNESS_VALUE 10
 #define VOLTAGE_DETECTION_THRESHOLD 15 * 1000
 
-#define BLINKER_ENABLED 0
+#define BLINKER_ENABLED 1
 #define J1850_ENABLED 1
 #define MEMS_ENABLED 0
 #define STARTER_LOCK_ENABLE 1

@@ -47,17 +47,15 @@ extern "C"
     extern bool leftEnabled;
     extern bool rightEnabled;
     extern bool hazardEnabled;
-    extern bool overtakeMode;
-    extern bool blinkPause;
+    extern bool overtakeMode;    
     extern uint32_t blinkCounter;
 
     void leftSideOff();
     void leftSideToggle();
     void rightSideOff();
     void rightSideToggle();
-
-    void blinkerOff();
-    void blinkerOn();
+    
+    void blinkerDoBlink();
     void hazardToggle();
 
     void enableStarter();

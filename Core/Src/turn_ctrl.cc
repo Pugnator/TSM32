@@ -91,57 +91,88 @@ uint8_t volatile currentSidemarkBrightness = 0;
       overtakeMode = false;
       blinkCounter = 0;
     }
-  }
+  }  
 
-  void blinkerOn()
+  void blinkerDoBlink()
   {
-    for (uint16_t period = 0; period <= 99; period += hazardEnabled ? PWM_HAZARD_DUTY_STEP : PWM_ON_DUTY_STEP)
+    static uint32_t startTick = 0;
+    static uint16_t period = 0;
+    static bool turnOffStage = false;
+    static bool turnOnStage = false;
+    static bool pauseStage = false;
+    static bool initialized = false;
+
+    if (!initialized)
+    {
+      initialized = true;
+      startTick = HAL_GetTick();
+      period = 0;
+      turnOffStage = false;
+      turnOnStage = true;
+      pauseStage = false;
+    }
+
+    uint32_t currentTick = HAL_GetTick();
+    uint32_t elapsed = currentTick - startTick;
+
+    if (turnOnStage)
+    {
+      if (elapsed >= PWM_DUTY_DELAY)
+      {
+        startTick = currentTick;
+        if (period < 96)
+        {
+          period += hazardEnabled ? PWM_HAZARD_DUTY_STEP : PWM_ON_DUTY_STEP;
+        }
+        else
+        {
+          turnOnStage = false;
+          turnOffStage = true;
+        }
+
+        if (hazardEnabled)
+        {
+          LEFT_PWM_OUT = period;
+          RIGHT_PWM_OUT = period;
+        }
+        else if (leftEnabled)
+        {
+          LEFT_PWM_OUT = period;
+        }
+        else if (rightEnabled)
+        {
+          RIGHT_PWM_OUT = period;
+        }
+      }
+    }
+
+    if (turnOffStage && elapsed > TURN_OFF_DELAY)
     {
       if (hazardEnabled)
       {
-        LEFT_PWM_OUT = period;
-        RIGHT_PWM_OUT = period;
+        LEFT_PWM_OUT = 0;
+        RIGHT_PWM_OUT = 0;
       }
-      else if (leftEnabled)
+      else if (leftEnabled || hazardEnabled)
       {
-        LEFT_PWM_OUT = period;
+        LEFT_PWM_OUT = 0;
       }
-      else if (rightEnabled)
+      else if (rightEnabled || hazardEnabled)
       {
-        RIGHT_PWM_OUT = period;
+        RIGHT_PWM_OUT = 0;
       }
-      HAL_Delay(PWM_DUTY_DELAY);
+      startTick = currentTick;
+      turnOffStage = false;
+      pauseStage = true;
     }
-    HAL_Delay(TURN_OFF_DELAY);
-    if (leftEnabled || hazardEnabled)
+
+    if (pauseStage && elapsed > TURN_OFF_PAUSE)
     {
-      LEFT_PWM_OUT = 0;
-    }
-    else if (rightEnabled || hazardEnabled)
-    {
-      RIGHT_PWM_OUT = 0;
+      initialized = false;
+      blinkCounter++;
     }
   }
-
-  void blinkerOff()
-  {
-    if (hazardEnabled)
-    {
-      LEFT_PWM_OUT = 0;
-      RIGHT_PWM_OUT = 0;
-    }
-    else if (leftEnabled)
-    {
-      LEFT_PWM_OUT = 0;
-    }
-    else if (rightEnabled)
-    {
-      RIGHT_PWM_OUT = 0;
-      ;
-    }
-    HAL_Delay(TURN_OFF_DELAY);
-  }
-
+ 
 #ifdef __cplusplus
 }
 #endif

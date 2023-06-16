@@ -17,8 +17,7 @@ extern "C"
     }
 
     if (overtakeMode && OVERTAKE_BLINK_COUNT < blinkCounter)
-    {
-      blinkerOff();
+    {      
       overtakeMode = false;
       leftEnabled = false;
       rightEnabled = false;
@@ -27,17 +26,7 @@ extern "C"
       return;
     }
 
-    if (!blinkPause)
-    {
-      blinkCounter++;
-      blinkerOn();
-    }
-    else
-    {
-      blinkerOff();
-    }
-
-    blinkPause = !blinkPause;
+    blinkerDoBlink(); 
 #endif
   }
 
@@ -53,7 +42,7 @@ extern "C"
   {
 #if J1850_ENABLED
     if (messageCollected)
-    {
+    {      
       printFrameJ1850();
       messageReset();
       messageCollected = false;

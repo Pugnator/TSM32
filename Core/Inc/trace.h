@@ -7,6 +7,7 @@
 //#define USE_UART2_TRACE
 #define USE_SEGGER_RTT_TRACE
 #define LOG_LEVEL_INFO
+//#define LOG_LEVEL_DEBUG
 
 
 #ifdef LOG_LEVEL_DEBUG
