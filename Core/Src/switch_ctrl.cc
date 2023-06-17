@@ -86,7 +86,7 @@ extern "C"
     // J1850 service timer, 200us
     if (J1850_TIMER_INSTANCE == htim->Instance)
     {      
-      messageCollected = true;
+      J1850VPW::messageCollected = true;
       HAL_GPIO_TogglePin(J1850TX_GPIO_Port, J1850TX_Pin);      
       HAL_TIM_Base_Stop_IT(&htim6);
       return;

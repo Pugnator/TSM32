@@ -23,15 +23,47 @@
 #pragma once
 
 #include <stdint.h>
-#define DWT_DELAY_NEWBIE 0
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-  void DWT_Init(void);
-  void DWT_Delay(uint32_t us);
+  static inline void DWT_Init();
+  static inline void DWT_Delay(uint32_t us);
+
+  /**
+   * Initialization routine.
+   * You might need to enable access to DWT registers on Cortex-M7
+   *   DWT->LAR = 0xC5ACCE55
+   */
+  static inline void DWT_Init()
+  {
+    if (!(CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk))
+    {
+      CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+      DWT->CYCCNT = 0;
+      DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    }
+  }
+
+  /**
+   * Delay routine itself.
+   * Time is in microseconds (1/1000000th of a second), not to be
+   * confused with millisecond (1/1000th).
+   *
+   * No need to check an overflow. Let it just tick :)
+   *
+   * @param uint32_t us  Number of microseconds to delay for
+   */
+  static inline void DWT_Delay(uint32_t us) // microseconds
+  {
+    uint32_t startTick = DWT->CYCCNT;
+    uint32_t delayTicks = us * (SystemCoreClock / 1000000);
+
+    while (DWT->CYCCNT - startTick < delayTicks)
+      ;
+  }
 #ifdef __cplusplus
 }
 #endif

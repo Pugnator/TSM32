@@ -1,11 +1,9 @@
 #pragma once
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C"
+#define J1850_PAYLOAD_SIZE 64
+namespace J1850VPW
 {
-#endif
-
   typedef union j1850Header
   {
     struct
@@ -42,21 +40,15 @@ extern "C"
     ENGSTAT = 0xFF
   } sourceType;
 
-#define PAYLOAD_SIZE 64
-
-  extern uint8_t payloadJ1850[PAYLOAD_SIZE];
-  extern uint8_t sendBufJ1850[PAYLOAD_SIZE];  
-  extern size_t sendBufLen;
+  extern uint8_t payloadJ1850[J1850_PAYLOAD_SIZE];    
   extern volatile uint8_t j1850RXctr;
-  extern volatile bool messageCollected;
-  extern volatile bool rxQueryNotEmpty;
+  extern volatile bool messageCollected;  
 
-  
-  void printFrameJ1850();
-  void sendCommandJ1850(const uint8_t *data, size_t size);
-  uint8_t j1850Crc(uint8_t *msg_buf, int8_t nbytes);
+  void printFrame();
+  void sendFrame(const uint8_t *data, size_t size);
+  void sendByte(const uint8_t byte);
+  uint8_t crc8(uint8_t *msg_buf, int8_t nbytes);
   void messageReset();
-  void j1850SendMessage();
 
 // define J1850 VPW timing requirements in accordance with SAE J1850 standard
 // all width times in us
@@ -95,7 +87,4 @@ extern "C"
 #define RX_IFR_SHORT_MAX 96 // maximum short in frame respond pulse time
 #define RX_IFR_LONG_MIN 96  // minimum long in frame respond pulse time
 #define RX_IFR_LONG_MAX 163 // maximum long in frame respond pulse time
-
-#ifdef __cplusplus
 }
-#endif

@@ -13,11 +13,6 @@
 extern bool stopAppExecuting;
 extern bool goOn;
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 /**
  * The STM32 factory-programmed UUID memory.
  * Three values of 32 bits each starting at this address
@@ -25,12 +20,7 @@ extern "C"
  */
 #define STM32_UUID ((uint32_t *)0x1FFF7A10)
 
-#define USE_STATIC_ALLOC
 
-#define BLINKER_TIMER htim9
-#define BLINKER_TIMER_INSTANCE TIM9
-#define J1850_EOF_TIMER htim6
-#define J1850_TIMER_INSTANCE TIM6
 
 #define LEFT_BUTTON (HAL_GPIO_ReadPin(LT_BUTTON_GPIO_Port, LT_BUTTON_Pin))
 #define RIGHT_BUTTON (HAL_GPIO_ReadPin(RT_BUTTON_GPIO_Port, RT_BUTTON_Pin))
@@ -40,21 +30,24 @@ extern "C"
 #define LEFT_PWM_OUT (TIM1->CCR3)
 #define RIGHT_PWM_OUT (TIM1->CCR4)
 
-    extern volatile uint8_t currentSidemarkBrightness;
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-    void adcHandler();
+    extern volatile uint8_t currentSidemarkBrightness;
 
     extern bool leftEnabled;
     extern bool rightEnabled;
     extern bool hazardEnabled;
-    extern bool overtakeMode;    
+    extern bool overtakeMode;
     extern uint32_t blinkCounter;
 
     void leftSideOff();
     void leftSideToggle();
     void rightSideOff();
     void rightSideToggle();
-    
+
     void blinkerDoBlink();
     void hazardToggle();
 
@@ -62,10 +55,6 @@ extern "C"
     void disableStarter();
 
     void adcHandler();
-    void memsHandler();
-    void j1850Handler();
-    void blinkerHandler();
-    void workerLoop();
 
     extern uint32_t adcDMAbuffer[ADC_DMA_BUF_SIZE];
     extern bool adcDMAcompleted;

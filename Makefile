@@ -107,10 +107,10 @@ CPP_SOURCES =  \
 	Core/Src/switch_ctrl.cc \
 	Core/Src/kalman.cc \
 	Core/Src/j1850vpw.cc \
+	Core/Src/j1850test.cc \
+	Core/Src/j1850parser.cc \
 	Core/Src/tsm.cc \
-	Core/Src/worker.cc \
 	Core/Src/sys.cc \
-	Core/Src/dwtdelay.cc \
 	Core/Src/printf.cc \
 	Core/Src/trace.cc\
 	Core/Src/eeprom.cc\

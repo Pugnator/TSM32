@@ -2,11 +2,13 @@
 #include "settings.h"
 #include "mpu.h"
 #include "j1850.h"
+
 #include <stdio.h>
 #include "id.h"
 #include "vmmu.h"
 #include <memory>
 #include "assert.h"
+#include "dwtdelay.h"
 
 bool stopAppExecuting = true;
 
@@ -42,13 +44,13 @@ extern "C"
 
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
     leftSideOff();
-    rightSideOff();    
+    rightSideOff();
 
 #if MEMS_ENABLED
     std::unique_ptr<MPU9250> ahrs;
-    // Start AHRS
     ahrs.reset(new MPU9250(&hi2c1));
     if (ahrs->ok())
     {
@@ -57,7 +59,43 @@ extern "C"
     }
 #endif
     stopAppExecuting = false;
-    workerLoop();
+    while (!stopAppExecuting)
+    {
+      //J1850VPW::sendByte(0xAA);
+
+#if AUTO_LIGHT_ENABLE
+      adcHandler();
+#endif
+
+#if J1850_ENABLED
+      if (J1850VPW::messageCollected)
+      {
+        J1850VPW::printFrame();
+        J1850VPW::messageReset();
+      }
+#endif
+
+#if MEMS_ENABLED
+      auto az = ahrs->getHeadingAngle();
+      DEBUG_LOG("Turning at AZ=%.1f\r\n", az);
+#endif
+
+#if BLINKER_ENABLED
+      if (hazardEnabled || leftEnabled || rightEnabled)
+      {
+        blinkerDoBlink();
+      }
+
+      if (overtakeMode && OVERTAKE_BLINK_COUNT < blinkCounter)
+      {
+        overtakeMode = false;
+        leftEnabled = false;
+        rightEnabled = false;
+        hazardEnabled = false;
+        blinkCounter = 0;
+      }
+#endif
+    }
     DEBUG_LOG("Stop!\r\n");
   }
 

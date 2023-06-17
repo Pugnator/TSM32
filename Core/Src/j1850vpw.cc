@@ -4,26 +4,21 @@
 #include <assert.h>
 #include "dwtdelay.h"
 
-#ifdef __cplusplus
-extern "C"
+namespace J1850VPW
 {
-#endif
+
 #define BIT_PER_BYTE 7
 
   static volatile uint32_t riseEdgeTime = 0;
   static volatile uint32_t fallEdgeTime = 0;
   static volatile bool capturePolarityRising = true;
   volatile bool messageStarted = false;
-  volatile bool messageCollected = false;
-  volatile bool rxQueryNotEmpty = false;
+  volatile bool messageCollected = false;  
   volatile uint8_t j1850RXctr = 0;
   static volatile uint8_t bitCounter = 0;
-  static volatile uint32_t frameCounter = 0;
-  static volatile uint32_t framePulseCount = 0;
+  static volatile uint32_t frameCounter = 0;  
 
-  uint8_t payloadJ1850[PAYLOAD_SIZE] = {0};
-  uint8_t sendBufJ1850[PAYLOAD_SIZE] = {0};
-  size_t sendBufLen = 0;
+  uint8_t payloadJ1850[J1850_PAYLOAD_SIZE] = {0};  
 
   static void startEOFtimer()
   {
@@ -70,14 +65,15 @@ extern "C"
     }
   }
 
-  void printFrameJ1850()
+  void printFrame()
   {
-    if (j1850RXctr <= 4)
+    if (j1850RXctr == 0 || j1850RXctr > 11)
     {
-      INFO_LOG("Frame is less than 4 bytes long [=%u]\r\n", j1850RXctr);
-      return;
+      DEBUG_LOG("Empty/corrupted frame [=%u]\r\n", j1850RXctr);
+      return;      
     }
-    uint8_t crc = j1850Crc(payloadJ1850, j1850RXctr - 1);
+
+    uint8_t crc = crc8(payloadJ1850, j1850RXctr - 1);
     INFO_LOG("Frame #%u [CRC: 0x%02X] %s\r\n", frameCounter, crc, crc == payloadJ1850[j1850RXctr - 1] ? "VALID" : "INVALID!");
     for (uint8_t i = 0; i < j1850RXctr; i++)
     {
@@ -103,7 +99,7 @@ extern "C"
     INFO_LOG("%u bytes header\r\n", headerSize);
     INFO_LOG("Message to '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[1])));
     INFO_LOG("Message from '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[2])));
-    INFO_LOG("*********************\r\n");  
+    INFO_LOG("*********************\r\n");
 
     if (static_cast<sourceType>(payloadJ1850[1]) == RPM)
     {
@@ -121,14 +117,14 @@ extern "C"
 
   void messageReset()
   {
+    messageCollected = false;
     memset(payloadJ1850, 0, sizeof(payloadJ1850));
     bitCounter = 0;
     j1850RXctr = 0;
     messageStarted = false;
   }
-
-  /* Thanks to B. Roadman's web site for this CRC code */
-  uint8_t j1850Crc(uint8_t *msg_buf, int8_t nbytes)
+  
+  uint8_t crc8(uint8_t *msg_buf, int8_t nbytes)
   {
     if (0 == nbytes || 11 < nbytes)
     {
@@ -162,7 +158,7 @@ extern "C"
     return ~crc_reg; // Return CRC
   }
 
-  /*  
+  /*
   If the pulse duration falls within the range for a "Start Of Frame" pulse, the messageStarted flag is set to true and the LED is toggled.
 
   If the messageStarted flag is true, the pulse duration is compared to the ranges for "long" and "short" pulses.
@@ -175,8 +171,8 @@ extern "C"
   {
     fallEdgeTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
 
-    //If TX line is Active - arbitration is lost
-    if(HAL_GPIO_ReadPin(J1850TX_GPIO_Port, J1850TX_Pin) == GPIO_PIN_SET)
+    // If TX line is Active - arbitration is lost
+    if (HAL_GPIO_ReadPin(J1850TX_GPIO_Port, J1850TX_Pin) == GPIO_PIN_SET)
     {
       messageReset();
       return;
@@ -188,7 +184,7 @@ extern "C"
       DEBUG_LOG("Capture overflow\r\n");
       messageReset();
       return;
-    }    
+    }
 
     const uint32_t pulse = fallEdgeTime - riseEdgeTime;
 
@@ -197,7 +193,6 @@ extern "C"
     {
       frameCounter++;
       DEBUG_LOG("Start Of Frame, %uus\r\n", pulse);
-      HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
       messageStarted = true;
       fallEdgeTime = 0;
       __HAL_TIM_SET_COUNTER(&htim5, 0);
@@ -278,25 +273,70 @@ extern "C"
     }
   }
 
-  void sendCommandJ1850(const uint8_t *data, size_t size)
-  {
-    sendBufLen = size;
-    memcpy(sendBufJ1850, data, size);
+  void sendFrame(const uint8_t *data, size_t size)
+  {        
     // sendBufJ1850[sendBufLen] = j1850Crc(sendBufJ1850, sendBufLen);
     // sendBufLen++;
     Print("##########################\r\n");
     Print("Sending message\r\n");
-    for (uint8_t i = 0; i < sendBufLen; i++)
-    {
-      DEBUG_LOG("0x%02X ", sendBufJ1850[i]);
-    }
-    Print("\r\n##########################\r\n");
-    rxQueryNotEmpty = true;
+   
+    Print("\r\n##########################\r\n");    
   }
-#endif
+
+#endif  
+
+  void sendByte(const uint8_t byte)
+  {
+    bool bitActive = false;
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+    DWT_Delay(TX_SOF);
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+
+    size_t bit = 7;
+    uint8_t temp = byte;
+    while (bit >= 0)
+    {
+      if (temp & 0x01)
+      {
+        // 1
+        // DEBUG_LOG("bit %d is 1\n", bit);
+        if (bitActive)
+        {
+          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+          DWT_Delay(TX_SHORT);
+        }
+        else
+        {
+          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+          DWT_Delay(TX_LONG);
+        }
+      }
+      else
+      {
+        // 0
+        // DEBUG_LOG("bit %d is 0\n", bit);
+        if (bitActive)
+        {
+          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+          DWT_Delay(TX_LONG);
+        }
+        else
+        {
+          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+          DWT_Delay(TX_SHORT);
+        }
+      }
+
+      bit--;
+      bitActive = !bitActive;
+      temp = temp >> 1;
+    }
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+  }
 
   void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
   {
+    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     if (htim->Channel != HAL_TIM_ACTIVE_CHANNEL_2)
     {
       return;
@@ -331,70 +371,12 @@ extern "C"
       DEBUG_LOG("J1850: the bit counter == 8 [0x%.2X]\r\n", payloadJ1850[j1850RXctr]);
       bitCounter = 0;
       j1850RXctr++;
-      if (j1850RXctr > PAYLOAD_SIZE)
+      if (j1850RXctr > J1850_PAYLOAD_SIZE)
       {
-        DEBUG_LOG("J1850: frame is too large: %u\r\n", PAYLOAD_SIZE);
+        DEBUG_LOG("J1850: frame is too large: %u\r\n", J1850_PAYLOAD_SIZE);
         messageReset();
       }
     }
 #endif
   }
-
-  void j1850SendMessage()
-  {
-#if J1850_ENABLED
-    bool bitActive = false;
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-    DWT_Delay(TX_SOF);
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-    for (size_t i = 0; i < sendBufLen; i++)
-    {
-      size_t bit = 7;
-      uint8_t temp = sendBufJ1850[i];
-      while (bit >= 0)
-      {
-        if (temp & 0x01)
-        {
-          // 1
-          // DEBUG_LOG("bit %d is 1\n", bit);
-          if (bitActive)
-          {
-            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-            DWT_Delay(TX_SHORT);
-          }
-          else
-          {
-            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-            DWT_Delay(TX_LONG);
-          }
-        }
-        else
-        {
-          // 0
-          // DEBUG_LOG("bit %d is 0\n", bit);
-          if (bitActive)
-          {
-            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-            DWT_Delay(TX_LONG);
-          }
-          else
-          {
-            HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-            DWT_Delay(TX_SHORT);
-          }
-        }
-
-        bit--;
-        bitActive = !bitActive;
-        temp = temp >> 1;
-      }
-    }
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-    rxQueryNotEmpty = false;
-    sendBufLen = 0;
-#endif
-  }
-
-#ifdef __cplusplus
 }
-#endif
