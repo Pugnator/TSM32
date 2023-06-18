@@ -18,7 +18,9 @@
 #define BLINKER_TIMER htim9
 #define BLINKER_TIMER_INSTANCE TIM9
 #define J1850_EOF_TIMER htim6
-#define J1850_TIMER_INSTANCE TIM6
+#define J1850_EOF_TIMER_INSTANCE TIM6
+#define J1850_IC_INSTANCE htim5
+#define J1850_IC_TIMER_INSTANCE TIM5
 
 #define BLINKER_ENABLED 1
 #define J1850_ENABLED 1
@@ -31,6 +33,13 @@
 #define ADC_10V_VALUE 2865
 #define ADC_13V_VALUE 3722
 #define ADC_14_3V_VALUE 4095
+
+/*
+TIM5/2 J1850 - 1us per tick
+TIM6/3 - 240us/0.28ms
+TIM9/4 - 110ms/700ms
+TIM11- 333ms
+*/
 
 /*
 Fuse8 for STM setup:

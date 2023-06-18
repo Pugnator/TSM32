@@ -84,9 +84,9 @@ extern "C"
   {
 #if J1850_ENABLED
     // J1850 service timer, 200us
-    if (J1850_TIMER_INSTANCE == htim->Instance)
+    if (J1850_EOF_TIMER_INSTANCE == htim->Instance)
     {
-      messageCollected = true;      
+      messageCollected = true;
       HAL_TIM_Base_Stop_IT(&htim6);
       return;
     }
@@ -119,12 +119,15 @@ extern "C"
       if (waitLongPress)
       {
         // We're waiting for a long press, but the button is depressed - stop
-        if (timerHitCounter > 2 && (LEFT_BUTTON == GPIO_PIN_SET || LEFT_BUTTON == GPIO_PIN_SET))
+        if (timerHitCounter > 2)
         {
-          DEBUG_LOG("No button is pressed while waiting for a long press. Stop.\r\n");
-          overtakeMode = true;
-          resetEvent();
-          return;
+          if ((leftButtonEvent && LEFT_BUTTON == GPIO_PIN_SET) || (rightButtonEvent && RIGHT_BUTTON == GPIO_PIN_SET))
+          {
+            DEBUG_LOG("No button is pressed while waiting for a long press. Stop.\r\n");
+            overtakeMode = true;
+            resetEvent();
+            return;
+          }
         }
 
         if (longPressCounter++ != LONG_PRESS_COUNT)
