@@ -152,7 +152,7 @@ namespace J1850VPW
     }
 
     uint8_t crc = crc1850(payloadJ1850, j1850RXctr - 1);
-    INFO_LOG("Frame #%u [CRC: 0x%02X] %s\r\n", frameCounter, crc, crc == payloadJ1850[j1850RXctr - 1] ? "VALID" : "INVALID!");
+    INFO_LOG("[%u] Frame #%u [CRC: 0x%02X] %s\r\n", HAL_GetTick(), frameCounter, crc, crc == payloadJ1850[j1850RXctr - 1] ? "VALID" : "INVALID!");
     for (uint8_t i = 0; i < j1850RXctr; i++)
     {
       INFO_LOG("0x%02X ", payloadJ1850[i]);

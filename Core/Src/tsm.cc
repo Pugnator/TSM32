@@ -30,28 +30,31 @@ extern "C"
              id[0], id[1], id[2],
              VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
-    /*Battery watchdog*/
-    // HAL_ADC_Start(&hadc1);
+/*Battery watchdog*/
+// HAL_ADC_Start(&hadc1);
+#if AUTO_LIGHT_ENABLE
     HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
     HAL_ADC_Start_IT(&hadc1);
+#endif
 
-    /*J1850 logger*/
+/*J1850 logger*/
+#if J1850_ENABLED
     HAL_TIM_IC_Start_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+#endif
     /*Blinker bulb PWM*/
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
     /*Starter enable*/
 
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 
     leftSideOff();
-    rightSideOff();    
+    rightSideOff();
 
-    uint8_t frame[2] = {0xAA, 0xAA};
-    J1850VPW::sendFrame(frame, 2);
-    
+    // uint8_t frame[2] = {0xAA, 0xAA};
+    // J1850VPW::sendFrame(frame, 2);
 
 #if MEMS_ENABLED
     std::unique_ptr<MPU9250> ahrs;
@@ -64,7 +67,7 @@ extern "C"
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
-    {      
+    {
 
 #if AUTO_LIGHT_ENABLE
       adcHandler();
