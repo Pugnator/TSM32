@@ -2,8 +2,38 @@
 #include <stdint.h>
 
 #define J1850_PAYLOAD_SIZE 64
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+  extern uint16_t rpms;
+  extern uint16_t kph;
+  extern bool mil;
+  extern bool sil;
+  extern uint8_t dtc;
+  extern uint32_t trip;
+
+  extern uint8_t payloadJ1850[J1850_PAYLOAD_SIZE];
+  extern volatile uint8_t j1850RXctr;
+  extern volatile uint32_t frameCounter;
+  extern volatile bool messageCollected;
+
+  uint8_t crc1850(const uint8_t *msg_buf, uint8_t nbytes);
+#ifdef __cplusplus
+}
+#endif
 namespace J1850VPW
 {
+
+  enum class J1850error
+  {
+    OK,
+    IncorrectFrame,
+    LostArbitration
+  };
+
   typedef union j1850Header
   {
     struct
@@ -19,6 +49,7 @@ namespace J1850VPW
 
   typedef enum sourceType
   {
+    ERROR = 0,
     ECM = 0x10,
     GAUGE = 0x10,
     TSM = 0x40,
@@ -40,14 +71,11 @@ namespace J1850VPW
     ENGSTAT = 0xFF
   } sourceType;
 
-  extern uint8_t payloadJ1850[J1850_PAYLOAD_SIZE];    
-  extern volatile uint8_t j1850RXctr;
-  extern volatile bool messageCollected;  
-
+  const char *sourceToStr(sourceType type);
   void printFrame();
-  void sendFrame(const uint8_t *data, size_t size);
-  void sendByte(const uint8_t byte);
-  uint8_t crc8(uint8_t *msg_buf, int8_t nbytes);
+  bool parseFrame();
+  J1850error sendFrame(const uint8_t *data, uint8_t size);
+  J1850error sendByte(const uint8_t byte);
   void messageReset();
 
 // define J1850 VPW timing requirements in accordance with SAE J1850 standard

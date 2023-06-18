@@ -4,116 +4,28 @@
 #include <assert.h>
 #include "dwtdelay.h"
 
+#define BIT_PER_BYTE 7
+
+static volatile uint32_t riseEdgeTime = 0;
+static volatile uint32_t fallEdgeTime = 0;
+static volatile bool capturePolarityRising = true;
+volatile bool messageStarted = false;
+volatile bool messageCollected = false;
+volatile uint8_t j1850RXctr = 0;
+static volatile uint8_t bitCounter = 0;
+uint8_t payloadJ1850[J1850_PAYLOAD_SIZE] = {0};
+
+uint16_t rpms = 0;
+uint16_t kph = 0;
+bool mil = 0;
+bool sil = 0;
+uint8_t dtc = 0;
+uint32_t trip = 0;
+
 namespace J1850VPW
 {
 
-#define BIT_PER_BYTE 7
-
-  static volatile uint32_t riseEdgeTime = 0;
-  static volatile uint32_t fallEdgeTime = 0;
-  static volatile bool capturePolarityRising = true;
-  volatile bool messageStarted = false;
-  volatile bool messageCollected = false;  
-  volatile uint8_t j1850RXctr = 0;
-  static volatile uint8_t bitCounter = 0;
-  static volatile uint32_t frameCounter = 0;  
-
-  uint8_t payloadJ1850[J1850_PAYLOAD_SIZE] = {0};  
-
-  static void startEOFtimer()
-  {
-    __HAL_TIM_CLEAR_FLAG(&J1850_EOF_TIMER, TIM_SR_UIF);
-    __HAL_TIM_SET_COUNTER(&J1850_EOF_TIMER, 0);
-    HAL_TIM_Base_Start_IT(&J1850_EOF_TIMER);
-  }
-
 #if J1850_ENABLED
-  const char *sourceToStr(sourceType type)
-  {
-    switch (type)
-    {
-    case ECM:
-      return "Engine Control Module";
-    case RPM:
-      return "RPMs";
-    case SPEED:
-      return "Speedometer";
-    case BLINKER:
-      return "Turn signal module";
-    case MIL:
-      return "Malfunction Indicator Lamp";
-    case SIL:
-      return "Security Indicator Lamp";
-    case IPC:
-      return "Instrument Cluster Panel";
-    case TEMP:
-      return "Engine temperature";
-    case ODO:
-      return "Odometer";
-    case FUEL:
-      return "Fuel gauge";
-    case ENGSTAT:
-      return "Engine status";
-    case NET:
-      return "Network Control";
-    case SECURITY:
-      return "Vehicle Security";
-    case VSC:
-      return "Vehicle Speed Control";
-    default:
-      return "Unknown source";
-    }
-  }
-
-  void printFrame()
-  {
-    if (j1850RXctr == 0 || j1850RXctr > 11)
-    {
-      DEBUG_LOG("Empty/corrupted frame [=%u]\r\n", j1850RXctr);
-      return;      
-    }
-
-    uint8_t crc = crc8(payloadJ1850, j1850RXctr - 1);
-    INFO_LOG("Frame #%u [CRC: 0x%02X] %s\r\n", frameCounter, crc, crc == payloadJ1850[j1850RXctr - 1] ? "VALID" : "INVALID!");
-    for (uint8_t i = 0; i < j1850RXctr; i++)
-    {
-      INFO_LOG("0x%02X ", payloadJ1850[i]);
-    }
-    INFO_LOG("\r\n");
-    if (crc != payloadJ1850[j1850RXctr - 1])
-    {
-      return;
-    }
-    j1850Header h;
-    h.header = payloadJ1850[0];
-    /*
-    } else if ((x & 0xff0fffff) == 0x6c00f114) {
-        if (D) Log.d(TAG, "DTC clear request");
-      } else if ((x & 0xffff0fff) == 0x6cf10054) {
-        if (D) Log.d(TAG, "DTC clear reply");
-      } else
-    */
-    uint8_t headerSize = h.ctx.type ? 1 : 3;
-
-    INFO_LOG("HEADER\r\nPriority: %u\r\n", h.ctx.priority);
-    INFO_LOG("%u bytes header\r\n", headerSize);
-    INFO_LOG("Message to '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[1])));
-    INFO_LOG("Message from '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[2])));
-    INFO_LOG("*********************\r\n");
-
-    if (static_cast<sourceType>(payloadJ1850[1]) == RPM)
-    {
-      uint16_t rpms = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
-      rpms /= 4;
-      INFO_LOG("RPMs: %u\r\n", rpms);
-    }
-    if (static_cast<sourceType>(payloadJ1850[1]) == SPEED)
-    {
-      uint16_t rpms = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
-      rpms /= 128;
-      INFO_LOG("Speed: %u\r\n", rpms);
-    }
-  }
 
   void messageReset()
   {
@@ -123,40 +35,70 @@ namespace J1850VPW
     j1850RXctr = 0;
     messageStarted = false;
   }
-  
-  uint8_t crc8(uint8_t *msg_buf, int8_t nbytes)
-  {
-    if (0 == nbytes || 11 < nbytes)
-    {
-      return 0;
-    }
-    uint8_t crc_reg = 0xff, poly, byte_count, bit_count;
-    uint8_t *byte_point;
-    uint8_t bit_point;
 
-    for (byte_count = 0, byte_point = msg_buf; byte_count < nbytes; ++byte_count, ++byte_point)
-    {
-      for (bit_count = 0, bit_point = 0x80; bit_count < 8; ++bit_count, bit_point >>= 1)
-      {
-        if (bit_point & *byte_point) // case for new bit = 1
-        {
-          if (crc_reg & 0x80)
-            poly = 1; // define the polynomial
-          else
-            poly = 0x1c;
-          crc_reg = ((crc_reg << 1) | 1) ^ poly;
-        }
-        else // case for new bit = 0
-        {
-          poly = 0;
-          if (crc_reg & 0x80)
-            poly = 0x1d;
-          crc_reg = (crc_reg << 1) ^ poly;
-        }
-      }
-    }
-    return ~crc_reg; // Return CRC
+  static void startEOFtimer()
+  {
+    __HAL_TIM_CLEAR_FLAG(&J1850_EOF_TIMER, TIM_SR_UIF);
+    __HAL_TIM_SET_COUNTER(&J1850_EOF_TIMER, 0);
+    HAL_TIM_Base_Start_IT(&J1850_EOF_TIMER);
   }
+
+  J1850error sendFrame(const uint8_t *data, uint8_t size)
+  {
+    if (!size || size > 11)
+    {
+      return J1850error::IncorrectFrame;
+    }
+    uint8_t crc = crc1850(data, size);
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+    DWT_Delay(TX_SOF);
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+    for (uint8_t i = 0; i < size; i++)
+    {
+      sendByte(data[i]);
+    }
+    sendByte(crc);
+    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+    DWT_Delay(TX_EOF + TX_EOD);
+    return J1850error::OK;
+  }
+
+#endif
+
+  J1850error sendByte(const uint8_t byte)
+  {
+    // If TX line is Active - arbitration is lost
+    // if (HAL_GPIO_ReadPin(J1850RX_GPIO_Port, J1850RX_Pin) == GPIO_PIN_SET)
+    {
+    }
+
+    uint8_t nbits = 8;
+    uint8_t temp_ = byte;
+    uint32_t delay;
+    while (nbits--) // send 8 bits
+    {
+      if (nbits & 1) // start allways with passive symbol
+      {
+        delay = (temp_ & 0x80) ? TX_LONG : TX_SHORT; // send correct pulse lenght
+        HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
+        DWT_Delay(delay);
+      }
+      else // send active symbol
+      {
+        delay = (temp_ & 0x80) ? TX_SHORT : TX_LONG; // send correct pulse lenght
+        HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
+        DWT_Delay(delay);
+      }
+      temp_ <<= 1; // next bit
+    }
+    return J1850error::OK;
+  }
+}
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
   /*
   If the pulse duration falls within the range for a "Start Of Frame" pulse, the messageStarted flag is set to true and the LED is toggled.
@@ -171,18 +113,10 @@ namespace J1850VPW
   {
     fallEdgeTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
 
-    // If TX line is Active - arbitration is lost
-    if (HAL_GPIO_ReadPin(J1850TX_GPIO_Port, J1850TX_Pin) == GPIO_PIN_SET)
-    {
-      messageReset();
-      return;
-    }
-
     // Check if it's an unrealisting time;
     if (riseEdgeTime > fallEdgeTime)
     {
-      DEBUG_LOG("Capture overflow\r\n");
-      messageReset();
+      J1850VPW::messageReset();
       return;
     }
 
@@ -273,67 +207,6 @@ namespace J1850VPW
     }
   }
 
-  void sendFrame(const uint8_t *data, size_t size)
-  {        
-    // sendBufJ1850[sendBufLen] = j1850Crc(sendBufJ1850, sendBufLen);
-    // sendBufLen++;
-    Print("##########################\r\n");
-    Print("Sending message\r\n");
-   
-    Print("\r\n##########################\r\n");    
-  }
-
-#endif  
-
-  void sendByte(const uint8_t byte)
-  {
-    bool bitActive = false;
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-    DWT_Delay(TX_SOF);
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-
-    size_t bit = 7;
-    uint8_t temp = byte;
-    while (bit >= 0)
-    {
-      if (temp & 0x01)
-      {
-        // 1
-        // DEBUG_LOG("bit %d is 1\n", bit);
-        if (bitActive)
-        {
-          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-          DWT_Delay(TX_SHORT);
-        }
-        else
-        {
-          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-          DWT_Delay(TX_LONG);
-        }
-      }
-      else
-      {
-        // 0
-        // DEBUG_LOG("bit %d is 0\n", bit);
-        if (bitActive)
-        {
-          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-          DWT_Delay(TX_LONG);
-        }
-        else
-        {
-          HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-          DWT_Delay(TX_SHORT);
-        }
-      }
-
-      bit--;
-      bitActive = !bitActive;
-      temp = temp >> 1;
-    }
-    HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-  }
-
   void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
   {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
@@ -346,7 +219,6 @@ namespace J1850VPW
 
     if (messageCollected)
     {
-      DEBUG_LOG("The message is still in the queue. Ignore the new one\r\n");
       return;
     }
 
@@ -364,7 +236,7 @@ namespace J1850VPW
       capturePolarityRising = true;
       __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_2, TIM_INPUTCHANNELPOLARITY_RISING);
       // Start a check if it's the end of the frame
-      startEOFtimer();
+      J1850VPW::startEOFtimer();
     }
     if (bitCounter == 8)
     {
@@ -374,9 +246,46 @@ namespace J1850VPW
       if (j1850RXctr > J1850_PAYLOAD_SIZE)
       {
         DEBUG_LOG("J1850: frame is too large: %u\r\n", J1850_PAYLOAD_SIZE);
-        messageReset();
+        J1850VPW::messageReset();
       }
     }
 #endif
   }
+
+  uint8_t crc1850(const uint8_t *msg_buf, uint8_t nbytes)
+  {
+    if (0 == nbytes || 11 < nbytes)
+    {
+      return 0;
+    }
+    uint8_t crc_reg = 0xff, poly, byte_count, bit_count;
+    const uint8_t *byte_point;
+    uint8_t bit_point;
+
+    for (byte_count = 0, byte_point = msg_buf; byte_count < nbytes; ++byte_count, ++byte_point)
+    {
+      for (bit_count = 0, bit_point = 0x80; bit_count < 8; ++bit_count, bit_point >>= 1)
+      {
+        if (bit_point & *byte_point) // case for new bit = 1
+        {
+          if (crc_reg & 0x80)
+            poly = 1; // define the polynomial
+          else
+            poly = 0x1c;
+          crc_reg = ((crc_reg << 1) | 1) ^ poly;
+        }
+        else // case for new bit = 0
+        {
+          poly = 0;
+          if (crc_reg & 0x80)
+            poly = 0x1d;
+          crc_reg = (crc_reg << 1) ^ poly;
+        }
+      }
+    }
+    return ~crc_reg; // Return CRC
+  }
+
+#ifdef __cplusplus
 }
+#endif

@@ -48,7 +48,7 @@ extern "C"
     {
       DEBUG_LOG("MPU Interrupt.\r\n");
       return;
-    }    
+    }
 
     if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
     {
@@ -61,7 +61,7 @@ extern "C"
       startBlinkerTimer();
       rightButtonEvent = true;
       DEBUG_LOG("[%u] Right switch activated.\r\n", startTime);
-    }    
+    }
   }
 
   void resetEvent()
@@ -78,16 +78,15 @@ extern "C"
     TIM1  - PWM, bulbs
     TIM5  - J1850 capture
     TIM6  - J1850 - EOF timer
-    TIM9  - Blinker delay timer    
+    TIM9  - Blinker delay timer
   */
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
 #if J1850_ENABLED
     // J1850 service timer, 200us
     if (J1850_TIMER_INSTANCE == htim->Instance)
-    {      
-      J1850VPW::messageCollected = true;
-      HAL_GPIO_TogglePin(J1850TX_GPIO_Port, J1850TX_Pin);      
+    {
+      messageCollected = true;      
       HAL_TIM_Base_Stop_IT(&htim6);
       return;
     }

@@ -20,8 +20,6 @@ extern bool goOn;
  */
 #define STM32_UUID ((uint32_t *)0x1FFF7A10)
 
-
-
 #define LEFT_BUTTON (HAL_GPIO_ReadPin(LT_BUTTON_GPIO_Port, LT_BUTTON_Pin))
 #define RIGHT_BUTTON (HAL_GPIO_ReadPin(RT_BUTTON_GPIO_Port, RT_BUTTON_Pin))
 #define PRESSED (GPIO_PIN_RESET)

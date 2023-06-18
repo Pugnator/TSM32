@@ -47,7 +47,11 @@ extern "C"
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
 
     leftSideOff();
-    rightSideOff();
+    rightSideOff();    
+
+    uint8_t frame[2] = {0xAA, 0xAA};
+    J1850VPW::sendFrame(frame, 2);
+    
 
 #if MEMS_ENABLED
     std::unique_ptr<MPU9250> ahrs;
@@ -60,15 +64,14 @@ extern "C"
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
-    {
-      //J1850VPW::sendByte(0xAA);
+    {      
 
 #if AUTO_LIGHT_ENABLE
       adcHandler();
 #endif
 
 #if J1850_ENABLED
-      if (J1850VPW::messageCollected)
+      if (messageCollected)
       {
         J1850VPW::printFrame();
         J1850VPW::messageReset();

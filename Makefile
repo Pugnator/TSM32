@@ -107,7 +107,6 @@ CPP_SOURCES =  \
 	Core/Src/switch_ctrl.cc \
 	Core/Src/kalman.cc \
 	Core/Src/j1850vpw.cc \
-	Core/Src/j1850test.cc \
 	Core/Src/j1850parser.cc \
 	Core/Src/tsm.cc \
 	Core/Src/sys.cc \
@@ -226,7 +225,7 @@ CXXFLAGS += -DVERSION_BUILD_DATE=\""$(BUILD_DATE)\"" \
 LDSCRIPT = STM32F410RBTx_FLASH.ld
 
 # libraries
-LIBS = -lm
+LIBS = -lm -lstdc++
 LIBDIR = 
 LDFLAGS = $(MCU) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections -flto -specs=nano.specs -specs=nosys.specs
 
