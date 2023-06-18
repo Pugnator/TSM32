@@ -129,7 +129,7 @@ extern "C"
       DEBUG_LOG("Start Of Frame, %uus\r\n", pulse);
       messageStarted = true;
       fallEdgeTime = 0;
-      __HAL_TIM_SET_COUNTER(&htim5, 0);
+      __HAL_TIM_SET_COUNTER(&J1850_IC_INSTANCE, 0);
       return;
     }
 

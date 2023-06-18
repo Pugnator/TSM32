@@ -44,11 +44,13 @@ extern "C"
 
   void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
+#ifdef IMU_INT_Pin
     if (GPIO_Pin == IMU_INT_Pin)
     {
       DEBUG_LOG("MPU Interrupt.\r\n");
       return;
     }
+#endif
 
     if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
     {
@@ -84,10 +86,10 @@ extern "C"
   {
 #if J1850_ENABLED
     // J1850 service timer, 200us
-    if (J1850_TIMER_INSTANCE == htim->Instance)
+    if (J1850_EOF_TIMER_INSTANCE == htim->Instance)
     {
-      messageCollected = true;      
-      HAL_TIM_Base_Stop_IT(&htim6);
+      messageCollected = true;
+      HAL_TIM_Base_Stop_IT(&J1850_EOF_TIMER);
       return;
     }
 #endif

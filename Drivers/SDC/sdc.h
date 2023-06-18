@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stm32f4xx_hal.h"
+#include "stm32f1xx_hal.h"
 
 #define SDCARD_SPI_PORT hspi1
 #define SDCARD_CS_Pin GPIO_PIN_2

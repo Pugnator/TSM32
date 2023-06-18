@@ -1,8 +1,8 @@
 #pragma once
 
 #include "i2c.h"
-#include "trace.h"
 #include "i2c_er.h"
+#include "trace.h"
 #include "mpudefs.h"
 #include <math.h>
 #include <memory>

@@ -25,7 +25,7 @@ extern "C"
   void tsmRunApp()
   {
     uint32_t id[3] = {0};
-    getCPUid(id, STM32F4_t);
+    getCPUid(id, STM32F1_t);
     INFO_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
              id[0], id[1], id[2],
              VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
@@ -36,7 +36,7 @@ extern "C"
     HAL_ADC_Start_IT(&hadc1);
 
     /*J1850 logger*/
-    HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_2);
+    HAL_TIM_IC_Start_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
     /*Blinker bulb PWM*/
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
