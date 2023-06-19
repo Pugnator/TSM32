@@ -34,6 +34,8 @@
 #define ADC_13V_VALUE 3722
 #define ADC_14_3V_VALUE 4095
 
+void startupSettingsHandler();
+
 /*
 TIM5/2 J1850 - 1us per tick
 TIM6/3 - 240us/0.28ms

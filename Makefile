@@ -104,6 +104,7 @@ CPP_SOURCES =  \
 	Core/Src/bulb_ctrl.cc \
 	Core/Src/starter_ctrl.cc \
 	Core/Src/turn_ctrl.cc \
+	Core/Src/settings.cc \
 	Core/Src/switch_ctrl.cc \
 	Core/Src/kalman.cc \
 	Core/Src/j1850vpw.cc \

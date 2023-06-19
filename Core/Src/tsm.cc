@@ -30,6 +30,8 @@ extern "C"
              id[0], id[1], id[2],
              VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
+    startupSettingsHandler();
+
 /*Battery watchdog*/
 // HAL_ADC_Start(&hadc1);
 #if AUTO_LIGHT_ENABLE
