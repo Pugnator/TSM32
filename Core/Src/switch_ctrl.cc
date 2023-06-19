@@ -8,8 +8,8 @@ extern "C"
 {
 #endif
 
-#define TIM9_PERIOD 110
-#define LONG_PRESS_COUNT (LONG_PRESS_TIME / TIM9_PERIOD)
+#define BUTTON_TIM_PERIOD 110
+#define LONG_PRESS_COUNT (LONG_PRESS_TIME / BUTTON_TIM_PERIOD)
 
   /** \brief Left button processing event triggered */
   static volatile bool leftButtonEvent = false;
@@ -42,8 +42,23 @@ extern "C"
     HAL_TIM_Base_Start_IT(&BLINKER_TIMER);
   }
 
+  static void resetEvent()
+  {
+    stopBlinkerTimer();
+    timerHitCounter = 0;
+    waitLongPress = false;
+    leftButtonEvent = false;
+    rightButtonEvent = false;
+    longPressCounter = 0;
+  }
+
   void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
+    if (settingsMode)
+    {
+      return;
+    }
+    
 #ifdef IMU_INT_Pin
     if (GPIO_Pin == IMU_INT_Pin)
     {
@@ -54,26 +69,18 @@ extern "C"
 
     if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
     {
+      resetEvent();
       startBlinkerTimer();
       leftButtonEvent = true;
       DEBUG_LOG("[%u] Left switch activated.\r\n", startTime);
     }
     else if (GPIO_Pin == RT_BUTTON_Pin && !rightButtonEvent)
     {
+      resetEvent();
       startBlinkerTimer();
       rightButtonEvent = true;
       DEBUG_LOG("[%u] Right switch activated.\r\n", startTime);
     }
-  }
-
-  void resetEvent()
-  {
-    stopBlinkerTimer();
-    timerHitCounter = 0;
-    waitLongPress = false;
-    leftButtonEvent = false;
-    rightButtonEvent = false;
-    longPressCounter = 0;
   }
 
   /*
@@ -85,7 +92,7 @@ extern "C"
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
 #if J1850_ENABLED
-    // J1850 service timer, 200us
+    // J1850 service timer, 280us
     if (J1850_EOF_TIMER_INSTANCE == htim->Instance)
     {
       messageCollected = true;
@@ -121,12 +128,15 @@ extern "C"
       if (waitLongPress)
       {
         // We're waiting for a long press, but the button is depressed - stop
-        if (timerHitCounter > 2 && (LEFT_BUTTON == GPIO_PIN_SET || LEFT_BUTTON == GPIO_PIN_SET))
+        if (timerHitCounter > 2)
         {
-          DEBUG_LOG("No button is pressed while waiting for a long press. Stop.\r\n");
-          overtakeMode = true;
-          resetEvent();
-          return;
+          if ((leftButtonEvent && LEFT_BUTTON == GPIO_PIN_SET) || (rightButtonEvent && RIGHT_BUTTON == GPIO_PIN_SET))
+          {
+            DEBUG_LOG("No button is pressed while waiting for a long press. Stop.\r\n");
+            overtakeMode = true;
+            resetEvent();
+            return;
+          }
         }
 
         if (longPressCounter++ != LONG_PRESS_COUNT)

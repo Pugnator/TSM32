@@ -40,6 +40,7 @@ extern "C"
     extern bool hazardEnabled;
     extern bool overtakeMode;
     extern uint32_t blinkCounter;
+    extern volatile bool settingsMode;
 
     void leftSideOff();
     void leftSideToggle();
