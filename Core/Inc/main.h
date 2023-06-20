@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f1xx_hal.h"
+#include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -60,16 +60,18 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define STARTER_RELAY_Pin GPIO_PIN_13
 #define STARTER_RELAY_GPIO_Port GPIOC
-#define NSS_Pin GPIO_PIN_14
-#define NSS_GPIO_Port GPIOC
 #define BATTERY_ADC_Pin GPIO_PIN_0
 #define BATTERY_ADC_GPIO_Port GPIOA
 #define J1850RX_Pin GPIO_PIN_1
 #define J1850RX_GPIO_Port GPIOA
-#define J1850TX_Pin GPIO_PIN_2
+#define J1850TX_Pin GPIO_PIN_4
 #define J1850TX_GPIO_Port GPIOA
+#define MPU_AD0_Pin GPIO_PIN_6
+#define MPU_AD0_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_0
 #define LED_GPIO_Port GPIOB
+#define SDCARD_CS_Pin GPIO_PIN_2
+#define SDCARD_CS_GPIO_Port GPIOB
 #define RT_BUTTON_Pin GPIO_PIN_12
 #define RT_BUTTON_GPIO_Port GPIOB
 #define RT_BUTTON_EXTI_IRQn EXTI15_10_IRQn
@@ -80,6 +82,9 @@ void Error_Handler(void);
 #define LT_PWM_GPIO_Port GPIOA
 #define RT_PWM_Pin GPIO_PIN_11
 #define RT_PWM_GPIO_Port GPIOA
+#define IMU_INT_Pin GPIO_PIN_9
+#define IMU_INT_GPIO_Port GPIOB
+#define IMU_INT_EXTI_IRQn EXTI9_5_IRQn
 
 /* USER CODE BEGIN Private defines */
 
