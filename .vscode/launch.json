@@ -10,7 +10,7 @@
       "executable": "${workspaceRoot}\\build\\TSM_103.elf",
       "request": "launch",
       "type": "cortex-debug",
-      "device": "STM32F410RB",
+      "device": "STM32F103C8",
       "servertype": "jlink",
       "interface": "swd",
       "runToEntryPoint": "main",

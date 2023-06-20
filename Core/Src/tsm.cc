@@ -25,7 +25,7 @@ extern "C"
   void tsmRunApp()
   {
     uint32_t id[3] = {0};
-    getCPUid(id, STM32F4_t);
+    getCPUid(id, STM32F1_t);
     INFO_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
              id[0], id[1], id[2],
              VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
@@ -33,10 +33,9 @@ extern "C"
     startupSettingsHandler();
 
 /*Battery watchdog*/
-// HAL_ADC_Start(&hadc1);
 #if AUTO_LIGHT_ENABLE
     HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
-    HAL_ADC_Start_IT(&hadc1);
+    //HAL_ADC_Start_IT(&hadc1);
 #endif
 
 /*J1850 logger*/
@@ -55,8 +54,8 @@ extern "C"
     leftSideOff();
     rightSideOff();
 
-    // uint8_t frame[2] = {0xAA, 0xAA};
-    // J1850VPW::sendFrame(frame, 2);
+    //uint8_t frame[2] = {0xAA, 0xAA};
+    //J1850VPW::sendFrame(frame, 2);
 
 #if MEMS_ENABLED
     std::unique_ptr<MPU9250> ahrs;

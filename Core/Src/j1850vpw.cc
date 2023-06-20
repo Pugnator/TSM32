@@ -25,7 +25,14 @@ uint32_t trip = 0;
 namespace J1850VPW
 {
 
-#if J1850_ENABLED
+  static inline void J1850delayUS(uint32_t us) // microseconds
+  {
+    uint32_t startTick = DWT->CYCCNT;
+    uint32_t delayTicks = us * (SystemCoreClock / 1000000);
+
+    while (DWT->CYCCNT - startTick < delayTicks)
+      ;
+  }
 
   void messageReset()
   {
@@ -51,7 +58,7 @@ namespace J1850VPW
     }
     uint8_t crc = crc1850(data, size);
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-    DWT_Delay(TX_SOF);
+    J1850delayUS(TX_SOF);
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
     for (uint8_t i = 0; i < size; i++)
     {
@@ -59,11 +66,9 @@ namespace J1850VPW
     }
     sendByte(crc);
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-    DWT_Delay(TX_EOF + TX_EOD);
+    J1850delayUS(TX_EOF + TX_EOD);
     return J1850error::OK;
   }
-
-#endif
 
   J1850error sendByte(const uint8_t byte)
   {
@@ -81,13 +86,13 @@ namespace J1850VPW
       {
         delay = (temp_ & 0x80) ? TX_LONG : TX_SHORT; // send correct pulse lenght
         HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-        DWT_Delay(delay);
+        J1850delayUS(delay);
       }
       else // send active symbol
       {
         delay = (temp_ & 0x80) ? TX_SHORT : TX_LONG; // send correct pulse lenght
         HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
-        DWT_Delay(delay);
+        J1850delayUS(delay);
       }
       temp_ <<= 1; // next bit
     }
