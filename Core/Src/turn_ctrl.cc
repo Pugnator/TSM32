@@ -14,12 +14,7 @@ extern "C"
   bool hazardEnabled = false;
   bool overtakeMode = false;
   bool blinkPause = false;
-
-#if AUTO_LIGHT_ENABLE
-  uint8_t volatile currentSidemarkBrightness = DLR_BRIGHTNESS_VALUE;
-#else
-uint8_t volatile currentSidemarkBrightness = 0;
-#endif
+  uint8_t volatile currentSidemarkBrightness = 0;
 
   uint32_t blinkCounter = 0;
 
@@ -91,7 +86,7 @@ uint8_t volatile currentSidemarkBrightness = 0;
       overtakeMode = false;
       blinkCounter = 0;
     }
-  }  
+  }
 
   void blinkerDoBlink()
   {
@@ -172,7 +167,7 @@ uint8_t volatile currentSidemarkBrightness = 0;
       blinkCounter++;
     }
   }
- 
+
 #ifdef __cplusplus
 }
 #endif
