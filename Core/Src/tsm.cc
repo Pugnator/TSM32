@@ -12,6 +12,13 @@
 
 bool stopAppExecuting = true;
 
+Quaternion mpuQ;
+float ypr[3];
+float yprDeg[3];
+bool trackingEnabled = false;
+int16_t initialYaw = INT16_MIN;
+uint32_t initialTime = 0;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -20,6 +27,24 @@ extern "C"
   void HAL_IncTick(void)
   {
     uwTick += uwTickFreq;
+  }
+
+  static bool detectTurn(int16_t initialYaw, int16_t currentYaw, int16_t threshold)
+  {
+    int16_t yaw_difference = currentYaw - initialYaw;
+    if (yaw_difference > 180)
+      yaw_difference -= 360;
+    else if (yaw_difference < -180)
+      yaw_difference += 360;
+
+    if (abs(yaw_difference) > threshold)
+    {
+      HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+      return true;
+    }
+
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    return false;
   }
 
   void tsmRunApp()
@@ -49,7 +74,7 @@ extern "C"
     /*Starter enable*/
 
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
     leftSideOff();
     rightSideOff();
@@ -58,13 +83,7 @@ extern "C"
     // J1850VPW::sendFrame(frame, 2);
 
 #if MEMS_ENABLED
-    std::unique_ptr<MPU9250> ahrs;
-    ahrs.reset(new MPU9250(&hi2c1));
-    if (ahrs->ok())
-    {
-      // Start autoupdate
-      HAL_TIM_Base_Start_IT(&htim11);
-    }
+    MPU9250 mpu(&hi2c1, true);
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
@@ -82,16 +101,18 @@ extern "C"
       }
 #endif
 
-#if MEMS_ENABLED
-      auto az = ahrs->getHeadingAngle();
-      DEBUG_LOG("Turning at AZ=%.1f\r\n", az);
-#endif
-
 #if BLINKER_ENABLED
       if (hazardEnabled || leftEnabled || rightEnabled)
       {
+        if (!hazardEnabled && !trackingEnabled)
+        {
+          trackingEnabled = true;
+          initialTime = HAL_GetTick();
+          initialYaw = INT16_MIN;
+          DEBUG_LOG("Blinker started at %lu\r\n", initialTime);
+        }
         blinkerDoBlink();
-      }
+      }     
 
       if (overtakeMode && OVERTAKE_BLINK_COUNT < blinkCounter)
       {
@@ -101,6 +122,56 @@ extern "C"
         hazardEnabled = false;
         blinkCounter = 0;
       }
+#endif
+
+#if MEMS_ENABLED
+
+      if (hazardEnabled || (!leftEnabled && !rightEnabled))
+      {
+        trackingEnabled = false;
+        continue;
+      }
+
+      if (mpu.interruptStatus() != InterruptSource::DmpInterrupt)
+      {
+        continue;
+      }
+
+      uint16_t fifo = mpu.fifoRead();
+      if (!fifo || 0xFFFF == fifo)
+      {
+        mpu.fifoReset();
+        continue;
+      }
+
+      mpu.getQuaternion(mpuQ);
+      mpu.getYawPitchRoll(ypr, mpuQ);
+      mpu.yprToDegrees(ypr, yprDeg);
+      if (initialYaw == INT16_MIN)
+      {
+        initialYaw = (int16_t)yprDeg[0];        
+        DEBUG_LOG("Initial yaw = %.3d\r\n", initialYaw);
+        continue;
+      }
+
+      if (!detectTurn(initialYaw, (int16_t)yprDeg[0], TURN_ANGLE_THRESHOLD))
+      {
+        continue;
+      }
+
+      DEBUG_LOG("Turn detected, yaw = %.3d\r\n", (int16_t)yprDeg[0]);
+
+      if (leftEnabled)
+      {
+        leftSideToggle();
+      }
+      else if (rightEnabled)
+      {
+        rightSideToggle();
+      }
+      trackingEnabled = false;
+      initialYaw = INT16_MIN;
+
 #endif
     }
     DEBUG_LOG("Stop!\r\n");

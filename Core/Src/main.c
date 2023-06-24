@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "crc.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "i2c.h"
@@ -107,6 +108,7 @@ int main(void)
   MX_SPI1_Init();
   MX_FATFS_Init();
   MX_USART2_UART_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init();
   vmmu_init();

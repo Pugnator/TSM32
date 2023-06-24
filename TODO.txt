@@ -1,5 +1,3 @@
-Don't turn off the DLRs if turn signal is on
-Extend voltage check to 10-15 seconds
 DLRs should turn on/off slowly
 
 J1850

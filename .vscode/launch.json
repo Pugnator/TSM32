@@ -7,7 +7,7 @@
     {
       "name": "STM32 Debug",
       "cwd": "${workspaceRoot}",
-      "executable": "${workspaceRoot}\\build\\TSM_103.elf",
+      "executable": "${workspaceRoot}\\build\\TSM_410.elf",
       "request": "launch",
       "type": "cortex-debug",
       "device": "STM32F103C8",
