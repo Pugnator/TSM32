@@ -52,17 +52,19 @@ bool MPU9250::magSetMode(magMode mode)
 
 bool MPU9250::configureMagnetometer()
 {
+#if defined(IMU_I2C_MODE)
   if (HAL_OK != HAL_I2C_IsDeviceReady(i2c, MPU9250_I2C_ADDR_MAG, 10, 100))
   {
     I2C_ClearBusyFlagErratum(i2c, 1000);
     DEBUG_LOG("MAG is not online\r\n");
     return false;
   }
+#endif
 
   magReset();
 
   uint8_t wai = 0;
-  magReadRegIIC(AK8963_WIA, &wai);
+  magRead(AK8963_WIA, &wai);
   if (wai != 0x48)
   {
     return false;
@@ -77,7 +79,7 @@ bool MPU9250::configureMagnetometer()
   }
   HAL_Delay(10);
   uint8_t fuseRom[3] = {0};
-  if (!magReadRegIIC(AK8963_ASAX, &fuseRom[0], 3))
+  if (!magRead(AK8963_ASAX, &fuseRom[0], 3))
   {
     return false;
   }
@@ -143,10 +145,11 @@ bool MPU9250::readMagAxis(Axes3D &result)
   uint8_t state = 0;
   do
   {
-    magReadRegIIC(AK8963_ST1, &state);
+    magRead(AK8963_ST1, &state);
   } while (!(state & 0x01));
 
-  magReadRegIIC(AK8963_HXL, &data[0], 7);
+  if(!magRead(AK8963_HXL, &data[0], 7))
+    return false;
   // Check if overflow occurred
 
   float Mx_Raw = ((int16_t)((int16_t)data[1] << 8) | data[0]);
@@ -221,6 +224,6 @@ float MPU9250::getHeadingAngle()
   {
     az -= 360.0f;
   }
-  
+
   return az;
 }

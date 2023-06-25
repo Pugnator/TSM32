@@ -107,7 +107,7 @@ extern "C"
         if (!hazardEnabled && !trackingEnabled)
         {
           trackingEnabled = true;
-          initialTime = HAL_GetTick();          
+          initialTime = HAL_GetTick();
           initialYaw = INT16_MIN;
           DEBUG_LOG("Blinker started at %lu\r\n", initialTime);
         }

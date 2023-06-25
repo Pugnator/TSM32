@@ -165,6 +165,13 @@ bool MPU9250::startDMP()
   if (!mpuWrite(MPU9250_INT_ENABLE, 0x02))
     return false;
 
+#if defined(IMU_SPI_MODE)
+  if (!configureMagnetometer())
+  {
+    DEBUG_LOG("Failed to configure magnetometer.\r\n");
+    ok_ = false;
+  }
+#endif
   return true;
 }
 
@@ -379,6 +386,7 @@ bool MPU9250::loadCalibration(Eeprom *mem)
 
 bool MPU9250::setup()
 {
+#if defined(IMU_I2C_MODE)
   if (!mpuWrite(MPU9250_USER_CTRL, 0)) // disable internal I2C bus
     return false;
   // reset device
@@ -387,13 +395,28 @@ bool MPU9250::setup()
   if (!mpuWrite(MPU9250_USER_CTRL, 0x20)) // re-enable internal I2C bus
     return false;
   HAL_Delay(100); // Wait for all registers to reset
-#if defined(IMU_I2C_MODE)
+
   if (HAL_OK != HAL_I2C_IsDeviceReady(i2c, MPU9250_I2C_ADDR, 10, 100))
   {
     I2C_ClearBusyFlagErratum(i2c, 1000);
     DEBUG_LOG("Accelerometer is not online\r\n");
     return false;
   }
+#elif defined(IMU_SPI_MODE)
+  // enable SPI mode
+  uint8_t temp_ = 0;
+  if (!mpuRead(MPU9250_USER_CTRL, &temp_))
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, temp_ | 0x10))
+    return false;
+
+  if (!mpuRead(MPU9250_USER_CTRL, &temp_))
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, temp_ | 0x20))
+    return false;
+
+    //************
+
 #endif
 
   // Clear sleep mode bit (6), enable all sensors
@@ -428,14 +451,21 @@ bool MPU9250::setup()
 
 bool MPU9250::fifoReset()
 {
-  mpuWrite(MPU9250_FIFO_EN, 0);
-  mpuWrite(MPU9250_INT_ENABLE, 0);
-  mpuWrite(MPU9250_USER_CTRL, 0);
+  if (!mpuWrite(MPU9250_FIFO_EN, 0))
+    return false;
+  if (!mpuWrite(MPU9250_INT_ENABLE, 0))
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, 0))
+    return false;
   HAL_Delay(50);
-  mpuWrite(MPU9250_USER_CTRL, 0x20);
-  mpuWrite(MPU9250_USER_CTRL, 0x24);
-  mpuWrite(MPU9250_USER_CTRL, 0x20);
-  mpuWrite(MPU9250_USER_CTRL, 0xE8);
+  if (!mpuWrite(MPU9250_USER_CTRL, 0x20))
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, 0x24))
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, 0x20))
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, 0xE8))
+    return false;
 
   mpuWrite(MPU9250_INT_ENABLE, 0x02);
   return true;

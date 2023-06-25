@@ -109,7 +109,7 @@ void MPU9250::mpuSelect()
 #endif
 }
 
-bool MPU9250::magWriteRegIIC(uint8_t reg, uint8_t *byte, size_t len)
+bool MPU9250::magWriteRegI2c(uint8_t reg, uint8_t *byte, size_t len)
 {
 #if defined(IMU_I2C_MODE)
   if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, byte, len, 1000) != HAL_OK)
@@ -122,7 +122,7 @@ bool MPU9250::magWriteRegIIC(uint8_t reg, uint8_t *byte, size_t len)
   return true;
 }
 
-bool MPU9250::magWriteRegIIC(uint8_t reg, uint8_t byte)
+bool MPU9250::magWriteRegI2c(uint8_t reg, uint8_t byte)
 {
 #if defined(IMU_I2C_MODE)
   uint8_t temp = byte;
@@ -138,7 +138,7 @@ bool MPU9250::magWriteRegIIC(uint8_t reg, uint8_t byte)
   return true;
 }
 
-bool MPU9250::magReadRegIIC(uint8_t reg, uint8_t *byte, size_t len, uint32_t timeout_ms)
+bool MPU9250::magReadRegI2c(uint8_t reg, uint8_t *byte, size_t len, uint32_t timeout_ms)
 {
 #if defined(IMU_I2C_MODE)
   uint32_t start_time = HAL_GetTick(); // Record the start time
@@ -157,12 +157,124 @@ bool MPU9250::magReadRegIIC(uint8_t reg, uint8_t *byte, size_t len, uint32_t tim
   return false; // Timeout reached, return false
 }
 
+bool MPU9250::magWriteRegSpi(uint8_t address, uint8_t *byte, size_t len)
+{
+#if defined(IMU_SPI_MODE)
+  static const uint8_t magAddress = MPU9250_SPI_ADDR_MAG;
+  if (!mpuWrite(MPU9250_I2C_SLV4_ADDR, magAddress))
+    return false;
+
+  HAL_Delay(1);
+
+  for (uint8_t i = 0; i < len; i++)
+  {
+    if (!mpuWrite(MPU9250_I2C_SLV4_REG, address + i))
+      return false;
+
+    HAL_Delay(1);
+    if (!mpuWrite(MPU9250_I2C_SLV4_DO, byte[i]))
+      return false;
+
+    HAL_Delay(1);
+    if (!mpuWrite(MPU9250_I2C_SLV4_CTRL, 0x80)) // Enable
+      return false;
+
+    HAL_Delay(1);
+    uint8_t status = 0;
+    do
+    {
+      if (!mpuRead(MPU9250_I2C_MST_STATUS, &status))
+        return false;
+
+      HAL_Delay(1);
+    } while ((status & 0x40) == 0); // Done
+
+    if (status & 0x10) // NACK
+      return false;
+  }
+
+#endif
+  return true;
+}
+bool MPU9250::magWriteRegSpi(uint8_t address, uint8_t byte)
+{
+#if defined(IMU_SPI_MODE)
+  static const uint8_t magAddress = MPU9250_SPI_ADDR_MAG;
+  if (!mpuWrite(MPU9250_I2C_SLV4_ADDR, magAddress))
+    return false;
+
+  HAL_Delay(1);
+  if (!mpuWrite(MPU9250_I2C_SLV4_REG, address))
+    return false;
+
+  HAL_Delay(1);
+  if (!mpuWrite(MPU9250_I2C_SLV4_DO, byte))
+    return false;
+
+  HAL_Delay(1);
+  if (!mpuWrite(MPU9250_I2C_SLV4_CTRL, 0x80)) // Enable
+    return false;
+
+  HAL_Delay(1);
+  uint8_t status = 0;
+  do
+  {
+    if (!mpuRead(MPU9250_I2C_MST_STATUS, &status))
+      return false;
+
+    HAL_Delay(1);
+  } while ((status & 0x40) == 0); // Done
+
+  if (status & 0x10) // NACK
+    return false;
+
+#endif
+  return true;
+}
+bool MPU9250::magReadRegSpi(uint8_t address, uint8_t *byte, size_t len, uint32_t timeout_ms)
+{
+#if defined(IMU_SPI_MODE)
+  static const uint8_t magAddress = MPU9250_SPI_ADDR_MAG | 0x80;
+
+  if (!mpuWrite(MPU9250_I2C_SLV4_ADDR, magAddress))
+    return false;
+
+  HAL_Delay(1);
+
+  for (uint8_t i = 0; i < len; i++)
+  {
+    if (!mpuWrite(MPU9250_I2C_SLV4_REG, address + i))
+      return false;
+
+    HAL_Delay(1);
+
+    if (!mpuWrite(MPU9250_I2C_SLV4_CTRL, 0x80)) // Enable
+      return false;
+
+    HAL_Delay(1);
+    uint8_t status = 0;
+    do
+    {
+      if (!mpuRead(MPU9250_I2C_MST_STATUS, &status))
+        return false;
+
+      HAL_Delay(1);
+    } while ((status & 0x40) == 0); // Done
+
+    if (!mpuRead(MPU9250_I2C_SLV4_DI, &byte[i]))
+    return false;
+  }  
+
+#endif
+  return true;
+}
+
 bool MPU9250::magWrite(uint8_t reg, uint8_t *byte, size_t len)
 {
 #if defined(IMU_I2C_MODE)
-  return magWriteRegIIC(reg, byte, len);
+  return magWriteRegI2c(reg, byte, len);
 #elif defined(IMU_SPI_MODE)
-  return true; // magWriteRegSpi(reg, byte, len);
+  return magWriteRegSpi(reg, byte, len);
 #else
 #error "Specify IMU mode"
 #endif
@@ -171,9 +283,9 @@ bool MPU9250::magWrite(uint8_t reg, uint8_t *byte, size_t len)
 bool MPU9250::magWrite(uint8_t reg, uint8_t byte)
 {
 #if defined(IMU_I2C_MODE)
-  return magWriteRegIIC(reg, byte);
+  return magWriteRegI2c(reg, byte);
 #elif defined(IMU_SPI_MODE)
-  return true; // magWriteRegSpi(reg, byte);
+  return magWriteRegSpi(reg, byte);
 #else
 #error "Specify IMU mode"
 #endif
@@ -182,9 +294,9 @@ bool MPU9250::magWrite(uint8_t reg, uint8_t byte)
 bool MPU9250::magRead(uint8_t reg, uint8_t *byte, size_t len, uint32_t timeout_ms)
 {
 #if defined(IMU_I2C_MODE)
-  return magReadRegIIC(reg, byte, len, timeout_ms);
+  return magReadRegI2c(reg, byte, len, timeout_ms);
 #elif defined(IMU_SPI_MODE)
-  return true; // magReadRegIIC(reg, byte, len, timeout_ms);
+  return magReadRegSpi(reg, byte, len, timeout_ms);
 #else
 #error "Specify IMU mode"
 #endif

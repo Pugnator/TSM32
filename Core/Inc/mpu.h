@@ -68,6 +68,7 @@ PA5.Signal=SPI1_SCK
 
 #define MPU9250_I2C_ADDR 0xD0
 #define MPU9250_I2C_ADDR_MAG (0x0C << 1)
+#define MPU9250_SPI_ADDR_MAG 0x0C
 
 #define DMP_PACKET_SIZE 32
 #define DMP_FIFO_SIZE 512
@@ -164,9 +165,12 @@ private:
   bool magWrite(uint8_t address, uint8_t *byte, size_t len);
   bool magWrite(uint8_t address, uint8_t byte);
   bool magRead(uint8_t address, uint8_t *byte, size_t len = 1, uint32_t timeout_ms = 1000);
-  bool magWriteRegIIC(uint8_t address, uint8_t *byte, size_t len);
-  bool magWriteRegIIC(uint8_t address, uint8_t byte);
-  bool magReadRegIIC(uint8_t address, uint8_t *byte, size_t len = 1, uint32_t timeout_ms = 1000);
+  bool magWriteRegI2c(uint8_t address, uint8_t *byte, size_t len);
+  bool magWriteRegI2c(uint8_t address, uint8_t byte);
+  bool magReadRegI2c(uint8_t address, uint8_t *byte, size_t len = 1, uint32_t timeout_ms = 1000);
+  bool magWriteRegSpi(uint8_t address, uint8_t *byte, size_t len);
+  bool magWriteRegSpi(uint8_t address, uint8_t byte);
+  bool magReadRegSpi(uint8_t address, uint8_t *byte, size_t len = 1, uint32_t timeout_ms = 1000);
   bool magReset();
   bool magSetMode(magMode mode);
 
