@@ -5,12 +5,14 @@ bool MPU9250::mpuWrite(uint8_t address, uint8_t *byte, size_t len)
 {
 #if defined(IMU_SPI_MODE)
   mpuSelect();
-  uint8_t raddr = address | 0x80;
-  HAL_SPI_Transmit(&MPU_SPI_PORT, &raddr, 1, 100);
+  HAL_SPI_Transmit(&MPU_SPI_PORT, &address, 1, 100);
   uint8_t temp_val = 0;
   for (uint32_t i = 0; i < len; i++)
-  {        
-    HAL_SPI_TransmitReceive(&MPU_SPI_PORT, &byte[i], &temp_val, 1, 100);
+  {
+    if (HAL_SPI_TransmitReceive(&MPU_SPI_PORT, &byte[i], &temp_val, 1, 100) != HAL_OK)
+    {
+      return false;
+    }
   }
   mpuDeselect();
 #elif defined(IMU_I2C_MODE)
@@ -24,15 +26,25 @@ bool MPU9250::mpuWrite(uint8_t address, uint8_t *byte, size_t len)
 #else
 #error "Select either SPI or I2C mode."
 #endif
+  return true;
 }
 
 bool MPU9250::mpuWrite(uint8_t address, uint8_t byte)
 {
 #if defined(IMU_SPI_MODE)
   mpuSelect();
-  HAL_SPI_Transmit(&MPU_SPI_PORT, &address, 1, 100);
-  uint8_t temp_val = 0;
-  HAL_SPI_Transmit(&MPU_SPI_PORT, &byte, 1, 100);
+  if (HAL_SPI_Transmit(&MPU_SPI_PORT, &address, 1, 100) != HAL_OK)
+  {
+    mpuDeselect();
+    return false;
+  }
+
+  uint8_t temp = 0;
+  if (HAL_SPI_TransmitReceive(&MPU_SPI_PORT, &byte, &temp, 1, 100) != HAL_OK)
+  {
+    mpuDeselect();
+    return false;
+  }
   mpuDeselect();
 #elif defined(IMU_I2C_MODE)
   uint8_t temp = byte;
@@ -53,11 +65,21 @@ bool MPU9250::mpuRead(uint8_t address, uint8_t *byte, size_t len)
 {
 #if defined(IMU_SPI_MODE)
   mpuSelect();
-  HAL_SPI_Transmit(&MPU_SPI_PORT, &address, 1, 100);
-  uint8_t temp_val = 0;
+  uint8_t raddr = address | 0x80;
+  if (HAL_SPI_Transmit(&MPU_SPI_PORT, &raddr, 1, 100) != HAL_OK)
+  {
+    mpuDeselect();
+    return false;
+  }
+
+  uint8_t temp = 0;
   for (uint32_t i = 0; i < len; i++)
   {
-    HAL_SPI_TransmitReceive(&MPU_SPI_PORT, 0, &byte[i], 1, 100);
+    if (HAL_SPI_TransmitReceive(&MPU_SPI_PORT, &temp, &byte[i], 1, 100) != HAL_OK)
+    {
+      mpuDeselect();
+      return false;
+    }
   }
   mpuDeselect();
 #elif defined(IMU_I2C_MODE)
@@ -162,7 +184,7 @@ bool MPU9250::magRead(uint8_t reg, uint8_t *byte, size_t len, uint32_t timeout_m
 #if defined(IMU_I2C_MODE)
   return magReadRegIIC(reg, byte, len, timeout_ms);
 #elif defined(IMU_SPI_MODE)
-  return true;//magReadRegIIC(reg, byte, len, timeout_ms);
+  return true; // magReadRegIIC(reg, byte, len, timeout_ms);
 #else
 #error "Specify IMU mode"
 #endif

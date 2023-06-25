@@ -55,12 +55,12 @@ PA6.Signal=SPI1_MISO
 PA5.Signal=SPI1_SCK
 */
 
-#define IMU_I2C_MODE
-// #define IMU_SPI_MODE
+//#define IMU_I2C_MODE
+#define IMU_SPI_MODE
 
 #ifdef IMU_SPI_MODE
 #define MPU_SPI_PORT hspi1
-#define MPU_CS_Pin GPIO_PIN_1
+#define MPU_CS_Pin GPIO_PIN_2
 #define MPU_CS_GPIO_Port GPIOB
 #endif
 
@@ -170,7 +170,7 @@ private:
   bool magReset();
   bool magSetMode(magMode mode);
 
-  bool reset();
+  bool setup();
   bool configureAccelerometer();
   bool configureGyroscope();
   bool configureMagnetometer();

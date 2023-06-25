@@ -48,6 +48,11 @@ MPU9250::MPU9250(I2C_HandleTypeDef *dev, bool dmpEnable)
   gMult = 250.0f / 32768.0f;
   gSensF = 10.0f * 4912.0f / 32768.0f;
 
+  ok_ = setup();
+
+  if (!ok_)
+    return;
+
   if (dmpEnabled_)
   {
     DEBUG_LOG("Configuring Digital Motion Processor.\r\n");
@@ -56,13 +61,6 @@ MPU9250::MPU9250(I2C_HandleTypeDef *dev, bool dmpEnable)
   }
 
   DEBUG_LOG("Configuring basic mode.\r\n");
-
-  ok_ = reset();
-
-  if (!ok_)
-  {
-    return;
-  }
 
   if (!configureGyroscope())
   {
@@ -102,51 +100,70 @@ bool MPU9250::ok()
 bool MPU9250::startDMP()
 {
   // Configure Power Management Registers
-  mpuWrite(MPU9250_PWR_MGMT_1, 0);
-  mpuWrite(MPU9250_PWR_MGMT_2, 0);
+  if (!mpuWrite(MPU9250_PWR_MGMT_1, 0))
+    return false;
+  if (!mpuWrite(MPU9250_PWR_MGMT_2, 0))
+    return false;
   // Configure Gyroscope Parameters
-  mpuWrite(MPU9250_CONFIG, 0x03);
-  mpuWrite(MPU9250_GYRO_CONFIG, 0x18);
+  if (!mpuWrite(MPU9250_CONFIG, 0x03))
+    return false;
+  if (!mpuWrite(MPU9250_GYRO_CONFIG, 0x18))
+    return false;
   // Configure Accelerometer Parameters
-  mpuWrite(MPU9250_ACCEL_CONFIG, 0);
+  if (!mpuWrite(MPU9250_ACCEL_CONFIG, 0))
+    return false;
   // Configure FIFO and Interrupts
   // Now DMP has the control over the FIFO
-  mpuWrite(MPU9250_FIFO_EN, 0);
-  mpuWrite(MPU9250_INT_ENABLE, 0);
+  if (!mpuWrite(MPU9250_FIFO_EN, 0))
+    return false;
+  if (!mpuWrite(MPU9250_INT_ENABLE, 0))
+    return false;
   // Reset the FIFO
-  mpuWrite(MPU9250_USER_CTRL, 0x04);
+  if (!mpuWrite(MPU9250_USER_CTRL, 0x04))
+    return false;
   // Configure Sensor Sample Rate
-  mpuWrite(MPU9250_SMPLRT_DIV, 0x04);
+  if (!mpuWrite(MPU9250_SMPLRT_DIV, 0x04))
+    return false;
   // Load Firmware One Byte at a Time
   uint32_t address = 0;
-  uint8_t temp = 0;
   while (address < dmpFirmwareSize)
   {
-    mpuWrite(MPU9250_DMP_CTRL_1, address >> 8);
-    mpuWrite(MPU9250_DMP_CTRL_2, address & 0xFF);
-    mpuWrite(MPU9250_DMP_CTRL_3, dmpFirmware[address]);
+    if (!mpuWrite(MPU9250_DMP_CTRL_1, address >> 8))
+      return false;
+    if (!mpuWrite(MPU9250_DMP_CTRL_2, address & 0xFF))
+      return false;
+    if (!mpuWrite(MPU9250_DMP_CTRL_3, dmpFirmware[address]))
+      return false;
     address++;
   }
   DEBUG_LOG("Uploaded %u bytes to MPU\r\n", address);
   // Load Firmware Start Value
-  mpuWrite(MPU9250_FW_START_1, MPU9250_DMP_JUMP_ADDRESS >> 8);
-  mpuWrite(MPU9250_FW_START_2, MPU9250_DMP_JUMP_ADDRESS & 0xFF);
+  if (!mpuWrite(MPU9250_FW_START_1, MPU9250_DMP_JUMP_ADDRESS >> 8))
+    return false;
+  if (!mpuWrite(MPU9250_FW_START_2, MPU9250_DMP_JUMP_ADDRESS & 0xFF))
+    return false;
 
   // Enable I2C bypass in order to use AK9638 via I2C
-  mpuWrite(MPU9250_INT_PIN_CFG, 0x2);
-
-  if (!configureMagnetometer())
-  {
-    DEBUG_LOG("Failed to configure magnetometer.\r\n");
+  if (!mpuWrite(MPU9250_INT_PIN_CFG, 0x2))
     return false;
-  }
-
-  mpuWrite(MPU9250_USER_CTRL, 0x20);
-  mpuWrite(MPU9250_USER_CTRL, 0x24);
-  mpuWrite(MPU9250_USER_CTRL, 0x20);
-  mpuWrite(MPU9250_USER_CTRL, 0xE8);
+  /*
+    if (!configureMagnetometer())
+    {
+      DEBUG_LOG("Failed to configure magnetometer.\r\n");
+      return false;
+    }
+  */
+  if (!mpuWrite(MPU9250_USER_CTRL, 0x20))
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, 0x24))
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, 0x20))
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, 0xE8))
+    return false;
   HAL_Delay(10);
-  mpuWrite(MPU9250_INT_ENABLE, 0x02);
+  if (!mpuWrite(MPU9250_INT_ENABLE, 0x02))
+    return false;
 
   return true;
 }
@@ -360,16 +377,16 @@ bool MPU9250::loadCalibration(Eeprom *mem)
   return true;
 }
 
-bool MPU9250::reset()
+bool MPU9250::setup()
 {
   if (!mpuWrite(MPU9250_USER_CTRL, 0)) // disable internal I2C bus
-  {
     return false;
-  }
   // reset device
-  mpuWrite(MPU9250_PWR_MGMT_1, 0x80); // Set bit 7 to reset MPU9250
-  mpuWrite(MPU9250_USER_CTRL, 0x20);  // re-enable internal I2C bus
-  HAL_Delay(100);                     // Wait for all registers to reset
+  if (!mpuWrite(MPU9250_PWR_MGMT_1, 0x80)) // Set bit 7 to reset MPU9250
+    return false;
+  if (!mpuWrite(MPU9250_USER_CTRL, 0x20)) // re-enable internal I2C bus
+    return false;
+  HAL_Delay(100); // Wait for all registers to reset
 #if defined(IMU_I2C_MODE)
   if (HAL_OK != HAL_I2C_IsDeviceReady(i2c, MPU9250_I2C_ADDR, 10, 100))
   {
@@ -378,19 +395,6 @@ bool MPU9250::reset()
     return false;
   }
 #endif
-  uint8_t wai = 0;
-  if (!mpuRead(MPU9250_WHO_AM_I, &wai))
-  {
-    return false;
-  }
-  if (0x71 == wai)
-  {
-    DEBUG_LOG("MPU 9250 is detected\r\n");
-  }
-  else
-  {
-    return false;
-  }
 
   // Clear sleep mode bit (6), enable all sensors
   if (!mpuWrite(MPU9250_PWR_MGMT_1, 0x00))
@@ -406,6 +410,19 @@ bool MPU9250::reset()
     return false;
   }
   HAL_Delay(200);
+  uint8_t wai = 0;
+  if (!mpuRead(MPU9250_WHO_AM_I, &wai))
+    return false;
+
+  if (0x71 == wai)
+  {
+    DEBUG_LOG("MPU9250 is detected [%.2X]\r\n", wai);
+  }
+  else
+  {
+    DEBUG_LOG("MPU9250 is NOT detected [%.2X]\r\n", wai);
+    return false;
+  }
   return true;
 }
 
@@ -514,19 +531,19 @@ float MPU9250::getTemperature()
 }
 
 bool MPU9250::enableDMP(bool enable)
-{  
+{
   uint8_t out = 0;
   if (!mpuRead(MPU9250_USER_CTRL, &out))
   {
     return false;
   }
-  //7th bit is a DMP enable flag
+  // 7th bit is a DMP enable flag
   out = enable ? (out | (1 << 7)) : (out & ~(1 << 7));
-  if(!mpuWrite(MPU9250_USER_CTRL, out))
+  if (!mpuWrite(MPU9250_USER_CTRL, out))
   {
     return false;
   }
-  
+
   mpuWrite(MPU9250_INT_ENABLE, enable ? 0x02 : 0);
   dmpEnabled_ = enable;
   return true;
@@ -539,8 +556,8 @@ bool MPU9250::resetDMP()
   {
     return false;
   }
-  //3rd bit is a DMP reset, set it to reset
+  // 3rd bit is a DMP reset, set it to reset
   out = out | (1 << 3);
   fifoReset();
-  return mpuWrite(MPU9250_USER_CTRL, out);  
+  return mpuWrite(MPU9250_USER_CTRL, out);
 }

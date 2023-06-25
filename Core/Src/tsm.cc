@@ -107,12 +107,12 @@ extern "C"
         if (!hazardEnabled && !trackingEnabled)
         {
           trackingEnabled = true;
-          initialTime = HAL_GetTick();
+          initialTime = HAL_GetTick();          
           initialYaw = INT16_MIN;
           DEBUG_LOG("Blinker started at %lu\r\n", initialTime);
         }
         blinkerDoBlink();
-      }     
+      }
 
       if (overtakeMode && OVERTAKE_BLINK_COUNT < blinkCounter)
       {
@@ -125,6 +125,8 @@ extern "C"
 #endif
 
 #if MEMS_ENABLED
+      if (!mpu.ok())
+        continue;
 
       if (hazardEnabled || (!leftEnabled && !rightEnabled))
       {
@@ -133,9 +135,7 @@ extern "C"
       }
 
       if (mpu.interruptStatus() != InterruptSource::DmpInterrupt)
-      {
         continue;
-      }
 
       uint16_t fifo = mpu.fifoRead();
       if (!fifo || 0xFFFF == fifo)
@@ -149,15 +149,14 @@ extern "C"
       mpu.yprToDegrees(ypr, yprDeg);
       if (initialYaw == INT16_MIN)
       {
-        initialYaw = (int16_t)yprDeg[0];        
+        initialYaw = (int16_t)yprDeg[0];
         DEBUG_LOG("Initial yaw = %.3d\r\n", initialYaw);
         continue;
       }
 
-      if (!detectTurn(initialYaw, (int16_t)yprDeg[0], TURN_ANGLE_THRESHOLD))
-      {
+      if (!detectTurn(initialYaw, (int16_t)yprDeg[0], TURN_ANGLE_THRESHOLD) &&
+          HAL_GetTick() - initialTime < TURN_MAX_TIME_MS)
         continue;
-      }
 
       DEBUG_LOG("Turn detected, yaw = %.3d\r\n", (int16_t)yprDeg[0]);
 
@@ -169,6 +168,7 @@ extern "C"
       {
         rightSideToggle();
       }
+
       trackingEnabled = false;
       initialYaw = INT16_MIN;
 
