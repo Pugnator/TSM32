@@ -4,10 +4,14 @@
 
 #define EEPROM_MPU_CALIB_ADDRESS 0
 
+#if defined(IMU_I2C_MODE)
 MPU9250::MPU9250(I2C_HandleTypeDef *dev, bool dmpEnable)
+#elif defined(IMU_SPI_MODE)
+MPU9250::MPU9250(SPI_HandleTypeDef *dev, bool dmpEnable)
+#endif
 {
   mpuDeselect();
-  i2c = dev;
+  bus_ = dev;
   isCalibration_ = false;
   dmpEnabled_ = dmpEnable;
   chipTemperature_ = 0;

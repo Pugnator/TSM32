@@ -1,9 +1,6 @@
 #pragma once
 
-#include "i2c.h"
-#include "spi.h"
 #include "trace.h"
-#include "i2c_er.h"
 #include "mpudefs.h"
 #include <math.h>
 #include <mems/math3d.h>
@@ -12,7 +9,7 @@
 
 #include "eeprom.h"
 
-#include "stm32f4xx_hal.h"
+#include "stm32f1xx_hal.h"
 
 /*
 Missile Guidance For Dummies
@@ -55,13 +52,15 @@ PA6.Signal=SPI1_MISO
 PA5.Signal=SPI1_SCK
 */
 
-//#define IMU_I2C_MODE
+// #define IMU_I2C_MODE
 #define IMU_SPI_MODE
 
+#ifdef IMU_I2C_MODE
+#include "i2c.h"
+#endif
+
 #ifdef IMU_SPI_MODE
-#define MPU_SPI_PORT hspi1
-#define MPU_CS_Pin GPIO_PIN_2
-#define MPU_CS_GPIO_Port GPIOB
+#include "spi.h"
 #endif
 
 #define MAGNETIC_DECLINATION +5.46f
@@ -112,7 +111,11 @@ typedef enum magMode
 class MPU9250
 {
 public:
+#if defined(IMU_I2C_MODE)
   MPU9250(I2C_HandleTypeDef *, bool dmpEnable = false);
+#elif defined(IMU_SPI_MODE)
+  MPU9250(SPI_HandleTypeDef *, bool dmpEnable = false);
+#endif
   ~MPU9250();
 
 public:
@@ -240,7 +243,11 @@ private:
   float mag[3];
   int32_t quat[4];
   uint8_t fifoBuffer[DMP_FIFO_SIZE];
-  I2C_HandleTypeDef *i2c;
+#if defined(IMU_I2C_MODE)
+  I2C_HandleTypeDef *bus_;
+#elif defined(IMU_SPI_MODE)
+  SPI_HandleTypeDef *bus_;
+#endif
 };
 
 class AttitudeHeadingReferenceSystem

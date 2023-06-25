@@ -5,20 +5,20 @@ bool MPU9250::mpuWrite(uint8_t address, uint8_t *byte, size_t len)
 {
 #if defined(IMU_SPI_MODE)
   mpuSelect();
-  HAL_SPI_Transmit(&MPU_SPI_PORT, &address, 1, 100);
+  HAL_SPI_Transmit(bus_, &address, 1, 100);
   uint8_t temp_val = 0;
   for (uint32_t i = 0; i < len; i++)
   {
-    if (HAL_SPI_TransmitReceive(&MPU_SPI_PORT, &byte[i], &temp_val, 1, 100) != HAL_OK)
+    if (HAL_SPI_TransmitReceive(bus_, &byte[i], &temp_val, 1, 100) != HAL_OK)
     {
       return false;
     }
   }
   mpuDeselect();
 #elif defined(IMU_I2C_MODE)
-  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR, address, 1, byte, len, 1000) != HAL_OK)
+  if (HAL_I2C_Mem_Write(bus_, MPU9250_I2C_ADDR, address, 1, byte, len, 1000) != HAL_OK)
   {
-    I2C_ClearBusyFlagErratum(i2c, 1000);
+    I2C_ClearBusyFlagErratum(bus_, 1000);
     return false;
   }
 
@@ -33,14 +33,14 @@ bool MPU9250::mpuWrite(uint8_t address, uint8_t byte)
 {
 #if defined(IMU_SPI_MODE)
   mpuSelect();
-  if (HAL_SPI_Transmit(&MPU_SPI_PORT, &address, 1, 100) != HAL_OK)
+  if (HAL_SPI_Transmit(bus_, &address, 1, 100) != HAL_OK)
   {
     mpuDeselect();
     return false;
   }
 
   uint8_t temp = 0;
-  if (HAL_SPI_TransmitReceive(&MPU_SPI_PORT, &byte, &temp, 1, 100) != HAL_OK)
+  if (HAL_SPI_TransmitReceive(bus_, &byte, &temp, 1, 100) != HAL_OK)
   {
     mpuDeselect();
     return false;
@@ -49,9 +49,9 @@ bool MPU9250::mpuWrite(uint8_t address, uint8_t byte)
 #elif defined(IMU_I2C_MODE)
   uint8_t temp = byte;
   uint8_t *data = &temp;
-  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR, address, 1, data, 1, 1000) != HAL_OK)
+  if (HAL_I2C_Mem_Write(bus_, MPU9250_I2C_ADDR, address, 1, data, 1, 1000) != HAL_OK)
   {
-    I2C_ClearBusyFlagErratum(i2c, 1000);
+    I2C_ClearBusyFlagErratum(bus_, 1000);
     return false;
   }
 #else
@@ -66,7 +66,7 @@ bool MPU9250::mpuRead(uint8_t address, uint8_t *byte, size_t len)
 #if defined(IMU_SPI_MODE)
   mpuSelect();
   uint8_t raddr = address | 0x80;
-  if (HAL_SPI_Transmit(&MPU_SPI_PORT, &raddr, 1, 100) != HAL_OK)
+  if (HAL_SPI_Transmit(bus_, &raddr, 1, 100) != HAL_OK)
   {
     mpuDeselect();
     return false;
@@ -75,7 +75,7 @@ bool MPU9250::mpuRead(uint8_t address, uint8_t *byte, size_t len)
   uint8_t temp = 0;
   for (uint32_t i = 0; i < len; i++)
   {
-    if (HAL_SPI_TransmitReceive(&MPU_SPI_PORT, &temp, &byte[i], 1, 100) != HAL_OK)
+    if (HAL_SPI_TransmitReceive(bus_, &temp, &byte[i], 1, 100) != HAL_OK)
     {
       mpuDeselect();
       return false;
@@ -83,9 +83,9 @@ bool MPU9250::mpuRead(uint8_t address, uint8_t *byte, size_t len)
   }
   mpuDeselect();
 #elif defined(IMU_I2C_MODE)
-  if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR, address, 1, byte, len, 1000) != HAL_OK)
+  if (HAL_I2C_Mem_Read(bus_, MPU9250_I2C_ADDR, address, 1, byte, len, 1000) != HAL_OK)
   {
-    I2C_ClearBusyFlagErratum(i2c, 1000);
+    I2C_ClearBusyFlagErratum(bus_, 1000);
     return false;
   }
 #else
@@ -112,9 +112,9 @@ void MPU9250::mpuSelect()
 bool MPU9250::magWriteRegI2c(uint8_t reg, uint8_t *byte, size_t len)
 {
 #if defined(IMU_I2C_MODE)
-  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, byte, len, 1000) != HAL_OK)
+  if (HAL_I2C_Mem_Write(bus_, MPU9250_I2C_ADDR_MAG, reg, 1, byte, len, 1000) != HAL_OK)
   {
-    I2C_ClearBusyFlagErratum(i2c, 1000);
+    I2C_ClearBusyFlagErratum(bus_, 1000);
     DEBUG_LOG("Failed to write to MAG\r\n");
     return false;
   }
@@ -128,9 +128,9 @@ bool MPU9250::magWriteRegI2c(uint8_t reg, uint8_t byte)
   uint8_t temp = byte;
   uint8_t *data = &temp;
 
-  if (HAL_I2C_Mem_Write(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, data, 1, 1000) != HAL_OK)
+  if (HAL_I2C_Mem_Write(bus_, MPU9250_I2C_ADDR_MAG, reg, 1, data, 1, 1000) != HAL_OK)
   {
-    I2C_ClearBusyFlagErratum(i2c, 1000);
+    I2C_ClearBusyFlagErratum(bus_, 1000);
     DEBUG_LOG("Failed to write to MAG\r\n");
     return false;
   }
@@ -145,13 +145,13 @@ bool MPU9250::magReadRegI2c(uint8_t reg, uint8_t *byte, size_t len, uint32_t tim
 
   while (HAL_GetTick() - start_time < timeout_ms)
   {
-    if (HAL_I2C_Mem_Read(i2c, MPU9250_I2C_ADDR_MAG, reg, 1, byte, len, 100) == HAL_OK)
+    if (HAL_I2C_Mem_Read(bus_, MPU9250_I2C_ADDR_MAG, reg, 1, byte, len, 100) == HAL_OK)
     {
       return true; // Read operation successful, return true
     }
   }
 
-  I2C_ClearBusyFlagErratum(i2c, 1000);
+  I2C_ClearBusyFlagErratum(bus_, 1000);
   DEBUG_LOG("Failed to read MAG\r\n");
 #endif
   return false; // Timeout reached, return false
@@ -262,8 +262,8 @@ bool MPU9250::magReadRegSpi(uint8_t address, uint8_t *byte, size_t len, uint32_t
     } while ((status & 0x40) == 0); // Done
 
     if (!mpuRead(MPU9250_I2C_SLV4_DI, &byte[i]))
-    return false;
-  }  
+      return false;
+  }
 
 #endif
   return true;
