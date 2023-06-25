@@ -1,11 +1,15 @@
 #pragma once
 
-#include "i2c.h"
-#include "i2c_er.h"
 #include "trace.h"
 #include "mpudefs.h"
 #include <math.h>
+#include <mems/math3d.h>
 #include <memory>
+#include <array>
+
+#include "eeprom.h"
+
+#include "stm32f1xx_hal.h"
 
 /*
 Missile Guidance For Dummies
@@ -40,32 +44,57 @@ Magnetic field strength: 52788.7 nT
 // Moscow
 // #define MAGNETIC_DECLINATION 11.0f
 // Belgrade
+
+/*
+PC14-OSC32_IN.GPIO_Label=NSS
+PA7.Signal=SPI1_MOSI
+PA6.Signal=SPI1_MISO
+PA5.Signal=SPI1_SCK
+*/
+
+// #define IMU_I2C_MODE
+#define IMU_SPI_MODE
+
+#ifdef IMU_I2C_MODE
+#include "i2c.h"
+#endif
+
+#ifdef IMU_SPI_MODE
+#include "spi.h"
+#endif
+
 #define MAGNETIC_DECLINATION +5.46f
 
-#define G_TO_MS2 9.8115
-#define DEG_TO_RAD (M_PI / 180.0f)
-#define RAD_TO_DEG (180.0f / M_PI)
-#define FREQUENCY 125
-#define GYRO_SENSITIVITY 65.5
-#define SENS_TO_DEG (1 / (GYRO_SENSITIVITY * FREQUENCY))
-#define SENS_TO_RAD SENS_TO_DEG *DEG_TO_RAD
-
 #define MPU9250_I2C_ADDR 0xD0
-#define MPU9250_I2C_ADDR_MAG 0x0C << 1
+#define MPU9250_I2C_ADDR_MAG (0x0C << 1)
+#define MPU9250_SPI_ADDR_MAG 0x0C
 
-#define AK8963_CALIBRATION_LOOPS 1000
-extern float az;
-extern float initialAzimuth;
+#define DMP_PACKET_SIZE 32
+#define DMP_FIFO_SIZE 512
 
-typedef struct Axis3D
+extern const uint8_t dmpFirmware[];
+extern const uint32_t dmpFirmwareSize;
+
+enum class InterruptSource : int
+{
+  NoInterrupt = 0,
+  FreeFall,
+  MotionDetection,
+  ZeroMotionDetection,
+  FifoOverflow,
+  MasterInterrupt,
+  DmpInterrupt,
+  DataReady
+};
+
+typedef struct Axes3D
 {
   float x;
   float y;
   float z;
+} Axes3D;
 
-} Axis3D;
-
-typedef enum
+typedef enum magMode
 {
   MAG_MODE_PD,
   MAG_MODE_SINGLE,
@@ -82,58 +111,146 @@ typedef enum
 class MPU9250
 {
 public:
-  MPU9250(I2C_HandleTypeDef *);
+#if defined(IMU_I2C_MODE)
+  MPU9250(I2C_HandleTypeDef *, bool dmpEnable = false);
+#elif defined(IMU_SPI_MODE)
+  MPU9250(SPI_HandleTypeDef *, bool dmpEnable = false);
+#endif
   ~MPU9250();
 
 public:
   bool ok();
-  bool ready();
+  InterruptSource interruptStatus();
 
-  void selfTest();
-  void magCalibration();
+  bool startDMP();
 
-  bool readAccel();
-  Axis3D readMag();
-  Axis3D readGyro();
+  bool staticCalibration(Eeprom *mem = nullptr);
+  bool loadCalibration(Eeprom *mem);
 
-  float getHeadingAngle();  
+  bool readMagAxis(Axes3D &result);
+  bool readAccelAxis(Axes3D &result);
+  bool readGyroAxis(Axes3D &result);
 
-  void scanBus();
+  float getHeadingAngle();
+  float getTemperature();
+
+  uint16_t fifoDataReady();
+  bool fifoReset();
+  uint16_t fifoRead();
+
+  void getQuaternion(Quaternion &q);
+  void getYawPitchRoll(float *ypr, Quaternion &q);
+  void yprToRadians(float *ypr, float *xyz);
+  void yprToDegrees(float *ypr, float *xyz);
+  void getEuler(float *output, Quaternion &q);
+
+  void getAccel(VectorInt16 &v);
+  void getGravity(VectorFloat &v, Quaternion &q);
+  void getLinearAccel(VectorInt16 &v, VectorInt16 &vRaw, VectorFloat &gravity);
+
+  bool dmpEnabled();
+
+  bool enableDMP(bool enable);
+  bool resetDMP();
 
 private:
-  bool writeRegMpu(uint8_t reg, uint8_t *byte, size_t len);
-  bool writeRegMpu(uint8_t reg, uint8_t &&byte);
-  bool readRegMpu(uint8_t reg, uint8_t *byte, size_t len = 1);
+  void selfTest();
 
-  bool writeRegMag(uint8_t reg, uint8_t *byte, size_t len);
-  bool writeRegMag(uint8_t reg, uint8_t &&byte);
-  bool readRegMag(uint8_t reg, uint8_t *byte, size_t len = 1, uint32_t timeout_ms = 1000);
-  bool magRST();
+  void parseDmpPacket();
+
+  bool mpuWrite(uint8_t address, uint8_t *byte, size_t len);
+  bool mpuWrite(uint8_t address, uint8_t byte);
+  bool mpuRead(uint8_t address, uint8_t *byte, size_t len = 1);
+
+  void mpuSelect();
+  void mpuDeselect();
+
+  bool magWrite(uint8_t address, uint8_t *byte, size_t len);
+  bool magWrite(uint8_t address, uint8_t byte);
+  bool magRead(uint8_t address, uint8_t *byte, size_t len = 1, uint32_t timeout_ms = 1000);
+  bool magWriteRegI2c(uint8_t address, uint8_t *byte, size_t len);
+  bool magWriteRegI2c(uint8_t address, uint8_t byte);
+  bool magReadRegI2c(uint8_t address, uint8_t *byte, size_t len = 1, uint32_t timeout_ms = 1000);
+  bool magWriteRegSpi(uint8_t address, uint8_t *byte, size_t len);
+  bool magWriteRegSpi(uint8_t address, uint8_t byte);
+  bool magReadRegSpi(uint8_t address, uint8_t *byte, size_t len = 1, uint32_t timeout_ms = 1000);
+  bool magReset();
   bool magSetMode(magMode mode);
-  
 
-  void reset();
-  bool initAcc();
-  bool initMag();
+  bool setup();
+  bool configureAccelerometer();
+  bool configureGyroscope();
+  bool configureMagnetometer();
 
-  float kalmanFilter(float val);
+  void gyroReset();
+  void gyroAutoOffset(Axes3D &axes);
+  void accAutoOffset(Axes3D &axes);
+  void magAutoOffset(Axes3D &axes);
 
-  bool _ok;
-  float corrX;
-  float corrY;
-  float corrZ;
+  float magFactoryCorrX;
+  float magFactoryCorrY;
+  float magFactoryCorrZ;
+
   float magOffsetX;
   float magOffsetY;
   float magOffsetZ;
-  float mScaleX;
-  float mScaleY;
-  float mScaleZ;
+
+  float magScaleX;
+  float magScaleY;
+  float magScaleZ;
+
+  float accOffsetX;
+  float accOffsetY;
+  float accOffsetZ;
+
+  float gyroOffsetX;
+  float gyroOffsetY;
+  float gyroOffsetZ;
+
+  float magMaxX;
+  float magMaxY;
+  float magMaxZ;
+  float magMinX;
+  float magMinY;
+  float magMinZ;
+
+  float accMaxX;
+  float accMaxY;
+  float accMaxZ;
+  float accMinX;
+  float accMinY;
+  float accMinZ;
+
+  float gyroMaxX;
+  float gyroMaxY;
+  float gyroMaxZ;
+  float gyroMinX;
+  float gyroMinY;
+  float gyroMinZ;
 
   float aMult;
   float gMult;
   float gSensF;
 
-  I2C_HandleTypeDef *i2c;
+  float chipTemperature_;
+
+  bool ok_;
+  bool isCalibration_;
+  bool dmpEnabled_;
+
+  int16_t gyro[3];
+  int16_t accel[3];
+  float mag[3];
+  int32_t quat[4];
+  uint8_t fifoBuffer[DMP_FIFO_SIZE];
+#if defined(IMU_I2C_MODE)
+  I2C_HandleTypeDef *bus_;
+#elif defined(IMU_SPI_MODE)
+  SPI_HandleTypeDef *bus_;
+#endif
 };
 
-extern std::unique_ptr<MPU9250> ahrs;
+class AttitudeHeadingReferenceSystem
+{
+  AttitudeHeadingReferenceSystem();
+};

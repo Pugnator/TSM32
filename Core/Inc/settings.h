@@ -24,8 +24,8 @@
 
 
 #define BLINKER_ENABLED 1
-#define J1850_ENABLED 1
-#define MEMS_ENABLED 0
+#define J1850_ENABLED 0
+#define MEMS_ENABLED 1
 #define STARTER_LOCK_ENABLE 0
 #define STARTER_UNLOCK_DISABLE 0
 #define AUTO_LIGHT_ENABLE 1
@@ -34,6 +34,9 @@
 #define ADC_10V_VALUE 2865
 #define ADC_13V_VALUE 3722
 #define ADC_14_3V_VALUE 4095
+
+#define TURN_ANGLE_THRESHOLD 60
+#define TURN_MAX_TIME_MS 1 * 60 * 1000
 
 void startupSettingsHandler();
 

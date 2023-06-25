@@ -12,8 +12,7 @@ extern "C"
   bool leftEnabled = false;
   bool rightEnabled = false;
   bool hazardEnabled = false;
-  bool overtakeMode = false;
-  bool blinkPause = false;
+  bool overtakeMode = false;  
   uint8_t volatile currentSidemarkBrightness = 0;
 
   uint32_t blinkCounter = 0;
@@ -25,8 +24,7 @@ extern "C"
       return;
     }
 
-    DEBUG_LOG("Left Side toggle\r\n");
-    blinkPause = false;
+    DEBUG_LOG("Left Side toggle\r\n");  
     blinkCounter = 0;
     leftEnabled = !leftEnabled;
     if (leftEnabled)
@@ -54,8 +52,7 @@ extern "C"
     }
 
     DEBUG_LOG("Right Side toggle\r\n");
-    blinkCounter = 0;
-    blinkPause = false;
+    blinkCounter = 0;    
     rightEnabled = !rightEnabled;
     if (rightEnabled)
     {

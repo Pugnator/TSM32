@@ -34,8 +34,6 @@ extern "C"
 
 void adcHandler()
 {
-  static uint32_t sampleCounter = 0;
-
   if (!adcDMAcompleted)
   {
     return;
@@ -49,13 +47,6 @@ void adcHandler()
   }
 
   meanVoltage /= ADC_DMA_BUF_SIZE;
-  sampleCounter++;
-
-  if (sampleCounter == 30 * 1000)
-  {
-    DEBUG_LOG("Battery: %.2fV\r\n", (meanVoltage * 3.3) / 871.14); //for 10k/2.7k bridge and 14V.
-    sampleCounter = 0;
-  }
 
   if (ADC_13V_VALUE < meanVoltage)
   {
