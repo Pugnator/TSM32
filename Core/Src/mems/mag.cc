@@ -100,7 +100,7 @@ bool MPU9250::configureMagnetometer()
   return true;
 }
 
-void MPU9250::magAutoOffset(Axes3D &axes)
+void MPU9250::magAutoOffset(VectorFloat &axes)
 {
   if (!isCalibration_)
   {
@@ -139,7 +139,7 @@ void MPU9250::magAutoOffset(Axes3D &axes)
   magOffsetZ = (magMaxZ + magMinZ) / 2.0;
 }
 
-bool MPU9250::readMagAxis(Axes3D &result)
+bool MPU9250::readMagAxis(VectorFloat &result)
 {
   uint8_t data[7];
   uint8_t state = 0;
@@ -188,7 +188,7 @@ bool MPU9250::readMagAxis(Axes3D &result)
 
 float MPU9250::getHeadingAngle()
 {
-  Axes3D ax;
+  VectorFloat ax;
   readMagAxis(ax);
   float Xf = ax.x;
   float Yf = ax.y;

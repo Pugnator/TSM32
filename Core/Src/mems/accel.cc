@@ -38,7 +38,7 @@ bool MPU9250::configureAccelerometer()
   return true;
 }
 
-void MPU9250::accAutoOffset(Axes3D &axes)
+void MPU9250::accAutoOffset(VectorFloat &axes)
 {
   if (!isCalibration_)
   {
@@ -77,7 +77,7 @@ void MPU9250::accAutoOffset(Axes3D &axes)
   accOffsetZ = (accMaxZ + accMinZ) / 2.0;
 }
 
-bool MPU9250::readAccelAxis(Axes3D &result)
+bool MPU9250::readAccelAxis(VectorFloat &result)
 {
   uint8_t data[8];
   mpuRead(MPU9250_ACCEL_XOUT_H, data, 6);

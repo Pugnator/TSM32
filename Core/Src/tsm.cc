@@ -83,7 +83,7 @@ extern "C"
     // J1850VPW::sendFrame(frame, 2);
 
 #if MEMS_ENABLED
-    MPU9250 mpu(&hi2c1, true);
+    MPU9250 mpu(&hspi1, true);
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)

@@ -9,7 +9,7 @@
 
 #include "eeprom.h"
 
-#include "stm32f1xx_hal.h"
+#include "stm32f4xx_hal.h"
 
 /*
 Missile Guidance For Dummies
@@ -87,13 +87,6 @@ enum class InterruptSource : int
   DataReady
 };
 
-typedef struct Axes3D
-{
-  float x;
-  float y;
-  float z;
-} Axes3D;
-
 typedef enum magMode
 {
   MAG_MODE_PD,
@@ -127,9 +120,9 @@ public:
   bool staticCalibration(Eeprom *mem = nullptr);
   bool loadCalibration(Eeprom *mem);
 
-  bool readMagAxis(Axes3D &result);
-  bool readAccelAxis(Axes3D &result);
-  bool readGyroAxis(Axes3D &result);
+  bool readMagAxis(VectorFloat &result);
+  bool readAccelAxis(VectorFloat &result);
+  bool readGyroAxis(VectorFloat &result);
 
   float getHeadingAngle();
   float getTemperature();
@@ -183,9 +176,9 @@ private:
   bool configureMagnetometer();
 
   void gyroReset();
-  void gyroAutoOffset(Axes3D &axes);
-  void accAutoOffset(Axes3D &axes);
-  void magAutoOffset(Axes3D &axes);
+  void gyroAutoOffset(VectorFloat &axes);
+  void accAutoOffset(VectorFloat &axes);
+  void magAutoOffset(VectorFloat &axes);
 
   float magFactoryCorrX;
   float magFactoryCorrY;

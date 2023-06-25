@@ -68,8 +68,8 @@ void Error_Handler(void);
 #define J1850TX_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_0
 #define LED_GPIO_Port GPIOB
-#define MPU_NSS_Pin GPIO_PIN_2
-#define MPU_NSS_GPIO_Port GPIOB
+#define MPU_CS_Pin GPIO_PIN_2
+#define MPU_CS_GPIO_Port GPIOB
 #define RT_BUTTON_Pin GPIO_PIN_12
 #define RT_BUTTON_GPIO_Port GPIOB
 #define RT_BUTTON_EXTI_IRQn EXTI15_10_IRQn
