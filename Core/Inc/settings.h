@@ -36,7 +36,7 @@
 #define ADC_14_3V_VALUE 4095
 
 #define TURN_ANGLE_THRESHOLD 60
-#define TURN_MAX_TIME_MS 1 * 60 * 1000
+#define TURN_MAX_TIME_MS 5 * 60 * 1000
 
 void startupSettingsHandler();
 

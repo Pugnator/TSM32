@@ -1,6 +1,5 @@
 #include "mpu.h"
 #include "MEMS/types.h"
-#include <memory>
 #include <algorithm>
 
 bool MPU9250::configureAccelerometer()
@@ -11,7 +10,7 @@ bool MPU9250::configureAccelerometer()
   mpuRead(MPU9250_ACCEL_CONFIG, temp_); // get current ACCEL_CONFIG register value
   // c = c & ~0xE0; // Clear self-test bits [7:5]
   *temp_ &= ~0x18;                                        // Clear AFS bits [4:3]
-  *temp_ |= static_cast<int>(MEMS::Ascale::Scale2G) << 3; // Set full scale range for the accelerometer
+  *temp_ |= static_cast<int>(AHRS::Ascale::Scale2G) << 3; // Set full scale range for the accelerometer
 
   mpuWrite(MPU9250_ACCEL_CONFIG, std::move(*temp_)); // Write new ACCEL_CONFIG register value
 
@@ -38,7 +37,7 @@ bool MPU9250::configureAccelerometer()
   return true;
 }
 
-void MPU9250::accAutoOffset(Axes3D &axes)
+void MPU9250::accAutoOffset(VectorFloat &axes)
 {
   if (!isCalibration_)
   {
@@ -77,7 +76,7 @@ void MPU9250::accAutoOffset(Axes3D &axes)
   accOffsetZ = (accMaxZ + accMinZ) / 2.0;
 }
 
-bool MPU9250::readAccelAxis(Axes3D &result)
+bool MPU9250::readAccelAxis(VectorFloat &result)
 {
   uint8_t data[8];
   mpuRead(MPU9250_ACCEL_XOUT_H, data, 6);

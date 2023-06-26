@@ -47,7 +47,7 @@ bool MPU9250::configureGyroscope()
   return true;
 }
 
-void MPU9250::gyroAutoOffset(Axes3D &axes)
+void MPU9250::gyroAutoOffset(VectorFloat &axes)
 {
   if (!isCalibration_)
   {
@@ -86,7 +86,7 @@ void MPU9250::gyroAutoOffset(Axes3D &axes)
   gyroOffsetZ = (gyroMaxZ + gyroMinZ) / 2.0;
 }
 
-bool MPU9250::readGyroAxis(Axes3D &result)
+bool MPU9250::readGyroAxis(VectorFloat &result)
 {
   uint8_t data[6];
   if (!mpuRead(MPU9250_GYRO_XOUT_H, data, 6))

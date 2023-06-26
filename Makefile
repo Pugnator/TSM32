@@ -41,7 +41,8 @@ BUILD_MACHINE := $(shell echo %username%)@$(shell hostname)
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -g -Og
+
+OPT = -O3
 
 
 #######################################
@@ -184,8 +185,8 @@ C_INCLUDES =  \
 
 CXXERRORS_TO_SKIP := -Wno-volatile
 
-CXXSTD := c++17 -pedantic -pedantic-errors $(CXXERRORS_TO_SKIP) #-Werror
-CSTD := c11 -pedantic
+CXXSTD := gnu++2b -pedantic -pedantic-errors $(CXXERRORS_TO_SKIP) #-Werror
+CSTD := c17 -pedantic
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 

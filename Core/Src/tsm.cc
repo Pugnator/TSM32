@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include "id.h"
 #include "vmmu.h"
-#include <memory>
 #include "assert.h"
 #include "dwtdelay.h"
 
@@ -60,7 +59,6 @@ extern "C"
 /*Battery watchdog*/
 #if AUTO_LIGHT_ENABLE
     HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
-    // HAL_ADC_Start_IT(&hadc1);
 #endif
 
 /*J1850 logger*/

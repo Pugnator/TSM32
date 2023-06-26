@@ -4,9 +4,7 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif
-
-  static bool engineStarted = false;
+#endif  
 
   void disableStarter()
   {

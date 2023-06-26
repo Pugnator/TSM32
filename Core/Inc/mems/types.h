@@ -1,15 +1,7 @@
 #pragma once
 
-namespace MEMS
+namespace AHRS
 {
-  typedef struct Axes3D
-  {
-    float x;
-    float y;
-    float z;
-
-  } Axes3D;
-
   enum class DeviceType
   {
     BMI270,
