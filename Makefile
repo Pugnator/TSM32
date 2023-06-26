@@ -107,7 +107,6 @@ CPP_SOURCES =  \
 	Core/Src/turn_ctrl.cc \
 	Core/Src/settings.cc \
 	Core/Src/switch_ctrl.cc \
-	Core/Src/kalman.cc \
 	Core/Src/j1850vpw.cc \
 	Core/Src/j1850parser.cc \
 	Core/Src/tsm.cc \
@@ -201,8 +200,8 @@ C_INCLUDES =  \
 
 CXXERRORS_TO_SKIP := -Wno-volatile
 
-CXXSTD := c++17 -pedantic -pedantic-errors $(CXXERRORS_TO_SKIP) #-Werror
-CSTD := c11 -pedantic
+CXXSTD := gnu++2b -pedantic -pedantic-errors $(CXXERRORS_TO_SKIP) #-Werror
+CSTD := c18 -pedantic
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 

@@ -1,6 +1,5 @@
 #include "tsm.h"
 #include "settings.h"
-#include "kalman.h"
 
 #ifdef __cplusplus
 extern "C"

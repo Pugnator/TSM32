@@ -4,7 +4,6 @@
 #include "mpudefs.h"
 #include <math.h>
 #include <mems/math3d.h>
-#include <memory>
 #include <array>
 
 #include "eeprom.h"

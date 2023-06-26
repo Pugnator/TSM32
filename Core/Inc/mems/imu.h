@@ -5,13 +5,14 @@
 #include "gyro.h"
 #include "mag.h"
 #include "types.h"
+#include "math3d.h"
 
-namespace MEMS
+namespace AHRS
 {
 
-  struct Mems
+  struct InertialMeasurementUnit
   {
-    Mems()
+    InertialMeasurementUnit()
     {
       acc_.reset(new Acc);
       gyro_.reset(new Gyro);
@@ -26,7 +27,7 @@ namespace MEMS
       Acc()
       {
       }
-      Axes3D read();
+      VectorInt16 read();
 
     private:
       std::unique_ptr<Accelerometer> instance_;
@@ -36,7 +37,7 @@ namespace MEMS
       Gyro()
       {
       }
-      Axes3D read();
+      VectorInt16 read();
 
     private:
       std::unique_ptr<Gyroscope> instance_;
@@ -47,7 +48,7 @@ namespace MEMS
       {
       
       }
-      Axes3D read();
+      VectorInt16 read();
 
     private:
       std::unique_ptr<Magnetometer> instance_;

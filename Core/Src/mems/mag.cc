@@ -1,6 +1,7 @@
 #include "tsm.h"
 #include "mpu.h"
 #include "eeprom.h"
+#include "mems/mag.h"
 #include <algorithm>
 
 bool MPU9250::magReset()
@@ -148,7 +149,7 @@ bool MPU9250::readMagAxis(VectorFloat &result)
     magRead(AK8963_ST1, &state);
   } while (!(state & 0x01));
 
-  if(!magRead(AK8963_HXL, &data[0], 7))
+  if (!magRead(AK8963_HXL, &data[0], 7))
     return false;
   // Check if overflow occurred
 
@@ -226,4 +227,33 @@ float MPU9250::getHeadingAngle()
   }
 
   return az;
+}
+
+namespace AHRS
+{
+  Mpu9250MagSPI::Mpu9250MagSPI(SPI_HandleTypeDef *bus)
+  {
+    bus_ = bus;
+  }
+
+  VectorFloat Mpu9250MagSPI::readData()
+  {
+    return VectorFloat();
+  }
+  const MagnetometerError Mpu9250MagSPI::readReg(uint8_t reg, uint8_t byte)
+  {
+    return MagnetometerError::Ok;
+  }
+  const MagnetometerError Mpu9250MagSPI::readReg(uint8_t reg, uint8_t *buf, size_t len, uint32_t timeout_ms)
+  {
+    return MagnetometerError::Ok;
+  }
+  const MagnetometerError Mpu9250MagSPI::writeReg(uint8_t reg, uint8_t byte)
+  {
+    return MagnetometerError::Ok;
+  }
+  const MagnetometerError Mpu9250MagSPI::writeReg(uint8_t reg, uint8_t *buf, size_t len)
+  {
+    return MagnetometerError::Ok;
+  }
 }

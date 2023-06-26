@@ -253,7 +253,7 @@ bool MPU9250::staticCalibration(Eeprom *mem)
 {
   DEBUG_LOG("Starting calibration\r\n");
   isCalibration_ = true;
-  VectorFloat temp;
+  VectorInt16 temp;
   for (uint32_t i = 1 * 3000; i > 0; i--)
   {
     readMagAxis(temp);

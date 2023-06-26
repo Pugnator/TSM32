@@ -1,6 +1,6 @@
 #pragma once
 
-namespace MEMS
+namespace AHRS
 {
   enum class DeviceType
   {
