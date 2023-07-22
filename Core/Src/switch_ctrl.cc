@@ -1,7 +1,6 @@
 #include "tsm.h"
 #include "settings.h"
 #include "j1850.h"
-#include "mpu.h"
 
 #ifdef __cplusplus
 extern "C"

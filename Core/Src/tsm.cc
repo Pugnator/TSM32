@@ -1,7 +1,9 @@
 #include "tsm.h"
 #include "settings.h"
-#include "mpu.h"
 #include "j1850.h"
+#include "spi.h"
+#include "imu_spi.h"
+#include "ahrs.h"
 
 #include <stdio.h>
 #include "id.h"
@@ -81,7 +83,7 @@ extern "C"
     // J1850VPW::sendFrame(frame, 2);
 
 #if MEMS_ENABLED
-    MPU9250 mpu(&hspi1, true);
+    std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, false, Mpu9250::MagMode::MasterMode));
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
@@ -123,8 +125,10 @@ extern "C"
 #endif
 
 #if MEMS_ENABLED
-      if (!mpu.ok())
+      if (!mpu->ok())
         continue;
+
+      mpu->sampleQuant();
 
       if (hazardEnabled || (!leftEnabled && !rightEnabled))
       {
@@ -132,31 +136,20 @@ extern "C"
         continue;
       }
 
-      if (mpu.interruptStatus() != InterruptSource::DmpInterrupt)
-        continue;
-
-      uint16_t fifo = mpu.fifoRead();
-      if (!fifo || 0xFFFF == fifo)
-      {
-        mpu.fifoReset();
-        continue;
-      }
-
-      mpu.getQuaternion(mpuQ);
-      mpu.getYawPitchRoll(ypr, mpuQ);
-      mpu.yprToDegrees(ypr, yprDeg);
+      auto ypr = mpu->getYawPitchRollD();
+     
       if (initialYaw == INT16_MIN)
       {
-        initialYaw = (int16_t)yprDeg[0];
+        initialYaw = ypr.x;
         DEBUG_LOG("Initial yaw = %.3d\r\n", initialYaw);
         continue;
       }
 
-      if (!detectTurn(initialYaw, (int16_t)yprDeg[0], TURN_ANGLE_THRESHOLD) &&
+      if (!detectTurn(initialYaw, ypr.x, TURN_ANGLE_THRESHOLD) &&
           HAL_GetTick() - initialTime < TURN_MAX_TIME_MS)
         continue;
 
-      DEBUG_LOG("Turn detected, yaw = %.3d\r\n", (int16_t)yprDeg[0]);
+      DEBUG_LOG("Turn detected, yaw = %.3d\r\n", ypr.x);
 
       if (leftEnabled)
       {

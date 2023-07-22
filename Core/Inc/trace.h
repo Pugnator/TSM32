@@ -3,10 +3,9 @@
 
 #define LOGGING_CHANNEL 0
 
-
 //#define USE_UART2_TRACE
 #define USE_SEGGER_RTT_TRACE
-#define LOG_LEVEL_INFO
+//#define LOG_LEVEL_INFO
 //#define LOG_LEVEL_DEBUG
 
 
@@ -27,8 +26,6 @@
 #else
 #define WARN_LOG(...)
 #endif
-
-#define CPU_CORE_FREQUENCY_HZ 100000000
 
 #define Print printf_
 #define PrintF printf_

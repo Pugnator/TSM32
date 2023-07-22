@@ -1,5 +1,83 @@
 #pragma once
 #include <cstdint>
+#include <cstdlib>
+#include <bit>
+#include <limits>
+#include <cmath>
+
+static inline float fastAsin(float x)
+{
+  const float c1 = 1.5707288f;  // Polynomial coefficient 1
+  const float c2 = -0.2121144f; // Polynomial coefficient 2
+  const float c3 = 0.0742610f;  // Polynomial coefficient 3
+  const float c4 = -0.0187293f; // Polynomial coefficient 4
+
+  float y = x * (fabsf(x) * (fabsf(x) * (c4 * fabsf(x) + c3) + c2) + c1);
+
+  return y;
+}
+
+static inline float fastAtan2(float y, float x)
+{
+  const float ONEQTR_PI = M_PI / 4.0f;
+  const float THRQTR_PI = 3.0f * M_PI / 4.0f;
+  float r, angle;
+  float absY = fabsf(y) + 1e-10f; // Small offset to avoid division by zero
+
+  if (x < 0.0f)
+  {
+    r = (x + absY) / (absY - x);
+    angle = THRQTR_PI;
+  }
+  else
+  {
+    r = (x - absY) / (x + absY);
+    angle = ONEQTR_PI;
+  }
+
+  angle += (0.1963f * r * r - 0.9817f) * r;
+
+  if (y < 0.0f)
+    return -angle; // negate if in quad III or IV
+  else
+    return angle;
+}
+
+static inline float fastInvSqrt(float x)
+{
+  float halfx = 0.5f * x;
+  float y = x;
+  long i = *(long *)&y;             // Type punning to reinterpret the bits of 'y' as a long integer
+  i = 0x5f3759df - (i >> 1);        // Magic number calculation for initial approximation
+  y = *(float *)&i;                 // Type punning to reinterpret the bits of 'i' as a float
+  y = y * (1.5f - (halfx * y * y)); // Refining the approximation
+  return y;
+}
+
+// Log base 2 approximation and Newton's Method
+static inline float fastSqrt(float z)
+{
+  union
+  {
+    float f;
+    uint32_t i;
+  } val = {z}; /* Convert type, preserving bit pattern */
+  /*
+   * To justify the following code, prove that
+   *
+   * ((((val.i / 2^m) - b) / 2) + b) * 2^m = ((val.i - 2^m) / 2) + ((b + 1) / 2) * 2^m)
+   *
+   * where
+   *
+   * b = exponent bias
+   * m = number of mantissa bits
+   */
+  val.i -= 1 << 23; /* Subtract 2^m. */
+  val.i >>= 1;      /* Divide by 2. */
+  val.i += 1 << 29; /* Add ((b + 1) / 2) * 2^m. */
+
+  return val.f; /* Interpret again as float */
+}
 
 struct Quaternion
 {
@@ -24,13 +102,23 @@ struct Quaternion
     z = nz;
   }
 
+  void zeroRollAndPitch()
+  {
+    x = 0.0f;
+    y = 0.0f;
+  }
+
+  bool isNormalized()
+  {
+    float nE = abs(w * w + x * x + y * y + z * z - 1.f);
+    if (nE > 0.01f)
+      return false;
+
+    return true;
+  }
+
   Quaternion getProduct(Quaternion q)
   {
-    // Quaternion multiplication is defined by:
-    //     (Q1 * Q2).w = (w1w2 - x1x2 - y1y2 - z1z2)
-    //     (Q1 * Q2).x = (w1x2 + x1w2 + y1z2 - z1y2)
-    //     (Q1 * Q2).y = (w1y2 - x1z2 + y1w2 + z1x2)
-    //     (Q1 * Q2).z = (w1z2 + x1y2 - y1x2 + z1w2
     return Quaternion(
         w * q.w - x * q.x - y * q.y - z * q.z,  // new w
         w * q.x + x * q.w + y * q.z - z * q.y,  // new x
@@ -45,22 +133,27 @@ struct Quaternion
 
   float getMagnitude()
   {
-    return sqrt(w * w + x * x + y * y + z * z);
+    return fastSqrt(w * w + x * x + y * y + z * z);
   }
 
-  void normalize()
+  bool normalize()
   {
     float m = getMagnitude();
+    if (m == 0.)
+      return false;
     w /= m;
     x /= m;
     y /= m;
     z /= m;
+    return true;
   }
 
   Quaternion getNormalized()
   {
     Quaternion r(w, x, y, z);
-    r.normalize();
+    if (r.normalize())
+      return Quaternion();
+
     return r;
   }
 };
@@ -85,23 +178,38 @@ struct VectorInt16
     z = nz;
   }
 
+  // Euclidean magnitude formula
   float getMagnitude()
   {
-    return sqrt(x * x + y * y + z * z);
+    return fastSqrt(x * x + y * y + z * z);
   }
 
-  void normalize()
+  bool normalize()
   {
     float m = getMagnitude();
-    x /= m;
-    y /= m;
-    z /= m;
+    if (!m)
+      return false;
+
+    x *= m;
+    y *= m;
+    z *= m;
+    return true;
+  }
+
+  bool isNormalized()
+  {
+    float nE = abs(x * x + y * y + z * z - 1.f);
+    if (nE > 0.01f)
+      return false;
+
+    return true;
   }
 
   VectorInt16 getNormalized()
   {
     VectorInt16 r(x, y, z);
-    r.normalize();
+    if (!r.normalize())
+      return VectorInt16();
     return r;
   }
 
@@ -161,7 +269,7 @@ struct VectorFloat
 
   float getMagnitude()
   {
-    return sqrt(x * x + y * y + z * z);
+    return fastSqrt(x * x + y * y + z * z);
   }
 
   void normalize()
@@ -177,6 +285,15 @@ struct VectorFloat
     VectorFloat r(x, y, z);
     r.normalize();
     return r;
+  }
+
+  bool isNormalized()
+  {
+    float nE = abs(x * x + y * y + z * z - 1.f);
+    if (nE > 0.01f)
+      return false;
+
+    return true;
   }
 
   void rotate(Quaternion *q)
