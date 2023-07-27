@@ -57,7 +57,7 @@ namespace J1850VPW
     static int32_t odolast = 0;
     if (j1850RXctr == 0 || j1850RXctr > 11)
     {
-      DEBUG_LOG("Empty/corrupted frame [=%u]\r\n", j1850RXctr);
+      WARN_LOG("Empty/corrupted frame [=%u]\r\n", j1850RXctr);
       return false;
     }
     uint8_t crc = crc1850(payloadJ1850, j1850RXctr - 1);
@@ -135,7 +135,7 @@ namespace J1850VPW
       if (odolast < 0)
       {
         odolast += 65536;
-      }        
+      }
       trip += odolast;
       odolast = speedSensorTicks;
     }

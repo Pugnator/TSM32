@@ -1,5 +1,6 @@
 #pragma once
 #include "imu_spi.h"
+#include "imu_i2c.h"
 #include "imu_base.h"
 #include "antijam.h"
 

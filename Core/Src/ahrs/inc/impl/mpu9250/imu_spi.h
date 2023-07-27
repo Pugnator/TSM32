@@ -41,7 +41,7 @@ namespace Mpu9250
     bool magWrite(uint8_t address, uint8_t *byte, uint32_t len) override;
     bool magWrite(uint8_t address, uint8_t byte) override;
     bool magRead(uint8_t address, uint8_t *byte, uint32_t len = 1, uint32_t timeout_ms = 1000) override;
-
+    
     SPI_HandleTypeDef *bus_;
   };
 }

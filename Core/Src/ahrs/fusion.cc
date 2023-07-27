@@ -375,4 +375,5 @@ namespace Ahrs
     q.z = q4;
   }  
   template class AhrsBase<Mpu9250::Mpu9250Spi>;
+  template class AhrsBase<Mpu9250::Mpu9250I2c>;
 }

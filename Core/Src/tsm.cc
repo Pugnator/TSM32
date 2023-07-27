@@ -2,7 +2,9 @@
 #include "settings.h"
 #include "j1850.h"
 #include "spi.h"
+#include "i2c.h"
 #include "imu_spi.h"
+#include "imu_i2c.h"
 #include "ahrs.h"
 
 #include <stdio.h>
@@ -40,11 +42,8 @@ extern "C"
 
     if (abs(yaw_difference) > threshold)
     {
-      //HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
       return true;
     }
-
-    //HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
     return false;
   }
 
@@ -76,20 +75,18 @@ extern "C"
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
 
     leftSideOff();
-    rightSideOff();      
+    rightSideOff();
 
-    /*
-    uint8_t test = 0xAA;
-    uint8_t res = 0;
-    HAL_SPI_TransmitReceive(&hspi1, &test, &res, 1, 100);
-    DEBUG_LOG("Send %.2X, got %.2X\r\n", test, res);
-    return;  
-    */
     // uint8_t frame[2] = {0xAA, 0xAA};
     // J1850VPW::sendFrame(frame, 2);
 
+    uint32_t prevSample = HAL_GetTick();
+    uint32_t counter = 0;
+    uint32_t beginTime = prevSample;
+
 #if MEMS_ENABLED
-    std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, false, Mpu9250::MagMode::MasterMode));
+    //std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, false, Mpu9250::MagMode::MasterMode));
+    std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, false, Mpu9250::MagMode::MasterMode));
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
@@ -135,6 +132,26 @@ extern "C"
         continue;
 
       mpu->sampleQuant();
+      counter++;
+      if (counter == 10 * 100UL)
+      {
+        uint32_t deltaTime = HAL_GetTick() - beginTime;
+        float samplesPerSecond = (float)counter / deltaTime * 1000.f;
+        float sampleSpeedHz = 1 / (deltaTime / (float)counter) * 1000.f;
+        DEBUG_LOG("%lu measures in %lums = %.4f samples per second = %.4f Hz\r\n", counter, deltaTime, samplesPerSecond, sampleSpeedHz);
+      }
+
+      if (HAL_GetTick() < IMU_STARTUP_TIME)
+        continue;
+
+      if (HAL_GetTick() - prevSample > 1 * 1000)
+      {
+        auto ypr = mpu->getYawPitchRollD();
+        DEBUG_LOG("Y=%.3d\r\n", ypr.x);
+        DEBUG_LOG("P=%.3d\r\n", ypr.y);
+        DEBUG_LOG("R=%.3d\r\n", ypr.z);
+        prevSample = HAL_GetTick();
+      }
 
       if (hazardEnabled || (!leftEnabled && !rightEnabled))
       {
@@ -143,7 +160,7 @@ extern "C"
       }
 
       auto ypr = mpu->getYawPitchRollD();
-     
+
       if (initialYaw == INT16_MIN)
       {
         initialYaw = ypr.x;
