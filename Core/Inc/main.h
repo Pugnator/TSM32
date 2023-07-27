@@ -60,16 +60,14 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define STARTER_RELAY_Pin GPIO_PIN_13
 #define STARTER_RELAY_GPIO_Port GPIOC
-#define MPU_CS_Pin GPIO_PIN_14
-#define MPU_CS_GPIO_Port GPIOC
 #define BATTERY_ADC_Pin GPIO_PIN_0
 #define BATTERY_ADC_GPIO_Port GPIOA
 #define J1850RX_Pin GPIO_PIN_1
 #define J1850RX_GPIO_Port GPIOA
 #define J1850TX_Pin GPIO_PIN_2
 #define J1850TX_GPIO_Port GPIOA
-#define LED_Pin GPIO_PIN_0
-#define LED_GPIO_Port GPIOB
+#define MPU_CS_Pin GPIO_PIN_0
+#define MPU_CS_GPIO_Port GPIOB
 #define RT_BUTTON_Pin GPIO_PIN_12
 #define RT_BUTTON_GPIO_Port GPIOB
 #define RT_BUTTON_EXTI_IRQn EXTI15_10_IRQn

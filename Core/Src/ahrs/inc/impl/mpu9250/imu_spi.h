@@ -2,6 +2,24 @@
 
 #include "mpu9250_base.h"
 
+#if !__has_include("spi.h")
+//! Dummy implementation if SPI is not enabled
+
+typedef struct SPI_HandleTypeDef
+{
+} SPI_HandleTypeDef;
+
+__attribute__((weak)) HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *, uint8_t *, uint8_t *, uint16_t, uint32_t)
+{
+  return HAL_OK;
+}
+
+__attribute__((weak)) HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *, uint8_t *, uint16_t, uint32_t)
+{
+  return HAL_OK;
+}
+#endif
+
 namespace Mpu9250
 {
   class Mpu9250Spi : public Mpu9250base

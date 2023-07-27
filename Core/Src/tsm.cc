@@ -40,11 +40,11 @@ extern "C"
 
     if (abs(yaw_difference) > threshold)
     {
-      HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+      //HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
       return true;
     }
 
-    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    //HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
     return false;
   }
 
@@ -74,11 +74,17 @@ extern "C"
     /*Starter enable*/
 
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
     leftSideOff();
-    rightSideOff();
+    rightSideOff();      
 
+    /*
+    uint8_t test = 0xAA;
+    uint8_t res = 0;
+    HAL_SPI_TransmitReceive(&hspi1, &test, &res, 1, 100);
+    DEBUG_LOG("Send %.2X, got %.2X\r\n", test, res);
+    return;  
+    */
     // uint8_t frame[2] = {0xAA, 0xAA};
     // J1850VPW::sendFrame(frame, 2);
 

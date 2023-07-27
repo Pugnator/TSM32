@@ -213,8 +213,7 @@ extern "C"
   }
 
   void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
-  {
-    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+  {    
     if (htim->Channel != HAL_TIM_ACTIVE_CHANNEL_2)
     {
       return;
