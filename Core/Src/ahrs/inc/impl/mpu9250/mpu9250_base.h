@@ -124,7 +124,7 @@ namespace Mpu9250
 
     uint16_t fifoDataReady();
     bool fifoReset();
-    uint16_t fifoRead();
+    uint16_t dmpFifoRead();
     uint32_t captureTime();
 
     void getDmpQuaternion(Quaternion &q);

@@ -1,8 +1,8 @@
 #include "tsm.h"
 #include "settings.h"
 #include "j1850.h"
-// #include "spi.h"
-#include "i2c.h"
+#include "spi.h"
+//#include "i2c.h"
 #include "imu_spi.h"
 #include "imu_i2c.h"
 #include "ahrs.h"
@@ -83,8 +83,8 @@ extern "C"
     uint32_t prevSample = HAL_GetTick();
 
 #if MEMS_ENABLED
-    // std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, false, Mpu9250::MagMode::MasterMode));
-    std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, false, Mpu9250::MagMode::MasterMode));
+    std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, true));
+    //std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, false));
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)

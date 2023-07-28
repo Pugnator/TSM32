@@ -25,15 +25,6 @@ static signed char gyro_orientation[9] = { 1, 0, 0,
 /* This is a pre Configured Version of the Embedded MotionDriver 6.12 Firmware instance. 
  *  https://www.invensense.com/developers/software-downloads/#sla_content_45 (requires account)
  *  This is based on the Latest release as of 21st of June 2019
- *  NOTE: This firmware instance is intended to be used with this class and may not work as 
- *  expected if used with other mpu6050 configuration programs.
- *  
- *  It's a miracle! The DMP is Pre Configured to work!!!!!
- *  Actually I used another program to load Configure, test and verify that the DMP was working. 
- *  Then I simply read the DMP Firmware back using view_DMP_firmware_Instance() function
- *  I triggered this near the beginning of the program. I don't believe there is a problem 
- *  with triggering it after it has ran but you can see that the DMP firmware changes over time.
- *  as the MPU6050 modifies [portions of the firmware memory block while active.
  */
 
 namespace Mpu9250

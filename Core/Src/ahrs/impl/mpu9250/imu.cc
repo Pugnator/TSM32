@@ -113,7 +113,7 @@ namespace Mpu9250
     return true;
   }
 
-  uint16_t Mpu9250base::fifoRead()
+  uint16_t Mpu9250base::dmpFifoRead()
   {
     uint16_t dataSize = fifoDataReady();
 

@@ -31,7 +31,7 @@ namespace Mpu9250
   class Mpu9250I2c : public Mpu9250base
   {
   public:
-    Mpu9250I2c(I2C_HandleTypeDef *interface, bool useDmp, MagMode magMode);
+    Mpu9250I2c(I2C_HandleTypeDef *interface, bool useDmp, MagMode magMode = Mpu9250::MagMode::MasterMode);
     ~Mpu9250I2c(){};
 
   private:

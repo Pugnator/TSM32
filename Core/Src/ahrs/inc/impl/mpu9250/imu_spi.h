@@ -25,7 +25,7 @@ namespace Mpu9250
   class Mpu9250Spi : public Mpu9250base
   {
   public:
-    Mpu9250Spi(SPI_HandleTypeDef *interface, bool dmpMode, MagMode magMode);
+    Mpu9250Spi(SPI_HandleTypeDef *interface, bool dmpMode, MagMode magMode = Mpu9250::MagMode::SlaveMode);
     ~Mpu9250Spi(){};
 
   private:

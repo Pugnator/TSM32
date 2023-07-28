@@ -280,44 +280,62 @@ namespace Ahrs
   template <typename MpuType>
   const Quaternion &AhrsBase<MpuType>::sampleQuant()
   {
-    uint32_t sampleTime = HAL_GetTick();
     static uint32_t counter = 0;
     static uint32_t beginTime = HAL_GetTick();
-#if FIXED_AHRS_UPDATE_RATE
-    static const uint32_t fixedUpdateRateMs = static_cast<uint32_t>(1000.0 / AHRS_UPDATE_RATE);
-    if (sampleTime - lastTimeUpdated_ < fixedUpdateRateMs)
-      return quan_; // Old value
-#endif
-    while (this->interruptStatus() != Mpu9250::InterruptSource::DataReady)
-      ;
-      // Frequency Update (Hz) = 1 / (Time Interval (ms) * 0.001)
-
-#if FIXED_AHRS_UPDATE_RATE
-    sampleFreq_ = AHRS_UPDATE_RATE;
-#else
-    sampleFreq_ = 1.f / ((sampleTime - lastTimeUpdated_) * 0.001f);
-#endif
-
-    lastTimeUpdated_ = sampleTime;
-    this->readAccelAxis(acc_);
-    this->readGyroAxis(gyro_);
-#if !DISABLE_MAGNETOMETER
-#if MAGNETOMETER_BLOCKING_MODE
-    if (!this->readMagAxis(mag_, true))
-#else
-    if (!this->readMagAxis(mag_, false))
-#endif
+    if (this->useDmp_)
     {
-      madgwick6DoF(quan_, gyro_, acc_);
+      if (this->interruptStatus() != Mpu9250::InterruptSource::DmpInterrupt)
+      {
+        return quan_;
+      }
+
+      uint16_t fifo = this->dmpFifoRead();
+      if (!fifo || 0xFFFF == fifo)
+      {
+        this->fifoReset();
+        return quan_;
+      }
+
+      this->getDmpQuaternion(quan_);
     }
     else
     {
-      madgwick9DoF(quan_, gyro_, acc_, mag_);
-    }
+      uint32_t sampleTime = HAL_GetTick();            
+#if FIXED_AHRS_UPDATE_RATE
+      static const uint32_t fixedUpdateRateMs = static_cast<uint32_t>(1000.0 / AHRS_UPDATE_RATE);
+      if (sampleTime - lastTimeUpdated_ < fixedUpdateRateMs)
+        return quan_; // Old value
+#endif
+      while (this->interruptStatus() != Mpu9250::InterruptSource::DataReady)
+        ;
+        // Frequency Update (Hz) = 1 / (Time Interval (ms) * 0.001)
+
+#if FIXED_AHRS_UPDATE_RATE
+      sampleFreq_ = AHRS_UPDATE_RATE;
 #else
-    madgwick6DoF(quan_, gyro_, acc_);
+      sampleFreq_ = 1.f / ((sampleTime - lastTimeUpdated_) * 0.001f);
 #endif
 
+      lastTimeUpdated_ = sampleTime;
+      this->readAccelAxis(acc_);
+      this->readGyroAxis(gyro_);
+#if !DISABLE_MAGNETOMETER
+#if MAGNETOMETER_BLOCKING_MODE
+      if (!this->readMagAxis(mag_, true))
+#else
+      if (!this->readMagAxis(mag_, false))
+#endif
+      {
+        madgwick6DoF(quan_, gyro_, acc_);
+      }
+      else
+      {
+        madgwick9DoF(quan_, gyro_, acc_, mag_);
+      }
+#else
+      madgwick6DoF(quan_, gyro_, acc_);
+#endif
+    }
     // antiJam->sample(mag_);
     counter++;
     if (counter == 10 * 100UL)

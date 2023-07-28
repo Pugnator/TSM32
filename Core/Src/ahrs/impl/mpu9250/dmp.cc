@@ -33,18 +33,6 @@ namespace Mpu9250
     if (!mpuWrite(MPU9250_SMPLRT_DIV, 0x04))
       return false;
 
-    // Enable I2C bypass in order to use AK9638 via I2C
-    if (!mpuWrite(MPU9250_INT_PIN_CFG, 0x22))
-      return false;
-
-    if (!configureMagnetometer())
-    {
-      DEBUG_LOG("Failed to configure magnetometer.\r\n");
-      ok_ = false;
-    }
-
-    // magSetMode(MAG_MODE_PD);
-
     // Load Firmware One Byte at a Time
     uint32_t address = 0;
     while (address < dmpFirmwareSize)
@@ -72,9 +60,6 @@ namespace Mpu9250
     if (!mpuWrite(MPU9250_USER_CTRL, 0x20))
       return false;
     if (!mpuWrite(MPU9250_USER_CTRL, 0xE8))
-      return false;
-
-    if (!setMagnetometerAsSlave())
       return false;
 
     HAL_Delay(10);
