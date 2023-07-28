@@ -53,18 +53,6 @@ namespace Mpu9250
     return true;
   }
 
-  /**
-   * @brief  Verify if active page is full and Writes variable in EEPROM.
-   * @param  address: 16 bit virtual address of the variable
-   * @param  startBit: 16 bit data to be written as variable value
-   * @param  length: 16 bit data to be written as variable value
-   * @param  data: 16 bit data to be written as variable value
-   * @retval Success or error status:
-   *           - HAL_OK: on success
-   *           - PAGE_FULL: if valid page is full
-   *           - NO_VALID_PAGE: if no valid page was found
-   *           - Flash error code: on write Flash error
-   */
   bool Mpu9250base::mpuWriteBits(uint8_t address, uint8_t startBit, uint8_t length, uint8_t data)
   {
     uint8_t byte;

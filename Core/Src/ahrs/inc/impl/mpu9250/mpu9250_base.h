@@ -165,6 +165,7 @@ namespace Mpu9250
 
     bool gyroCurrentBias();
     bool accelCurrentBias();
+    bool magCurrentBias();
 
     float magFactoryCorrX;
     float magFactoryCorrY;
@@ -177,6 +178,8 @@ namespace Mpu9250
     float aMult;
     float gMult;
     float gSensF;
+    
+    VectorInt16 magOffset;
 
     float chipTemperature_;
 

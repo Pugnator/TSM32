@@ -1,7 +1,7 @@
 #include "tsm.h"
 #include "settings.h"
 #include "j1850.h"
-#include "spi.h"
+// #include "spi.h"
 #include "i2c.h"
 #include "imu_spi.h"
 #include "imu_i2c.h"
@@ -81,11 +81,9 @@ extern "C"
     // J1850VPW::sendFrame(frame, 2);
 
     uint32_t prevSample = HAL_GetTick();
-    uint32_t counter = 0;
-    uint32_t beginTime = prevSample;
 
 #if MEMS_ENABLED
-    //std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, false, Mpu9250::MagMode::MasterMode));
+    // std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, false, Mpu9250::MagMode::MasterMode));
     std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, false, Mpu9250::MagMode::MasterMode));
 #endif
     stopAppExecuting = false;
@@ -132,14 +130,6 @@ extern "C"
         continue;
 
       mpu->sampleQuant();
-      counter++;
-      if (counter == 10 * 100UL)
-      {
-        uint32_t deltaTime = HAL_GetTick() - beginTime;
-        float samplesPerSecond = (float)counter / deltaTime * 1000.f;
-        float sampleSpeedHz = 1 / (deltaTime / (float)counter) * 1000.f;
-        DEBUG_LOG("%lu measures in %lums = %.4f samples per second = %.4f Hz\r\n", counter, deltaTime, samplesPerSecond, sampleSpeedHz);
-      }
 
       if (HAL_GetTick() < IMU_STARTUP_TIME)
         continue;

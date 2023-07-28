@@ -50,6 +50,39 @@ namespace Mpu9250
     return true;
   }
 
+  bool Mpu9250base::magCurrentBias()
+  {
+    DEBUG_LOG("Mag offset cancelation\r\n");    
+
+    int32_t xOffset = 0;
+    int32_t yOffset = 0;
+    int32_t zOffset = 0;
+
+    const int32_t averageCount = 1000;
+
+    VectorFloat temp;
+
+    for (uint32_t i = 0; i < averageCount; i++)
+    {
+      readMagAxis(temp, true);
+      xOffset += temp.x;
+      yOffset += temp.y;
+      zOffset += temp.z;
+    }
+    xOffset /= averageCount;
+    yOffset /= averageCount;
+    zOffset /= averageCount;
+
+    DEBUG_LOG("Mag X offset: %d\r\n", xOffset);
+    DEBUG_LOG("Mag Y offset: %d\r\n", yOffset);
+    DEBUG_LOG("Mag Z offset: %d\r\n", zOffset);
+
+    magOffset.x = xOffset;
+    magOffset.y = yOffset;
+    magOffset.z = zOffset;
+    return true;
+  }
+
   bool Mpu9250base::configureMagnetometer()
   {
     if (!magReset())
@@ -85,8 +118,10 @@ namespace Mpu9250
     if (!magSetMode(MAG_MODE_PD))
       return false;
 
-    if (!magSetMode(MAG_MODE_CONT_8HZ))
+    if (!magSetMode(MAG_MODE_CONT_100HZ))
       return false;
+
+    magCurrentBias();
 
     DEBUG_LOG("Mag is ready\r\n");
     return true;
@@ -131,9 +166,9 @@ namespace Mpu9250
 
     static const float mRes = 10.0 * 4912.0 / 32760.0; // Proper scale to return milliGauss
 
-    result.y = magX * magFactoryCorrX * mRes;
-    result.x = magY * magFactoryCorrY * mRes;
-    result.z = magZ * magFactoryCorrZ * mRes;
+    result.y = magX * magFactoryCorrX * mRes - magOffset.x;
+    result.x = magY * magFactoryCorrY * mRes - magOffset.y;
+    result.z = magZ * magFactoryCorrZ * mRes - magOffset.z;
     return true;
   }
 }
