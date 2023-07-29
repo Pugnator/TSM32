@@ -52,8 +52,8 @@ extern "C"
     uint32_t id[3] = {0};
     getCPUid(id, STM32F1_t);
     PrintF("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
-             id[0], id[1], id[2],
-             VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
+           id[0], id[1], id[2],
+           VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
     startupSettingsHandler();
 
@@ -70,22 +70,23 @@ extern "C"
     /*Blinker bulb PWM*/
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
-    
+
     /*Enable starter first*/
-    enableStarter();    
+    enableStarter();
 
     leftSideOff();
     rightSideOff();
 
-    // uint8_t frame[2] = {0xAA, 0xAA};
-    // J1850VPW::sendFrame(frame, 2);
-
+// uint8_t frame[2] = {0xAA, 0xAA};
+// J1850VPW::sendFrame(frame, 2);
+#if DEBUG
     uint32_t prevSample = HAL_GetTick();
+#endif
 
 #if MEMS_ENABLED
     std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, true));
     // std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, false));
-#endif    
+#endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
     {
@@ -134,14 +135,16 @@ extern "C"
       if (HAL_GetTick() < IMU_STARTUP_TIME)
         continue;
 
+#if DEBUG
       if (HAL_GetTick() - prevSample > 1 * 1000)
       {
-        auto ypr = mpu->getYawPitchRollD();        
+        auto ypr = mpu->getYawPitchRollD();
         DEBUG_LOG("Y=%.3d\r\n", ypr.x);
         DEBUG_LOG("P=%.3d\r\n", ypr.y);
         DEBUG_LOG("R=%.3d\r\n", ypr.z);
         prevSample = HAL_GetTick();
       }
+#endif
 
       if (hazardEnabled || (!leftEnabled && !rightEnabled))
       {

@@ -6,6 +6,8 @@ extern "C"
 {
 #endif
   static bool starterDisabled = false;
+  static bool starterEnabledLogged = false;
+  static bool starterDisabledLogged = false;
 
   void disableStarter()
   {
@@ -20,6 +22,12 @@ extern "C"
         return;
 
     starterDisabled = true;
+    starterEnabledLogged = false;
+    if(!starterDisabledLogged)
+    {
+      DEBUG_LOG("Starter is enabled.\r\n");
+      starterDisabledLogged = true;
+    }
     DEBUG_LOG("Starter disabled.\r\n");
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_RESET);
 
@@ -39,7 +47,13 @@ extern "C"
     }
 #endif
 
-    DEBUG_LOG("Starter is enabled.");
+    starterDisabledLogged = false;
+    if(!starterEnabledLogged)
+    {
+      DEBUG_LOG("Starter is enabled.\r\n");
+      starterEnabledLogged = true;      
+    }
+    
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
 #endif
   }
