@@ -28,11 +28,11 @@ namespace Ahrs
   {
     VectorFloat ypr_;
     // yaw: (about Z axis)
-    ypr_.x = fastAtan2(2.0f * (quan_.x * quan_.y + quan_.w * quan_.z), quan_.w * quan_.w + quan_.x * quan_.x - quan_.y * quan_.y - quan_.z * quan_.z);
+    ypr_.x = FAST_ATAN2(2.0f * (quan_.x * quan_.y + quan_.w * quan_.z), quan_.w * quan_.w + quan_.x * quan_.x - quan_.y * quan_.y - quan_.z * quan_.z);
     // pitch: (nose up/down, about Y axis)
-    ypr_.z = -fastAsin(2.0f * (quan_.x * quan_.z - quan_.w * quan_.y));
+    ypr_.z = -FAST_ASIN(2.0f * (quan_.x * quan_.z - quan_.w * quan_.y));
     // roll: (tilt left/right, about X axis)
-    ypr_.y = fastAtan2(2.0f * (quan_.w * quan_.x + quan_.y * quan_.z), quan_.w * quan_.w - quan_.x * quan_.x - quan_.y * quan_.y + quan_.z * quan_.z);
+    ypr_.y = FAST_ATAN2(2.0f * (quan_.w * quan_.x + quan_.y * quan_.z), quan_.w * quan_.w - quan_.x * quan_.x - quan_.y * quan_.y + quan_.z * quan_.z);
     return ypr_;
   }
 
@@ -40,11 +40,11 @@ namespace Ahrs
   void AhrsBase<MpuType>::getEuler(float *output, Quaternion &q)
   {
     // psi
-    output[0] = fastAtan2(2 * q.x * q.y - 2 * q.w * q.z, 2 * q.w * q.w + 2 * q.x * q.x - 1);
+    output[0] = FAST_ATAN2(2 * q.x * q.y - 2 * q.w * q.z, 2 * q.w * q.w + 2 * q.x * q.x - 1);
     // theta
-    output[1] = -fastAsin(2 * q.x * q.z + 2 * q.w * q.y);
+    output[1] = -FAST_ASIN(2 * q.x * q.z + 2 * q.w * q.y);
     // phi
-    output[2] = fastAtan2(2 * q.y * q.z - 2 * q.w * q.x, 2 * q.w * q.w + 2 * q.z * q.z - 1);
+    output[2] = FAST_ATAN2(2 * q.y * q.z - 2 * q.w * q.x, 2 * q.w * q.w + 2 * q.z * q.z - 1);
   }
 
   template <typename MpuType>
@@ -185,35 +185,54 @@ namespace Ahrs
 #if DISABLE_CALIBRATION
     return true;
 #endif
-    DEBUG_LOG("Starting calibration\r\n");
+    DEBUG_LOG("Static calibration\r\n");
+    DEBUG_LOG("Starting in\r\n");
+    for (uint32_t count = 10; count > 0; count--)
+    {
+      DEBUG_LOG("%u\r\n", count);
+      HAL_Delay(1000);
+    }
+
     isCalibration_ = true;
     VectorFloat temp;
-    for (uint32_t i = 1 * 3000; i > 0; i--)
-    {
-      this->readMagAxis(temp);
-    }
-    DEBUG_LOG("Mag offsets: %.2f, %.2f, %.2f\r\n", magOffsetX_, magOffsetY_, magOffsetZ_);
-
     float x = 0;
     float y = 0;
     float z = 0;
-    for (uint32_t i = 25000; i > 0; i--)
+    /*
+    for (uint32_t i = 1 * 100; i >= 0; i--)
     {
-      this->readAccelAxis(temp);
+      this->readMagAxis(temp);
       x += temp.x;
       y += temp.y;
       z += temp.z;
     }
-    x /= 25000.0;
-    y /= 25000.0;
-    z /= 25000.0;
+    DEBUG_LOG("Mag offsets: %.2f, %.2f, %.2f\r\n", x, y, z);
+    */
+    x = 0;
+    y = 0;
+    z = 0;
+    const uint32_t sampleNumber = 60;
+    for (uint32_t i = sampleNumber; i >= 0; i--)
+    {
+      while (this->interruptStatus() != Mpu9250::InterruptSource::DataReady)
+        ;
+      if (!this->readAccelAxis(temp))
+        return false;
+      x += temp.x;
+      y += temp.y;
+      z += temp.z;
+      HAL_Delay(1);
+    }
+    x /= (float)sampleNumber;
+    y /= (float)sampleNumber;
+    z /= (float)sampleNumber;
     DEBUG_LOG("Acc avareges: %.2f, %.2f, %.2f\r\n", x, y, z);
-    DEBUG_LOG("Acc offsets: %.2f, %.2f, %.2f\r\n", accOffsetX_, accOffsetY_, accOffsetZ_);
+    // DEBUG_LOG("Acc offsets: %.2f, %.2f, %.2f\r\n", accOffsetX_, accOffsetY_, accOffsetZ_);
 
     x = 0;
     y = 0;
     z = 0;
-    for (uint32_t i = 25000; i > 0; i--)
+    for (uint32_t i = 25000; i >= 0; i--)
     {
       this->readGyroAxis(temp);
       x += temp.x;
@@ -225,7 +244,7 @@ namespace Ahrs
     y /= 25000.0;
     z /= 25000.0;
     DEBUG_LOG("Gyro avareges: %.2f, %.2f, %.2f\r\n", x, y, z);
-    DEBUG_LOG("Gyro offsets: %.2f, %.2f, %.2f\r\n", gyroOffsetX_, gyroOffsetY, gyroOffsetZ_);
+    // DEBUG_LOG("Gyro offsets: %.2f, %.2f, %.2f\r\n", gyroOffsetX_, gyroOffsetY, gyroOffsetZ_);
 
     DEBUG_LOG("Finished calibration\r\n");
     return true;
@@ -280,8 +299,10 @@ namespace Ahrs
   template <typename MpuType>
   const Quaternion &AhrsBase<MpuType>::sampleQuant()
   {
+#if DEBUG
     static uint32_t counter = 0;
     static uint32_t beginTime = HAL_GetTick();
+#endif
     if (this->useDmp_)
     {
       if (this->interruptStatus() != Mpu9250::InterruptSource::DmpInterrupt)
@@ -300,7 +321,7 @@ namespace Ahrs
     }
     else
     {
-      uint32_t sampleTime = HAL_GetTick();            
+      uint32_t sampleTime = HAL_GetTick();
 #if FIXED_AHRS_UPDATE_RATE
       static const uint32_t fixedUpdateRateMs = static_cast<uint32_t>(1000.0 / AHRS_UPDATE_RATE);
       if (sampleTime - lastTimeUpdated_ < fixedUpdateRateMs)
@@ -336,7 +357,8 @@ namespace Ahrs
       madgwick6DoF(quan_, gyro_, acc_);
 #endif
     }
-    // antiJam->sample(mag_);
+// antiJam->sample(mag_);
+#if DEBUG
     counter++;
     if (counter == 10 * 100UL)
     {
@@ -345,6 +367,7 @@ namespace Ahrs
       float sampleSpeedHz = 1 / (deltaTime / (float)counter) * 1000.f;
       DEBUG_LOG("%lu measures in %lums = %.4f samples per second = %.4f Hz\r\n", counter, deltaTime, samplesPerSecond, sampleSpeedHz);
     }
+#endif
     return quan_;
   }
 

@@ -2,7 +2,7 @@
 #include "settings.h"
 #include "j1850.h"
 #include "spi.h"
-//#include "i2c.h"
+// #include "i2c.h"
 #include "imu_spi.h"
 #include "imu_i2c.h"
 #include "ahrs.h"
@@ -51,7 +51,7 @@ extern "C"
   {
     uint32_t id[3] = {0};
     getCPUid(id, STM32F1_t);
-    INFO_LOG("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
+    PrintF("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
              id[0], id[1], id[2],
              VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
@@ -70,9 +70,9 @@ extern "C"
     /*Blinker bulb PWM*/
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
-    /*Starter enable*/
-
-    HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
+    
+    /*Enable starter first*/
+    enableStarter();    
 
     leftSideOff();
     rightSideOff();
@@ -84,8 +84,8 @@ extern "C"
 
 #if MEMS_ENABLED
     std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, true));
-    //std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, false));
-#endif
+    // std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, false));
+#endif    
     stopAppExecuting = false;
     while (!stopAppExecuting)
     {
@@ -136,7 +136,7 @@ extern "C"
 
       if (HAL_GetTick() - prevSample > 1 * 1000)
       {
-        auto ypr = mpu->getYawPitchRollD();
+        auto ypr = mpu->getYawPitchRollD();        
         DEBUG_LOG("Y=%.3d\r\n", ypr.x);
         DEBUG_LOG("P=%.3d\r\n", ypr.y);
         DEBUG_LOG("R=%.3d\r\n", ypr.z);

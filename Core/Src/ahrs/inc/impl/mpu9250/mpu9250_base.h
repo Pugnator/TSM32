@@ -129,6 +129,7 @@ namespace Mpu9250
 
     void getDmpQuaternion(Quaternion &q);
     void getDmpAccel(VectorInt16 &vectorOut);
+    void getDmpGyro(VectorInt16 &vectorOut);
 
     bool dmpEnabled();
     bool startDMP();

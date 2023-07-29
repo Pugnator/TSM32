@@ -58,7 +58,7 @@ namespace Mpu9250
     int32_t yOffset = 0;
     int32_t zOffset = 0;
 
-    const int32_t averageCount = 100;
+    const int32_t averageCount = 10;
 
     VectorFloat temp;
 

@@ -57,6 +57,10 @@ namespace Ahrs
     float getHeadingAngle();
     VectorInt16 getYawPitchRollD();
     VectorFloat getYawPitchRollR();
+
+    VectorFloat &getLastAcceleration() { return acc_; };
+    VectorFloat &getLastGyro() { return gyro_; };
+    VectorFloat &getLastMagnetometer() { return mag_; };
     void getEuler(float *output, Quaternion &q);
 
     void getGravity(VectorFloat &vectorOut, Quaternion &q);

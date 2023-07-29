@@ -39,11 +39,18 @@ BUILD_MACHINE := $(shell echo %username%)@$(shell hostname)
 # building variables
 ######################################
 # debug build?
-DEBUG = 1
+DEBUG = 0
 # optimization
 
-OPT = -O3
-
+ifeq ($(DEBUG), 1)
+OPT = -Og -g
+CFLAGS += -DDEBUG
+CXXFLAGS += -DDEBUG
+else
+OPT = -Os
+CFLAGS += -DRELEASE
+CXXFLAGS += -DRELEASE
+endif
 
 #######################################
 # paths

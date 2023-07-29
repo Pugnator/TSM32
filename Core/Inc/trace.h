@@ -3,11 +3,12 @@
 
 #define LOGGING_CHANNEL 0
 
-//#define USE_UART2_TRACE
+// #define USE_UART2_TRACE
 #define USE_SEGGER_RTT_TRACE
+#if DEBUG
 #define LOG_LEVEL_INFO
 #define LOG_LEVEL_DEBUG
-
+#endif
 
 #ifdef LOG_LEVEL_DEBUG
 #define DEBUG_LOG PrintF

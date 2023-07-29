@@ -58,7 +58,7 @@ namespace Ahrs
     if (ax && ay && az)
     {
       // Normalise accelerometer measurement
-      recipNorm = fastInvSqrt(ax * ax + ay * ay + az * az);
+      recipNorm = FAST_INV_SQRT(ax * ax + ay * ay + az * az);
       ax *= recipNorm;
       ay *= recipNorm;
       az *= recipNorm;
@@ -84,7 +84,7 @@ namespace Ahrs
       s2 = 4.0f * q0q0 * q2 + _2q0 * ax + _4q2 * q3q3 - _2q3 * ay - _4q2 + _8q2 * q1q1 + _8q2 * q2q2 + _4q2 * az;
       s3 = 4.0f * q1q1 * q3 - _2q1 * ax + 4.0f * q2q2 * q3 - _2q2 * ay;
 
-      recipNorm = fastInvSqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
+      recipNorm = FAST_INV_SQRT(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
       s0 *= recipNorm;
       s1 *= recipNorm;
       s2 *= recipNorm;
@@ -105,13 +105,13 @@ namespace Ahrs
     q3 += qDot4 * invSampleFreq;
 
     // Normalise quaternion
-    recipNorm = fastInvSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+    recipNorm = FAST_INV_SQRT(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
     q0 *= recipNorm;
     q1 *= recipNorm;
     q2 *= recipNorm;
     q3 *= recipNorm;
 
-    // float quatMag = fastSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+    // float quatMag = FAST_SQRT(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
 
     q.w = q0;
     q.x = q1;
@@ -176,13 +176,13 @@ namespace Ahrs
     if (ax && ay && az)
     {
       // Normalise accelerometer measurement
-      recipNorm = fastInvSqrt(ax * ax + ay * ay + az * az);
+      recipNorm = FAST_INV_SQRT(ax * ax + ay * ay + az * az);
       ax *= recipNorm;
       ay *= recipNorm;
       az *= recipNorm;
 
       // Normalise magnetometer measurement
-      recipNorm = fastInvSqrt(mx * mx + my * my + mz * mz);
+      recipNorm = FAST_INV_SQRT(mx * mx + my * my + mz * mz);
       mx *= recipNorm;
       my *= recipNorm;
       mz *= recipNorm;
@@ -212,7 +212,7 @@ namespace Ahrs
       // Reference direction of Earth's magnetic field
       hx = mx * q0q0 - _2q0my * q3 + _2q0mz * q2 + mx * q1q1 + _2q1 * my * q2 + _2q1 * mz * q3 - mx * q2q2 - mx * q3q3;
       hy = _2q0mx * q3 + my * q0q0 - _2q0mz * q1 + _2q1mx * q2 - my * q1q1 + my * q2q2 + _2q2 * mz * q3 - my * q3q3;
-      _2bx = fastSqrt(hx * hx + hy * hy);
+      _2bx = FAST_SQRT(hx * hx + hy * hy);
       _2bz = -_2q0mx * q2 + _2q0my * q1 + mz * q0q0 + _2q1mx * q3 - mz * q1q1 + _2q2 * my * q3 - mz * q2q2 + mz * q3q3;
       _4bx = 2.0f * _2bx;
       _4bz = 2.0f * _2bz;
@@ -222,7 +222,7 @@ namespace Ahrs
       s1 = _2q3 * (2.0f * q1q3 - _2q0q2 - ax) + _2q0 * (2.0f * q0q1 + _2q2q3 - ay) - 4.0f * q1 * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) + _2bz * q3 * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q2 + _2bz * q0) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q3 - _4bz * q1) * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
       s2 = -_2q0 * (2.0f * q1q3 - _2q0q2 - ax) + _2q3 * (2.0f * q0q1 + _2q2q3 - ay) - 4.0f * q2 * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) + (-_4bx * q2 - _2bz * q0) * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q1 + _2bz * q3) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q0 - _4bz * q2) * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
       s3 = _2q1 * (2.0f * q1q3 - _2q0q2 - ax) + _2q2 * (2.0f * q0q1 + _2q2q3 - ay) + (-_4bx * q3 + _2bz * q1) * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (-_2bx * q0 + _2bz * q2) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + _2bx * q1 * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
-      recipNorm = fastInvSqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
+      recipNorm = FAST_INV_SQRT(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
       s0 *= recipNorm;
       s1 *= recipNorm;
       s2 *= recipNorm;
@@ -243,7 +243,7 @@ namespace Ahrs
     q3 += qDot4 * invSampleFreq;
 
     // Normalise quaternion
-    recipNorm = fastInvSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+    recipNorm = FAST_INV_SQRT(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
     q0 *= recipNorm;
     q1 *= recipNorm;
     q2 *= recipNorm;
@@ -300,7 +300,7 @@ namespace Ahrs
     float q4q4 = q4 * q4;
 
     // Normalise accelerometer measurement
-    norm = fastSqrt(ax * ax + ay * ay + az * az);
+    norm = FAST_SQRT(ax * ax + ay * ay + az * az);
     if (!norm)
       return;           // handle NaN
     norm = 1.0f / norm; // use reciprocal for division
@@ -309,7 +309,7 @@ namespace Ahrs
     az *= norm;
 
     // Normalise magnetometer measurement
-    norm = fastInvSqrt(mx * mx + my * my + mz * mz);
+    norm = FAST_INV_SQRT(mx * mx + my * my + mz * mz);
     if (!norm)
       return; // handle NaN
 
@@ -320,7 +320,7 @@ namespace Ahrs
     // Reference direction of Earth's magnetic field
     hx = 2.0f * mx * (0.5f - q3q3 - q4q4) + 2.0f * my * (q2q3 - q1q4) + 2.0f * mz * (q2q4 + q1q3);
     hy = 2.0f * mx * (q2q3 + q1q4) + 2.0f * my * (0.5f - q2q2 - q4q4) + 2.0f * mz * (q3q4 - q1q2);
-    bx = fastSqrt((hx * hx) + (hy * hy));
+    bx = FAST_SQRT((hx * hx) + (hy * hy));
     bz = 2.0f * mx * (q2q4 - q1q3) + 2.0f * my * (q3q4 + q1q2) + 2.0f * mz * (0.5f - q2q2 - q3q3);
 
     // Estimated direction of gravity and magnetic field
@@ -363,7 +363,7 @@ namespace Ahrs
     q4 = pc + (q1 * gz + pa * gy - pb * gx) * (0.5f * deltat);
 
     // Normalise quaternion
-    norm = fastInvSqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);
+    norm = FAST_INV_SQRT(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);
     q1 *= norm;
     q2 *= norm;
     q3 *= norm;

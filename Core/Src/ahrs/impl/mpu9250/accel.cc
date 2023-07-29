@@ -36,7 +36,7 @@ namespace Mpu9250
     // clear on read of INT_STATUS, and enable I2C_BYPASS_EN so additional chips
     // can join the I2C bus and all can be controlled as master
     // 00000010
-    accelCurrentBias();
+    //accelCurrentBias();
     return true;
   }
 

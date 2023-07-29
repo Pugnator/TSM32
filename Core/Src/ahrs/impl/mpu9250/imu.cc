@@ -23,6 +23,13 @@ namespace Mpu9250
     v.z = accel[2];
   }
 
+  void Mpu9250base::getDmpGyro(VectorInt16 &v)
+  {
+    v.x = gyro[0];
+    v.y = gyro[1];
+    v.z = gyro[2];
+  }
+
   bool Mpu9250base::mpuWriteBit(uint8_t address, uint8_t bitNumber, bool state)
   {
     uint8_t byte;

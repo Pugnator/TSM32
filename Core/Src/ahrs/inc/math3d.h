@@ -4,8 +4,21 @@
 #include <bit>
 #include <limits>
 #include <cmath>
+#include "ahrs_config.h"
 
-static inline float fastAsin(float x)
+#if SPEED_MATH
+#define FAST_ASIN(x) _fastAsin(x)
+#define FAST_ATAN2(x, y) _fastAtan2(x, y)
+#define FAST_SQRT(x) _fastSqrt(x)
+#define FAST_INV_SQRT(x) _fastInvSqrt(x)
+#else
+#define FAST_ASIN(x) asin(x)
+#define FAST_ATAN2(x, y) atan2(x, y)
+#define FAST_SQRT(x) sqrt(x)
+#define FAST_INV_SQRT(x) (1.0 / sqrt(x))
+#endif
+
+static inline float _fastAsin(float x)
 {
   const float c1 = 1.5707288f;  // Polynomial coefficient 1
   const float c2 = -0.2121144f; // Polynomial coefficient 2
@@ -17,7 +30,7 @@ static inline float fastAsin(float x)
   return y;
 }
 
-static inline float fastAtan2(float y, float x)
+static inline float _fastAtan2(float y, float x)
 {
   const float ONEQTR_PI = M_PI / 4.0f;
   const float THRQTR_PI = 3.0f * M_PI / 4.0f;
@@ -43,7 +56,7 @@ static inline float fastAtan2(float y, float x)
     return angle;
 }
 
-static inline float fastInvSqrt(float x)
+static inline float _fastInvSqrt(float x)
 {
   float halfx = 0.5f * x;
   float y = x;
@@ -55,7 +68,7 @@ static inline float fastInvSqrt(float x)
 }
 
 // Log base 2 approximation and Newton's Method
-static inline float fastSqrt(float z)
+static inline float _fastSqrt(float z)
 {
   union
   {
@@ -133,7 +146,7 @@ struct Quaternion
 
   float getMagnitude()
   {
-    return fastSqrt(w * w + x * x + y * y + z * z);
+    return FAST_SQRT(w * w + x * x + y * y + z * z);
   }
 
   bool normalize()
@@ -181,7 +194,7 @@ struct VectorInt16
   // Euclidean magnitude formula
   float getMagnitude()
   {
-    return fastSqrt(x * x + y * y + z * z);
+    return FAST_SQRT(x * x + y * y + z * z);
   }
 
   bool normalize()
@@ -269,7 +282,7 @@ struct VectorFloat
 
   float getMagnitude()
   {
-    return fastSqrt(x * x + y * y + z * z);
+    return FAST_SQRT(x * x + y * y + z * z);
   }
 
   void normalize()

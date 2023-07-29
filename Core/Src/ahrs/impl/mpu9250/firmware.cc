@@ -2,19 +2,7 @@
 #include <cstdint>
 #include "mpu9250_base.h"
 
-/*
-Embedded MotionDriver 6.12 Firmware instance. 
-https://www.invensense.com/developers/software-downloads/#sla_content_45 
-
-Jump address 0x0400
-*/
-
-/* The mounting matrix below tells the MPL how to rotate the raw
-   data from the driver(s). The matrix below reflects the axis
-   orientation of the MPU-6050 on the nav6 circuit board.
-*/
-
-/* for your understanding this is the Gyro orentation Hard coded into the MPU With this instance of the DMP
+/* This is the Gyro orentation Hard coded into the MPU With this instance of the DMP
 static signed char gyro_orientation[9] = { 1, 0, 0,
                                            0, 1, 0,
                                            0, 0, 1
