@@ -1,7 +1,6 @@
 #include "tsm.h"
 
 volatile bool settingsMode = false;
-;
 
 void startupSettingsHandler()
 {
