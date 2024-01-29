@@ -19,18 +19,17 @@ extern "C"
 
     static uint32_t crankingStartTime = HAL_GetTick();
     if (HAL_GetTick() - crankingStartTime < STARTER_DISABLE_THRESHOLD)
-        return;
+      return;
 
     starterDisabled = true;
     starterEnabledLogged = false;
-    if(!starterDisabledLogged)
+    if (!starterDisabledLogged)
     {
       DEBUG_LOG("Starter is enabled.\r\n");
       starterDisabledLogged = true;
     }
     DEBUG_LOG("Starter disabled.\r\n");
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_RESET);
-
 #endif
   }
 
@@ -48,14 +47,13 @@ extern "C"
 #endif
 
     starterDisabledLogged = false;
-    if(!starterEnabledLogged)
+    if (!starterEnabledLogged)
     {
       DEBUG_LOG("Starter is enabled.\r\n");
-      starterEnabledLogged = true;      
+      starterEnabledLogged = true;
     }
-    
-    HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
 #endif
+    HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_SET);
   }
 
 #ifdef __cplusplus

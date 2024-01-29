@@ -1,5 +1,7 @@
 #include "tsm.h"
 #include "settings.h"
+#include <cmath>
+#include <cstring>
 
 #ifdef __cplusplus
 extern "C"
@@ -31,6 +33,41 @@ extern "C"
 }
 #endif
 
+constexpr int MAX_WINDOW_SIZE = 256;
+
+class MovingAverage
+{
+private:
+  uint16_t values[MAX_WINDOW_SIZE];
+  int size;
+  uint16_t index;
+  uint64_t sum;
+
+public:
+  explicit MovingAverage(int windowSize) : size(windowSize), index(0), sum(0)
+  {
+    if (windowSize > MAX_WINDOW_SIZE)
+    {
+      size = MAX_WINDOW_SIZE;
+    }
+    memset(values, 0, sizeof(values));
+  }
+
+  uint16_t filter(uint16_t newValue)
+  {
+    sum -= values[index];
+    sum += newValue;
+    values[index] = newValue;
+    index = (index + 1) % size;
+    return sum / size;
+  }
+};
+
+uint32_t calculateEMA(uint32_t currentEMA, uint32_t newValue, double alpha)
+{
+  return alpha * newValue + (1 - alpha) * currentEMA;
+}
+
 void adcHandler()
 {
   if (!adcDMAcompleted)
@@ -38,17 +75,39 @@ void adcHandler()
     return;
   }
 
-  uint32_t meanVoltage = 0;
+  // alpha is the smoothing factor, the less it is the more smoothing is applied
+  static double alpha = 0.1;
+  // accumulator for smoothed average
+  static uint32_t smoothedAverage = 0;
+  static uint32_t prevSample = HAL_GetTick();
+  // R1 is the resistor between ADC and battery power supply
+  static const float R1 = 10.0; // in kOhm
+  // R2 is the resistor between ADC and GND
+  static const float R2 = 2.7; // in kOhm
+  // voltage divider factor is used to calculate actual voltage from ADC value
+  static const float voltageDividerFactor = (R1 + R2) / R2;
+  static MovingAverage filter(ADC_DMA_BUF_SIZE);
 
-  for (uint32_t i = 0; i < ADC_DMA_BUF_SIZE; i++)
+  for (int i = 1; i < ADC_DMA_BUF_SIZE; i++)
   {
-    meanVoltage += adcDMAbuffer[i] & 0xFFF;
+    smoothedAverage = filter.filter(adcDMAbuffer[i]);
   }
 
-  meanVoltage /= ADC_DMA_BUF_SIZE;
+  // complensation of the resistor's tolerance
+  // smoothedAverage *= 0.97f;
 
-  if (ADC_13V_VALUE < meanVoltage)
+#if DEBUG
+  if (HAL_GetTick() - prevSample > 1000)
   {
+    prevSample = HAL_GetTick();
+    float voltage = smoothedAverage * 3.3 / 4095 * voltageDividerFactor;
+    DEBUG_LOG("V = %0.2f ADC: %u\r\n", voltage, smoothedAverage);
+  }
+#endif
+
+  if (smoothedAverage > ADC_12_8V_VALUE)
+  {
+    // if voltage is below 12.6V we want to turn off sidemarks
     if (!overVoltage)
     {
       overVoltage = true;
@@ -56,6 +115,7 @@ void adcHandler()
       return;
     }
 
+    // check if voltage is ABOVE 12.6V for more than 15 seconds
     if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
     {
       disableStarter();
@@ -66,15 +126,18 @@ void adcHandler()
 #endif
     }
   }
-  else if (!leftEnabled && !rightEnabled) // we don't want to turn off sidemarks if blinkers are enabled
+  // we don't want to turn off sidemarks if blinkers are enabled
+  else if (!leftEnabled && !rightEnabled && smoothedAverage <= ADC_12_2V_VALUE)
   {
+    // if previously upper threshold was exceeded we want to reset the timer
     if (overVoltage)
     {
       overVoltage = false;
+      // start measuring time when voltage is below 12V
       voltageThresholdStartTime = HAL_GetTick();
       return;
     }
-
+    // check if voltage is BELOW 12V for more than 15 seconds
     if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
     {
       enableStarter();

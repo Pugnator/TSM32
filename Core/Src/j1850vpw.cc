@@ -4,6 +4,7 @@
 #include <assert.h>
 #include "dwtdelay.h"
 
+#if J1850_ENABLED
 #define BIT_PER_BYTE 7
 
 static volatile uint32_t riseEdgeTime = 0;
@@ -24,7 +25,6 @@ uint32_t trip = 0;
 
 namespace J1850VPW
 {
-
   static inline void J1850delayUS(uint32_t us) // microseconds
   {
     uint32_t startTick = DWT->CYCCNT;
@@ -292,4 +292,5 @@ extern "C"
 
 #ifdef __cplusplus
 }
+#endif
 #endif

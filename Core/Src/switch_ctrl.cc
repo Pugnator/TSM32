@@ -45,7 +45,7 @@ extern "C"
   {
 #ifdef IMU_INT_Pin
     if (GPIO_Pin == IMU_INT_Pin)
-    {      
+    {
       return;
     }
 #endif
@@ -119,7 +119,9 @@ extern "C"
       if (waitLongPress)
       {
         // We're waiting for a long press, but the button is depressed - stop
-        if (timerHitCounter > 2 && (LEFT_BUTTON == GPIO_PIN_SET || LEFT_BUTTON == GPIO_PIN_SET))
+        if (timerHitCounter > 2 &&
+            (LEFT_BUTTON == GPIO_PIN_SET &&
+             RIGHT_BUTTON == GPIO_PIN_SET))
         {
           DEBUG_LOG("No button is pressed while waiting for a long press. Stop.\r\n");
           overtakeMode = true;
@@ -135,8 +137,8 @@ extern "C"
 
         DEBUG_LOG("Check for a long press.\r\n");
 
-        if (LEFT_BUTTON == GPIO_PIN_RESET ||
-            RIGHT_BUTTON == GPIO_PIN_RESET)
+        if (LEFT_BUTTON == PRESSED ||
+            RIGHT_BUTTON == PRESSED)
         {
           DEBUG_LOG("Long press detected after %ums.\r\n", pressDuration);
           overtakeMode = false;
@@ -158,8 +160,8 @@ extern "C"
         return;
       }
       /* if both buttons are pressed */
-      if (LEFT_BUTTON == GPIO_PIN_RESET &&
-          RIGHT_BUTTON == GPIO_PIN_RESET)
+      if (LEFT_BUTTON == PRESSED &&
+          RIGHT_BUTTON == PRESSED)
       {
         DEBUG_LOG("Both switches were ON for %ums.\r\n", pressDuration);
         leftButtonEvent = false;
@@ -171,7 +173,7 @@ extern "C"
       }
       /* if left button is still pressed */
       else if (!hazardEnabled &&
-               LEFT_BUTTON == GPIO_PIN_RESET)
+               LEFT_BUTTON == PRESSED)
       {
         stopBlinkerTimer();
         DEBUG_LOG("LT was pressed for %u.\r\n", pressDuration);
@@ -184,7 +186,7 @@ extern "C"
       }
       /* if right button is still pressed */
       else if (!hazardEnabled &&
-               RIGHT_BUTTON == GPIO_PIN_RESET)
+               RIGHT_BUTTON == PRESSED)
       {
         stopBlinkerTimer();
         DEBUG_LOG("RT was pressed for %u.\r\n", pressDuration);

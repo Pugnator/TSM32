@@ -2,10 +2,13 @@
 #include "settings.h"
 #include "j1850.h"
 #include "spi.h"
+
+#if MEMS_ENABLED
 // #include "i2c.h"
 #include "imu_spi.h"
 #include "imu_i2c.h"
 #include "ahrs.h"
+#endif
 
 #include <stdio.h>
 #include "id.h"
@@ -15,12 +18,14 @@
 
 bool stopAppExecuting = true;
 
+#if MEMS_ENABLED
 Quaternion mpuQ;
 float ypr[3];
 float yprDeg[3];
 bool trackingEnabled = false;
 int16_t initialYaw = INT16_MIN;
 uint32_t initialTime = 0;
+#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -32,6 +37,7 @@ extern "C"
     uwTick += uwTickFreq;
   }
 
+#if MEMS_ENABLED
   static bool detectTurn(int16_t initialYaw, int16_t currentYaw, int16_t threshold)
   {
     int16_t yaw_difference = currentYaw - initialYaw;
@@ -46,6 +52,7 @@ extern "C"
     }
     return false;
   }
+#endif
 
   void tsmRunApp()
   {
@@ -106,18 +113,21 @@ extern "C"
 #if BLINKER_ENABLED
       if (hazardEnabled || leftEnabled || rightEnabled)
       {
+        #if MEMS_ENABLED
         if (!hazardEnabled && !trackingEnabled)
         {
           trackingEnabled = true;
           initialTime = HAL_GetTick();
           initialYaw = INT16_MIN;
-          DEBUG_LOG("Blinker started at %lu\r\n", initialTime);
+          DEBUG_LOG("Tracking started at %lu\r\n", initialTime);
         }
+        #endif
         blinkerDoBlink();
       }
 
       if (overtakeMode && OVERTAKE_BLINK_COUNT < blinkCounter)
       {
+        DEBUG_LOG("Deactivating the blinker: blink counter\r\n");
         overtakeMode = false;
         leftEnabled = false;
         rightEnabled = false;
@@ -165,7 +175,7 @@ extern "C"
           HAL_GetTick() - initialTime < TURN_MAX_TIME_MS)
         continue;
 
-      DEBUG_LOG("Turn detected, yaw = %.3d\r\n", ypr.x);
+      DEBUG_LOG("Deactivating the blinker: turn detected, yaw = %.3d\r\n", ypr.x);
 
       if (leftEnabled)
       {

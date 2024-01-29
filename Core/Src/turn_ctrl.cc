@@ -11,7 +11,7 @@ extern "C"
   bool leftEnabled = false;
   bool rightEnabled = false;
   bool hazardEnabled = false;
-  bool overtakeMode = false;  
+  bool overtakeMode = false;
   uint8_t volatile currentSidemarkBrightness = 0;
 
   uint32_t blinkCounter = 0;
@@ -23,7 +23,7 @@ extern "C"
       return;
     }
 
-    DEBUG_LOG("Left Side toggle\r\n");  
+    DEBUG_LOG("Left Side toggle\r\n");
     blinkCounter = 0;
     leftEnabled = !leftEnabled;
     if (leftEnabled)
@@ -36,13 +36,6 @@ extern "C"
     }
   }
 
-  void leftSideOff()
-  {
-    DEBUG_LOG("Left side off\r\n");
-    leftEnabled = false;
-    LEFT_PWM_OUT = currentSidemarkBrightness;
-  }
-
   void rightSideToggle()
   {
     if (hazardEnabled)
@@ -51,8 +44,8 @@ extern "C"
     }
 
     DEBUG_LOG("Right Side toggle\r\n");
-    blinkCounter = 0;    
     rightEnabled = !rightEnabled;
+    blinkCounter = 0;
     if (rightEnabled)
     {
       leftSideOff();
@@ -61,6 +54,13 @@ extern "C"
     {
       rightSideOff();
     }
+  }
+
+  void leftSideOff()
+  {
+    DEBUG_LOG("Left side off\r\n");
+    leftEnabled = false;
+    LEFT_PWM_OUT = currentSidemarkBrightness;
   }
 
   void rightSideOff()
@@ -117,6 +117,7 @@ extern "C"
         }
         else
         {
+          DEBUG_LOG("Blink ON\r\n");
           turnOnStage = false;
           turnOffStage = true;
         }
@@ -139,6 +140,7 @@ extern "C"
 
     if (turnOffStage && elapsed > TURN_OFF_DELAY)
     {
+      DEBUG_LOG("Blink OFF\r\n");
       if (hazardEnabled)
       {
         LEFT_PWM_OUT = 0;
