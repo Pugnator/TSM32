@@ -95,7 +95,7 @@ extern "C"
 #if BLINKER_ENABLED
     if (BLINKER_TIMER_INSTANCE == htim->Instance)
     {
-      timerHitCounter++;
+      timerHitCounter = timerHitCounter + 1;
       uint32_t currentTime = HAL_GetTick();
       if (startTime > currentTime)
       {
@@ -129,11 +129,12 @@ extern "C"
           return;
         }
 
-        if (longPressCounter++ != LONG_PRESS_COUNT)
-        {
+        if (longPressCounter != LONG_PRESS_COUNT)
+        {		  
           DEBUG_LOG("Waiting for a long press [%u].\r\n", longPressCounter);
+		  longPressCounter = longPressCounter + 1;
           return;
-        }
+        }		
 
         DEBUG_LOG("Check for a long press.\r\n");
 

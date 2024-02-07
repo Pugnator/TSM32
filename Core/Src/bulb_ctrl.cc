@@ -63,8 +63,8 @@ public:
     }
     for (uint32_t i = 0; i < size; ++i)
     {
-      values[i] = ADC_10V_VALUE;
-      sum += ADC_10V_VALUE;
+      values[i] = ADC_12_2V_VALUE;
+      sum += ADC_12_2V_VALUE;
     }
   }
 
@@ -88,7 +88,7 @@ void adcHandler()
   }
 
   prevSample = HAL_GetTick();
-  static uint32_t smoothedAverage = ADC_10V_VALUE;
+  static uint32_t smoothedAverage = ADC_12_2V_VALUE;
 
   static MovingAverage filter(ADC_DMA_BUF_SIZE);
   uint32_t prevSmoothedAverage = smoothedAverage;
