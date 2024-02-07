@@ -1,15 +1,4 @@
-*.h         eol=crlf
-*.hpp       eol=crlf
-*.cpp       eol=crlf
-*.cc       eol=crlf
-*.c         eol=crlf
-*.rc        eol=crlf
-*.vcproj    eol=crlf
-*.bat       eol=crlf
-*.sln       eol=crlf
-*.ico -text
-
-Drivers/* linguist-vendored=true
+Drivers/** linguist-vendored=true
 Core/Src/cpp/printf.cc linguist-vendored=true
 Core/Src/cpp/system_stm32f1xx.c linguist-vendored=true
 Core/Src/cpp/system_stm32f4xx.c linguist-vendored=true
@@ -19,3 +8,10 @@ Core/Src/cpp/adc.c linguist-vendored=true
 Core/Src/cpp/dma.c linguist-vendored=true
 Core/Src/cpp/gpio.c linguist-vendored=true
 Core/Src/cpp/spi.c linguist-vendored=true
+Core/Inc/stm32f1xx_hal_conf.h linguist-vendored=true
+Core/Inc/stm32f1xx_it.h linguist-vendored=true
+Core/Inc/tim.h linguist-vendored=true
+Core/Inc/dma.h linguist-vendored=true
+Core/Inc/spi.h linguist-vendored=true
+Core/Inc/gpio.h linguist-vendored=true
+Core/Inc/crc.h linguist-vendored=true
