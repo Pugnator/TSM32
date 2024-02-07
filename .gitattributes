@@ -8,3 +8,14 @@
 *.bat       eol=crlf
 *.sln       eol=crlf
 *.ico -text
+
+Drivers/* linguist-vendored=true
+Core/Src/cpp/printf.cc linguist-vendored=true
+Core/Src/cpp/system_stm32f1xx.c linguist-vendored=true
+Core/Src/cpp/system_stm32f4xx.c linguist-vendored=true
+Core/Src/cpp/tim.c linguist-vendored=true
+Core/Src/cpp/crc.c linguist-vendored=true
+Core/Src/cpp/adc.c linguist-vendored=true
+Core/Src/cpp/dma.c linguist-vendored=true
+Core/Src/cpp/gpio.c linguist-vendored=true
+Core/Src/cpp/spi.c linguist-vendored=true
