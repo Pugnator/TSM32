@@ -119,7 +119,7 @@ void adcHandler()
 #ifdef DEBUG
   float voltage = smoothedAverage * 3.3 / 4095 * voltageDividerFactor;
   DEBUG_LOG("V = %0.2f ADC: %u\r\n", voltage, smoothedAverage);
-#endif  
+#endif
 
   if (smoothedAverage > ADC_12_8V_VALUE)
   {
