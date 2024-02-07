@@ -57,7 +57,8 @@
     "trace.h": "c",
     "numbers": "cpp",
     "span": "cpp",
-    "vmmu.h": "c"
+    "vmmu.h": "c",
+    "thread": "cpp"
   },
   "C_Cpp.errorSquiggles": "Disabled",
   "cmake.configureOnOpen": false,
