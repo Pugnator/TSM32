@@ -1,14 +1,3 @@
-*.h         eol=crlf
-*.hpp       eol=crlf
-*.cpp       eol=crlf
-*.cc       eol=crlf
-*.c         eol=crlf
-*.rc        eol=crlf
-*.vcproj    eol=crlf
-*.bat       eol=crlf
-*.sln       eol=crlf
-*.ico -text
-
 Drivers/* linguist-vendored=true
 Core/Src/cpp/printf.cc linguist-vendored=true
 Core/Src/cpp/system_stm32f1xx.c linguist-vendored=true
