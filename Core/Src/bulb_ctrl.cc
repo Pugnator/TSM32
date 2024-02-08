@@ -5,7 +5,7 @@
 #include <algorithm>
 
 constexpr uint32_t MAX_WINDOW_SIZE = 128;
-constexpr uint32_t ADC_SAMPLE_PAUSE = 1000;
+constexpr uint32_t ADC_SAMPLE_PAUSE = 500;
 // R1 is the resistor between ADC and battery power supply
 constexpr float R1 = 10.0; // in kOhm
 // R2 is the resistor between ADC and GND
