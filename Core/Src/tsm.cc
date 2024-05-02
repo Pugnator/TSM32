@@ -4,7 +4,7 @@
 #include "spi.h"
 
 #if MEMS_ENABLED
-// #include "i2c.h"
+#include "i2c.h"
 #include "imu_spi.h"
 #include "imu_i2c.h"
 #include "ahrs.h"
@@ -92,7 +92,7 @@ extern "C"
 
 #if MEMS_ENABLED
     std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, true));
-    // std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, false));
+    //std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, true));
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
