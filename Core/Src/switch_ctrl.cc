@@ -50,13 +50,13 @@ extern "C"
     }
 #endif
 
-    if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
+    if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent && LEFT_BUTTON == PRESSED)
     {
       startBlinkerTimer();
       leftButtonEvent = true;
       DEBUG_LOG("[%u] Left switch activated.\r\n", startTime);
     }
-    else if (GPIO_Pin == RT_BUTTON_Pin && !rightButtonEvent)
+    else if (GPIO_Pin == RT_BUTTON_Pin && !rightButtonEvent && RIGHT_BUTTON == PRESSED)
     {
       startBlinkerTimer();
       rightButtonEvent = true;
@@ -196,6 +196,24 @@ extern "C"
         // Check if it's a long press
         waitLongPress = true;
         startBlinkerTimer();
+        return;
+      }
+      /* left button was pressed and released before the timer fired - valid short press */
+      else if (!hazardEnabled && leftButtonEvent)
+      {
+        DEBUG_LOG("LT short press (released before timer) for %ums.\r\n", pressDuration);
+        leftButtonEvent = false;
+        leftSideToggle();
+        resetEvent();
+        return;
+      }
+      /* right button was pressed and released before the timer fired - valid short press */
+      else if (!hazardEnabled && rightButtonEvent)
+      {
+        DEBUG_LOG("RT short press (released before timer) for %ums.\r\n", pressDuration);
+        rightButtonEvent = false;
+        rightSideToggle();
+        resetEvent();
         return;
       }
 
