@@ -4,7 +4,7 @@
 #include "spi.h"
 
 #if MEMS_ENABLED
-#include "i2c.h"
+#include "spi.h"
 #include "imu_spi.h"
 #include "imu_i2c.h"
 #include "ahrs.h"

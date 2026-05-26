@@ -130,11 +130,11 @@ extern "C"
         }
 
         if (longPressCounter != LONG_PRESS_COUNT)
-        {		  
+        {
           DEBUG_LOG("Waiting for a long press [%u].\r\n", longPressCounter);
-		  longPressCounter = longPressCounter + 1;
+          longPressCounter = longPressCounter + 1;
           return;
-        }		
+        }
 
         DEBUG_LOG("Check for a long press.\r\n");
 
