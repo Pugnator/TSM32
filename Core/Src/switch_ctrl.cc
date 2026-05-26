@@ -156,12 +156,6 @@ extern "C"
         return;
       }
 
-      // too quick press - skip
-      if (DEBOUNCE_MIN_TIME >= pressDuration)
-      {
-        DEBUG_LOG("Bounce detected: T=[%ums].\r\n", pressDuration, DEBOUNCE_MIN_TIME);
-        return;
-      }
       /* if both buttons are pressed */
       if (LEFT_BUTTON == PRESSED &&
           RIGHT_BUTTON == PRESSED)
