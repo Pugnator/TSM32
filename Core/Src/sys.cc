@@ -7,33 +7,6 @@
 extern "C"
 {
 #endif
-  int _getpid(void)
-  {
-    return 1;
-  }
-
-  void _kill(int pid)
-  {
-  }
-
-  void _exit(int status)
-  {
-    _kill(status);
-    while (1)
-    {
-    }
-  }
-
-  char *_sbrk(int delta)
-  {
-    return nullptr;
-  }
-
-  int _close(void)
-  {
-    return 1;
-  }
-
   int _gettimeofday(struct timeval *tv, void *tzvp)
   {
     return 0;
@@ -49,23 +22,6 @@ extern "C"
   {
     // Dummy implementation that always returns -1 (indicating an error)
     return -1;
-  }
-
-  int _isatty(int /*fd*/)
-  {
-    // Dummy implementation
-    // Return 1 (true) to simulate a terminal-like device
-    // Return 0 (false) otherwise
-
-    return 0; // Change to 1 to simulate a terminal-like device
-  }
-
-  int _fstat(int /*fd*/, struct stat * /*buf*/)
-  {
-    // Dummy implementation
-    // Set the members of the 'buf' structure to simulate file status information
-
-    return 0; // Return 0 to indicate success
   }
 
 #ifdef __cplusplus
