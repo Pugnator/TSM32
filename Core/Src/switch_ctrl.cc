@@ -7,8 +7,10 @@ extern "C"
 {
 #endif
 
-#define TIM9_PERIOD 110
-#define LONG_PRESS_COUNT (LONG_PRESS_TIME / TIM9_PERIOD)
+/* Period of BLINKER_TIMER (TIM4) in milliseconds, configured in CubeMX (tim.c).
+ * Keep this value in sync with the timer's prescaler/period. */
+#define BLINKER_TIMER_PERIOD_MS 110
+#define LONG_PRESS_COUNT (LONG_PRESS_TIME / BLINKER_TIMER_PERIOD_MS)
 
   /** \brief Left button processing event triggered */
   static volatile bool leftButtonEvent = false;
