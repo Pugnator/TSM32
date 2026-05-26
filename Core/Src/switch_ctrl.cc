@@ -99,12 +99,8 @@ extern "C"
     {
       timerHitCounter = timerHitCounter + 1;
       uint32_t currentTime = HAL_GetTick();
-      if (startTime > currentTime)
-      {
-        DEBUG_LOG("Shouldn't happen. The event is in the past. %u (trigger) > %u (now)\r\n", startTime, currentTime);
-        resetEvent();
-        return;
-      }
+      /* Unsigned subtraction handles HAL_GetTick() 32-bit wraparound
+       * (~49.7 days) correctly without an explicit guard. */
       uint32_t pressDuration = currentTime - startTime;
       DEBUG_LOG("[%u] %u since the click [%u], L = %u, R = %u.\r\n", currentTime, pressDuration, startTime,
                 LEFT_BUTTON,
