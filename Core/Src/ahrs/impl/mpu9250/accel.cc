@@ -42,7 +42,7 @@ namespace Mpu9250
 
   bool Mpu9250base::readAccelAxis(VectorFloat &result)
   {
-    uint8_t data[8];
+    uint8_t data[6];
     if (!mpuRead(MPU9250_ACCEL_XOUT_H, data, 6))
       return false;
 
@@ -50,8 +50,10 @@ namespace Mpu9250
     int16_t accY = ((int16_t)data[2] << 8) | data[3];
     int16_t accZ = ((int16_t)data[4] << 8) | data[5];
 
-    uint16_t _temp = (data[6] << 8 | data[7]);
-    chipTemperature_ = ((_temp - 21.0f) / 333.87f) + 21.0f;
+    // NOTE: chip temperature is read separately - the TEMP_OUT registers
+    // are not contiguous with the accel block.  Reading them here required
+    // a 2-byte over-read into uninitialised stack memory.  See issue #32
+    // for the proper readChipTemperature() implementation.
 
     // Sensor -> body axis remap (motorcycle deployment).
     // Sensor axes: X=back, Y=right, Z=up.
