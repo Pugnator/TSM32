@@ -133,10 +133,7 @@ extern "C"
 #if J1850_ENABLED
       if (messageCollected)
       {
-        if (J1850VPW::j1850TraceEnabled)
-        {
-          J1850VPW::printFrame();
-        }
+        J1850VPW::printFrame();
         J1850VPW::parseFrame();
         J1850VPW::messageReset();
       }

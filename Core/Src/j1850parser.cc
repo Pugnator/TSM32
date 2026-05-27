@@ -67,6 +67,8 @@ namespace J1850VPW
     uint8_t crc = crc1850(payloadJ1850, j1850RXctr - 1);
     if (crc != payloadJ1850[j1850RXctr - 1])
     {
+      PrintF("J1850: CRC mismatch got=0x%02X expected=0x%02X rx=%u\r\n",
+             (unsigned)payloadJ1850[j1850RXctr - 1], (unsigned)crc, (unsigned)j1850RXctr);
       return false;
     }
     j1850Header h;
@@ -74,7 +76,7 @@ namespace J1850VPW
     const uint8_t headerSize = h.ctx.type ? 1 : 3;
     if (headerSize == 1)
     {
-      WARN_LOG("J1850: 1-byte header frame rejected (not used on this network, rx=%u bytes)\r\n", j1850RXctr);
+      PrintF("J1850: 1-byte header frame rejected (not used on this network, rx=%u bytes)\r\n", j1850RXctr);
       return false;
     }
 
@@ -84,13 +86,13 @@ namespace J1850VPW
     {
       rpms = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
       rpms /= 4;
-      INFO_LOG("RPMs: %u\r\n", rpms);
+      PrintF("RPMs: %u\r\n", rpms);
     }
     else if (destination == SPEED)
     {
       kph = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
       kph /= 128;
-      INFO_LOG("Speed: %u\r\n", kph);
+      PrintF("Speed: %u\r\n", kph);
     }
     else if (destination == MIL)
     {
@@ -149,9 +151,13 @@ namespace J1850VPW
 
   void printFrame()
   {
+    if (!j1850TraceEnabled)
+    {
+      return;
+    }
     if (j1850RXctr == 0 || j1850RXctr > 11)
     {
-      DEBUG_LOG("Empty/corrupted frame [=%u]\r\n", j1850RXctr);
+      PrintF("Empty/corrupted frame [=%u]\r\n", j1850RXctr);
       return;
     }
 
