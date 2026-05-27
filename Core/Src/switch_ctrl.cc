@@ -126,18 +126,17 @@ extern "C"
 
       if (waitLongPress)
       {
-        // We're waiting for a long press, but the button is depressed - stop
-        if (timerHitCounter > 2 &&
-            (LEFT_BUTTON == GPIO_PIN_SET &&
-             RIGHT_BUTTON == GPIO_PIN_SET))
-        {
-          DEBUG_LOG("No button is pressed while waiting for a long press. Stop.\r\n");
-          overtakeMode = true;
-          resetEvent();
-          return;
-        }
-
-        if (longPressCounter != LONG_PRESS_COUNT)
+        /* The side toggle has already been applied. We now wait the full
+         * LONG_PRESS_COUNT timer ticks before deciding:
+         *   - button still pressed at the deadline -> regular turn signal
+         *   - button released before the deadline  -> overtake (lane-change)
+         *
+         * Do NOT short-circuit on early release: the previous early-exit
+         * branch (~220 ms) made any brisk tap look like the signal had
+         * "barely turned on" because overtakeMode auto-cancels after
+         * OVERTAKE_BLINK_COUNT blinks.
+         */
+        if (longPressCounter < LONG_PRESS_COUNT)
         {
           DEBUG_LOG("Waiting for a long press [%u].\r\n", longPressCounter);
           longPressCounter = longPressCounter + 1;
