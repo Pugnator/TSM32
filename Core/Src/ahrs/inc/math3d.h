@@ -21,6 +21,15 @@
 
 static inline float _fastAsin(float x)
 {
+  // The polynomial approximation is only valid on [-1, +1]; outside that
+  // range it diverges rapidly.  Floating-point rounding in upstream gravity-
+  // vector normalisation routinely produces inputs like 1.0000001f, so clamp
+  // explicitly before evaluating the polynomial.
+  if (x >= 1.0f)
+    return static_cast<float>(M_PI_2);
+  if (x <= -1.0f)
+    return -static_cast<float>(M_PI_2);
+
   const float c1 = 1.5707288f;  // Polynomial coefficient 1
   const float c2 = -0.2121144f; // Polynomial coefficient 2
   const float c3 = 0.0742610f;  // Polynomial coefficient 3
