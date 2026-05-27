@@ -52,15 +52,25 @@ extern "C"
     }
 #endif
 
+    /* If a button event is already armed, leave the existing debounce
+     * timer running so the first press timestamp is preserved. */
+    const bool wasIdle = !leftButtonEvent && !rightButtonEvent;
+
     if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent && LEFT_BUTTON == PRESSED)
     {
-      startBlinkerTimer();
+      if (wasIdle)
+      {
+        startBlinkerTimer();
+      }
       leftButtonEvent = true;
       DEBUG_LOG("[%u] Left switch activated.\r\n", startTime);
     }
     else if (GPIO_Pin == RT_BUTTON_Pin && !rightButtonEvent && RIGHT_BUTTON == PRESSED)
     {
-      startBlinkerTimer();
+      if (wasIdle)
+      {
+        startBlinkerTimer();
+      }
       rightButtonEvent = true;
       DEBUG_LOG("[%u] Right switch activated.\r\n", startTime);
     }
