@@ -2,6 +2,7 @@
 #include "settings.h"
 #include "j1850.h"
 #include "spi.h"
+#include "cli.h"
 
 #if MEMS_ENABLED
 #include "spi.h"
@@ -25,6 +26,31 @@ float yprDeg[3];
 bool trackingEnabled = false;
 int16_t initialYaw = INT16_MIN;
 uint32_t initialTime = 0;
+
+// Raw, non-owning pointer used by the CLI accessors below to read live
+// AHRS state without having to be templated on MpuType.  Owned by the
+// unique_ptr in tsmRunApp(); cleared at scope exit.
+static Ahrs::AhrsBase<Mpu9250::Mpu9250Spi> *gAhrs_ = nullptr;
+
+extern "C" float cliGetChipTemperatureC(void)
+{
+  return gAhrs_ ? gAhrs_->getTemperature() : 0.0f;
+}
+
+extern "C" void cliGetYprDeg(int16_t *yaw, int16_t *pitch, int16_t *roll)
+{
+  if (!gAhrs_)
+  {
+    if (yaw)   *yaw = 0;
+    if (pitch) *pitch = 0;
+    if (roll)  *roll = 0;
+    return;
+  }
+  auto v = gAhrs_->getYawPitchRollD();
+  if (yaw)   *yaw = v.x;
+  if (pitch) *pitch = v.y;
+  if (roll)  *roll = v.z;
+}
 #endif
 
 #ifdef __cplusplus
@@ -93,10 +119,12 @@ extern "C"
 #if MEMS_ENABLED
     std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, true));
     //std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, true));
+    gAhrs_ = mpu.get();
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
     {
+      cliPoll();
 
 #if AUTO_LIGHT_ENABLE
       adcHandler();
@@ -192,6 +220,9 @@ extern "C"
 #endif
     }
     DEBUG_LOG("Stop!\r\n");
+#if MEMS_ENABLED
+    gAhrs_ = nullptr;
+#endif
   }
 
 #ifdef __cplusplus
