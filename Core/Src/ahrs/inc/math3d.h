@@ -288,6 +288,8 @@ struct VectorFloat
   void normalize()
   {
     float m = getMagnitude();
+    if (m == 0.0f)
+      return;
     x /= m;
     y /= m;
     z /= m;
