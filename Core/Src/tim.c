@@ -120,7 +120,9 @@ void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 63;
+  /* J1850 input capture: tick = 1 us (72 MHz / (PSC+1) = 1 MHz) so the
+   * SAE-J1850 pulse-width thresholds in j1850.h read directly as us. */
+  htim2.Init.Prescaler = 71;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 65535;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

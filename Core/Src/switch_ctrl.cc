@@ -88,9 +88,9 @@ extern "C"
 
   /*
     TIM1  - PWM, bulbs
-    TIM5  - J1850 capture
-    TIM6  - J1850 - EOF timer
-    TIM9  - Blinker delay timer
+    TIM2  - J1850 input capture (PA1 / TIM2_CH2)
+    TIM3  - J1850 EOF idle-detect timer (~248 us one-shot)
+    TIM4  - Blinker delay timer
   */
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {

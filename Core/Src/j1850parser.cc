@@ -4,7 +4,10 @@
 volatile uint32_t frameCounter = 0;
 namespace J1850VPW
 {
-  volatile bool j1850TraceEnabled = false;
+  // Bench-mode default: dump every successfully captured RX frame on the
+  // RTT log channel.  Disable at runtime with 'j1850 trace off' once the
+  // signal path is validated.
+  volatile bool j1850TraceEnabled = true;
 
   sourceType convertByteToSourceType(uint8_t inputByte)
   {
@@ -152,33 +155,49 @@ namespace J1850VPW
       return;
     }
 
-    uint8_t crc = crc1850(payloadJ1850, j1850RXctr - 1);
-    INFO_LOG("[%u] Frame #%u [CRC: 0x%02X] %s\r\n", HAL_GetTick(), frameCounter, crc, crc == payloadJ1850[j1850RXctr - 1] ? "VALID" : "INVALID!");
-    for (uint8_t i = 0; i < j1850RXctr; i++)
-    {
-      INFO_LOG("0x%02X ", payloadJ1850[i]);
-    }
-    INFO_LOG("\r\n");
-    if (crc != payloadJ1850[j1850RXctr - 1])
-    {
-      return;
-    }
+    // One-line dump for bench RX verification.  Format:
+    //   [tick] #frame CRC=ok|BAD nB pri=p dst<-src : HH HH HH ...
+    const uint8_t n = j1850RXctr;
+    const uint8_t crc = crc1850(payloadJ1850, n - 1);
+    const bool crcOk = (crc == payloadJ1850[n - 1]);
+
     j1850Header h;
     h.header = payloadJ1850[0];
-    /*
-    } else if ((x & 0xff0fffff) == 0x6c00f114) {
-        if (D) Log.d(TAG, "DTC clear request");
-      } else if ((x & 0xffff0fff) == 0x6cf10054) {
-        if (D) Log.d(TAG, "DTC clear reply");
-      } else
-    */
-    uint8_t headerSize = h.ctx.type ? 1 : 3;
+    const uint8_t headerSize = h.ctx.type ? 1 : 3;
 
-    INFO_LOG("HEADER\r\nPriority: %u\r\n", h.ctx.priority);
-    INFO_LOG("%u bytes header\r\n", headerSize);
-    INFO_LOG("Message to '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[1])));
-    INFO_LOG("Message from '%s'\r\n", sourceToStr(static_cast<sourceType>(payloadJ1850[2])));
-    INFO_LOG("*********************\r\n");
+    char hex[3 * J1850_PAYLOAD_SIZE + 1];
+    uint32_t off = 0;
+    for (uint8_t i = 0; i < n && off + 3 < sizeof(hex); ++i)
+    {
+      static const char H[] = "0123456789ABCDEF";
+      hex[off++] = H[(payloadJ1850[i] >> 4) & 0xF];
+      hex[off++] = H[payloadJ1850[i] & 0xF];
+      hex[off++] = ' ';
+    }
+    hex[off ? off - 1 : 0] = '\0';
+
+    if (headerSize == 3)
+    {
+      INFO_LOG("[%lu] #%lu %s %uB pri=%u %s<-%s : %s\r\n",
+               (unsigned long)HAL_GetTick(),
+               (unsigned long)frameCounter,
+               crcOk ? "OK " : "BAD",
+               (unsigned)n,
+               (unsigned)h.ctx.priority,
+               sourceToStr(static_cast<sourceType>(payloadJ1850[1])),
+               sourceToStr(static_cast<sourceType>(payloadJ1850[2])),
+               hex);
+    }
+    else
+    {
+      INFO_LOG("[%lu] #%lu %s %uB pri=%u 1B-hdr : %s\r\n",
+               (unsigned long)HAL_GetTick(),
+               (unsigned long)frameCounter,
+               crcOk ? "OK " : "BAD",
+               (unsigned)n,
+               (unsigned)h.ctx.priority,
+               hex);
+    }
   }
 
   const char *sourceToStr(sourceType type)

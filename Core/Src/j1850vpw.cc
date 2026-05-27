@@ -247,7 +247,7 @@ extern "C"
       DEBUG_LOG("J1850: the bit counter == 8 [0x%.2X]\r\n", payloadJ1850[j1850RXctr]);
       bitCounter = 0;
       j1850RXctr++;
-      if (j1850RXctr > J1850_PAYLOAD_SIZE)
+      if (j1850RXctr >= J1850_PAYLOAD_SIZE)
       {
         DEBUG_LOG("J1850: frame is too large: %u\r\n", J1850_PAYLOAD_SIZE);
         J1850VPW::messageReset();
