@@ -214,9 +214,9 @@ struct VectorInt16
     if (!m)
       return false;
 
-    x *= m;
-    y *= m;
-    z *= m;
+    x /= m;
+    y /= m;
+    z /= m;
     return true;
   }
 
