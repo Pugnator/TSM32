@@ -4,6 +4,7 @@
 volatile uint32_t frameCounter = 0;
 namespace J1850VPW
 {
+  volatile bool j1850TraceEnabled = false;
 
   sourceType convertByteToSourceType(uint8_t inputByte)
   {

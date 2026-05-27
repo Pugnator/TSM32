@@ -6,26 +6,29 @@ Preferred outcome — full handshake with the ECM so it sees a "real" TSM.
 Acceptable fallback — keep clearing the offending DTCs from the cluster in a
 tight loop so the lamps never latch.
 
+Target bike: **2005 Harley-Davidson Sportster, carbureted**, Delphi ECM on a
+single-wire J1850-VPW bus.
+
 ---
 
 ## 1. State of play
 
 ### 1.1 Wiring already on the board
 
+Transceiver: **NXP MCZ33390** (single-wire J1850-VPW), confirmed populated.
+Its TX input is driven by the MCU; its RX output feeds back into the MCU.
+Both ends are positive-logic on the MCU side (high = bus active = +7.5 V).
+
 | Signal | MCU pin | Peripheral | Notes |
 |---|---|---|---|
-| J1850 RX | PA1 | TIM2_CH2 (input capture, IT + DMA) | Edge-timing capture, polarity flipped on every edge — see [j1850vpw.cc](Core/Src/j1850vpw.cc) |
-| J1850 TX | PA? | GPIO push/pull, bit-banged with DWT_CYCCNT | Hard-loop `J1850delayUS()` in [j1850vpw.cc](Core/Src/j1850vpw.cc#L27); arbitration check on RX is stubbed out |
+| J1850 RX | **PA1** | TIM2_CH2 (input capture, IT + DMA) | Edge-timing capture, polarity flipped on every edge — see [j1850vpw.cc](Core/Src/j1850vpw.cc) |
+| J1850 TX | **PA2** | GPIO push/pull, bit-banged with DWT_CYCCNT | Idles low (bus passive); hard-loop `J1850delayUS()` in [j1850vpw.cc](Core/Src/j1850vpw.cc#L27); arbitration check on RX is stubbed out |
 | EOF timer | TIM3 | Periodic IT | Marks frame end after bus has been idle for the configured window |
 | RX pulse capture | TIM2_CH2 | IC2 | Toggles `TIM_INPUTCHANNELPOLARITY_*` every edge |
 
-External transceiver: assumed to be on the carrier board (the MCU never sees
-the analog 0/7.5 V bus directly). Spec assumes an HD/SAE compatible single-
-wire driver, but no driver-specific code lives in firmware today.
+### 1.2 What firmware does today (post phase 2)
 
-### 1.2 What firmware does today
-
-`settings.h` keeps `J1850_ENABLED = 0`, so:
+`settings.h` now has `J1850_ENABLED = 1`, so:
 
 - The IC interrupt and EOF timer never start.
 - Nothing is parsed and nothing is transmitted.
@@ -222,13 +225,13 @@ filament has blown.
 
 | Phase | Deliverable | Issue / branch |
 |---|---|---|
-| 0 | This document committed | — |
-| 1 | RTT down-channel + minimal CLI (§2) | new issue, branch `feat/rtt-cli` |
-| 2 | Flip `J1850_ENABLED` to 1; expose live traffic on RTT channel 1, add `j1850 tx` command, exercise transmit on the bench with a sniffer | new issue, branch `feat/j1850-rx-trace` |
+| 0 | This document committed | done (`ba26b9d` push) |
+| 1 | RTT down-channel + minimal CLI (§2) | done (`ba26b9d`) |
+| 2 | Flip `J1850_ENABLED` to 1; runtime trace toggle; CLI-driven `j1850 tx` and `j1850 clear`; auto-parse every RX frame | done (this commit) |
 | 3 | Heartbeat + arbitration-safe TX (§3) | new issue, branch `feat/j1850-tsm-heartbeat` |
 | 4 | DTC-list parsing + ECM `clearDTC` ack/tracking | same branch |
 | 5 | Fallback DTC-clear loop behind `j1850 spoof` (§4) | new issue, branch `feat/j1850-dtc-loop` |
-| 6 | Bike-side verification, document the actual ECM revision and any per-bike tuning | merge / docs |
+| 6 | Bike-side verification on the 2005 Sportster, document the actual Delphi ECM revision and any per-bike tuning | merge / docs |
 
 Phases 1–2 are safe to do without bike access — bench sniffer is enough.
 Phase 3 requires a known-good capture from a stock bike to lock down the
@@ -238,13 +241,12 @@ exact heartbeat payload. Phase 5 is the safety net.
 
 ## 6. Open questions
 
-1. **Which ECM** is this firmware targeting? (Delphi `MT05` vs. `MT06` vs.
-   later Marelli have slightly different DTC code spaces.) Need a VIN or
-   ECM part number to lock down §3.1.
-2. **Is the transceiver Microchip MCP2050 / NXP MC33199 / discrete?**
-   Affects whether TX needs an enable line.
-3. **PA1/PA0 mapping** — `J1850TX_Pin` is defined in `main.h` but the pin
-   number was not in the snippet I read; confirm before phase 2.
-4. **CAN-bus presence** — some MY07+ bikes have both VPW and CAN. If this
-   board ever needs CAN, plan §3 around the existing TX path becoming a
-   different driver.
+1. **Delphi ECM revision** on this specific 2005 Sportster (some XL carb
+   bikes shipped with an earlier MT4-class part, later ones with MT4.4).
+   Affects DTC code-space mapping in phase 4 — capture a stock bike's
+   `0x6c00f119` reply to lock down.
+2. **Bus terminator / pull-down state** at idle on this particular harness
+   — the MC33390 expects the bus to float low. Verify with a scope before
+   enabling phase-3 heartbeat TX so we are not fighting another bus master.
+3. **Capture available?** A 30-second OEM bus log with the stock TSM in
+   place would massively shorten phase 3.

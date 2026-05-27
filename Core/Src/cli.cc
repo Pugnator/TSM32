@@ -34,11 +34,14 @@ namespace
   void cliCmdHelp()
   {
     PrintF("Commands:\r\n"
-           "  help              this list\r\n"
-           "  ver               firmware version + feature flags\r\n"
-           "  ahrs              live yaw/pitch/roll + chip temperature\r\n"
-           "  j1850             J1850 link status (RX counters)\r\n"
-           "  reset             software CPU reset\r\n");
+           "  help                  this list\r\n"
+           "  ver                   firmware version + feature flags\r\n"
+           "  ahrs                  live yaw/pitch/roll + chip temperature\r\n"
+           "  j1850                 J1850 link status (RX counters)\r\n"
+           "  j1850 trace on|off    auto-dump every RX frame on this CLI\r\n"
+           "  j1850 tx HH HH ...    send one frame (CRC appended), max 10 bytes\r\n"
+           "  j1850 clear           send DTC-clear request (6C 00 F1 14)\r\n"
+           "  reset                 software CPU reset\r\n");
   }
 
   void cliCmdVer()
@@ -64,17 +67,117 @@ namespace
 #endif
   }
 
-  void cliCmdJ1850()
+  void cliCmdJ1850(char *args)
   {
 #if J1850_ENABLED
-    PrintF("J1850   : enabled\r\n"
-           "  rx bytes        : %u\r\n"
-           "  frames received : %u\r\n"
-           "  message ready   : %s\r\n",
-           (unsigned)j1850RXctr,
-           (unsigned)frameCounter,
-           messageCollected ? "yes" : "no");
+    // Strip leading whitespace from the sub-command, if any.
+    while (args && (*args == ' ' || *args == '\t'))
+      ++args;
+
+    if (!args || *args == '\0')
+    {
+      PrintF("J1850   : enabled\r\n"
+             "  rx bytes        : %u\r\n"
+             "  frames received : %u\r\n"
+             "  message ready   : %s\r\n"
+             "  auto trace      : %s\r\n"
+             "  last MIL/SIL    : %d / %d\r\n",
+             (unsigned)j1850RXctr,
+             (unsigned)frameCounter,
+             messageCollected ? "yes" : "no",
+             J1850VPW::j1850TraceEnabled ? "on" : "off",
+             (int)mil, (int)sil);
+      return;
+    }
+
+    // Split sub-command vs. its tail.
+    char *sub = args;
+    char *tail = args;
+    while (*tail && *tail != ' ' && *tail != '\t')
+      ++tail;
+    if (*tail)
+    {
+      *tail = '\0';
+      ++tail;
+    }
+
+    if (!strcmp(sub, "trace"))
+    {
+      while (*tail == ' ' || *tail == '\t')
+        ++tail;
+      if (!strcmp(tail, "on"))
+      {
+        J1850VPW::j1850TraceEnabled = true;
+        PrintF("j1850: trace ON\r\n");
+      }
+      else if (!strcmp(tail, "off"))
+      {
+        J1850VPW::j1850TraceEnabled = false;
+        PrintF("j1850: trace OFF\r\n");
+      }
+      else
+      {
+        PrintF("usage: j1850 trace on|off\r\n");
+      }
+      return;
+    }
+
+    if (!strcmp(sub, "tx"))
+    {
+      // Parse a sequence of hex bytes (whitespace-separated or run-on).
+      uint8_t frame[11];
+      uint8_t n = 0;
+      const char *p = tail;
+      while (*p && n < sizeof(frame))
+      {
+        while (*p == ' ' || *p == '\t')
+          ++p;
+        if (!*p)
+          break;
+        unsigned v = 0;
+        int digits = 0;
+        while (digits < 2 && ((*p >= '0' && *p <= '9') ||
+                              (*p >= 'a' && *p <= 'f') ||
+                              (*p >= 'A' && *p <= 'F')))
+        {
+          v <<= 4;
+          if (*p <= '9')
+            v |= (unsigned)(*p - '0');
+          else if (*p <= 'F')
+            v |= (unsigned)(*p - 'A' + 10);
+          else
+            v |= (unsigned)(*p - 'a' + 10);
+          ++p;
+          ++digits;
+        }
+        if (digits == 0)
+        {
+          PrintF("j1850 tx: bad hex near '%s'\r\n", p);
+          return;
+        }
+        frame[n++] = (uint8_t)v;
+      }
+      if (n == 0)
+      {
+        PrintF("usage: j1850 tx HH HH ... (1-10 bytes)\r\n");
+        return;
+      }
+      cliJ1850TxRaw(frame, n);
+      return;
+    }
+
+    if (!strcmp(sub, "clear"))
+    {
+      // Standard KWP-on-J1850 \"clear DTC\" request: priority 6C, dest 00,
+      // src F1 (tester), service 14.
+      static const uint8_t clr[4] = {0x6C, 0x00, 0xF1, 0x14};
+      cliJ1850TxRaw(clr, sizeof(clr));
+      return;
+    }
+
+    PrintF("unknown j1850 sub-command '%s'.  Try 'help'.\r\n", sub);
 #else
+    (void)args;
     PrintF("J1850   : disabled at build time (J1850_ENABLED=0)\r\n");
 #endif
   }
@@ -108,7 +211,6 @@ namespace
       *args = '\0';
       ++args;
     }
-    (void)args; // unused while the v1 command set has no arguments
 
     if (!strcmp(cmd, "help") || !strcmp(cmd, "?"))
       cliCmdHelp();
@@ -117,7 +219,7 @@ namespace
     else if (!strcmp(cmd, "ahrs"))
       cliCmdAhrs();
     else if (!strcmp(cmd, "j1850"))
-      cliCmdJ1850();
+      cliCmdJ1850(args);
     else if (!strcmp(cmd, "reset"))
       cliCmdReset();
     else
@@ -201,4 +303,11 @@ extern "C" __attribute__((weak)) void cliGetYprDeg(int16_t *yaw, int16_t *pitch,
     *pitch = 0;
   if (roll)
     *roll = 0;
+}
+
+extern "C" __attribute__((weak)) void cliJ1850TxRaw(const uint8_t *bytes, uint8_t len)
+{
+  (void)bytes;
+  (void)len;
+  PrintF("j1850 tx: J1850 not built in (J1850_ENABLED=0)\r\n");
 }

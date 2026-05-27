@@ -78,6 +78,11 @@ namespace J1850VPW
   J1850error sendByte(const uint8_t byte);
   void messageReset();
 
+  // When true, the main loop prints every successfully-decoded RX frame on
+  // the RTT log channel.  Toggled at runtime by the 'j1850 trace on|off'
+  // CLI command -- see Core/Src/cli.cc.
+  extern volatile bool j1850TraceEnabled;
+
 // define J1850 VPW timing requirements in accordance with SAE J1850 standard
 // all width times in us
 // transmitting pulse width

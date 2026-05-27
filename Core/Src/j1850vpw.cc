@@ -290,6 +290,27 @@ extern "C"
     return ~crc_reg; // Return CRC
   }
 
+  // Bench-mode hook called from the RTT CLI.  Briefly masks the input-
+  // capture interrupt so the RX state machine cannot misinterpret our own
+  // bit-banged pulses, then drives the frame via sendFrame() (which appends
+  // the CRC).  Strong override of the weak default in cli.cc.
+  void cliJ1850TxRaw(const uint8_t *bytes, uint8_t len)
+  {
+    if (!bytes || len == 0 || len > 10)
+    {
+      PrintF("j1850 tx: invalid length (%u, max 10)\r\n", (unsigned)len);
+      return;
+    }
+    HAL_TIM_IC_Stop_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
+    J1850VPW::messageReset();
+    J1850VPW::J1850error rc = J1850VPW::sendFrame(bytes, len);
+    HAL_TIM_IC_Start_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
+    PrintF("j1850 tx: %u bytes -> %s\r\n",
+           (unsigned)len,
+           rc == J1850VPW::J1850error::OK ? "OK" :
+           rc == J1850VPW::J1850error::IncorrectFrame ? "BAD_FRAME" : "LOST_ARB");
+  }
+
 #ifdef __cplusplus
 }
 #endif

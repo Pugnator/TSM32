@@ -18,6 +18,13 @@ extern "C"
   float cliGetChipTemperatureC(void);
   void cliGetYprDeg(int16_t *yaw, int16_t *pitch, int16_t *roll);
 
+  /* Bench-mode J1850 transmit hook.  Disables the IC interrupt for the
+     duration of the bit-banged frame, calls J1850VPW::sendFrame() with the
+     supplied bytes (CRC is appended internally), then re-arms the IC.
+     Available only when J1850_ENABLED is non-zero; a weak no-op default in
+     cli.cc keeps the build green otherwise. */
+  void cliJ1850TxRaw(const uint8_t *bytes, uint8_t len);
+
 #ifdef __cplusplus
 }
 #endif
