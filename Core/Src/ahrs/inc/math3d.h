@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstdlib>
+#include <cstring>
 #include <bit>
 #include <limits>
 #include <cmath>
@@ -58,12 +59,17 @@ static inline float _fastAtan2(float y, float x)
 
 static inline float _fastInvSqrt(float x)
 {
-  float halfx = 0.5f * x;
-  float y = x;
-  long i = *(long *)&y;             // Type punning to reinterpret the bits of 'y' as a long integer
-  i = 0x5f3759df - (i >> 1);        // Magic number calculation for initial approximation
-  y = *(float *)&i;                 // Type punning to reinterpret the bits of 'i' as a float
-  y = y * (1.5f - (halfx * y * y)); // Refining the approximation
+  // Quake III fast inverse square root.  The bit-level reinterpretation must
+  // go through memcpy() to stay defined under strict aliasing -- the previous
+  // long* cast was UB and could be reordered or constant-folded incorrectly
+  // by -O3 / -flto even with -fno-strict-aliasing on this translation unit.
+  const float halfx = 0.5f * x;
+  std::uint32_t i;
+  std::memcpy(&i, &x, sizeof(i));
+  i = 0x5f3759dfu - (i >> 1);
+  float y;
+  std::memcpy(&y, &i, sizeof(y));
+  y = y * (1.5f - (halfx * y * y)); // one Newton iteration
   return y;
 }
 
