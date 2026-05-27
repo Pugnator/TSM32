@@ -143,6 +143,8 @@ extern "C"
 #endif
 
 #if BLINKER_ENABLED
+      blinkerHandler();
+
       if (hazardEnabled || leftEnabled || rightEnabled)
       {
         #if MEMS_ENABLED

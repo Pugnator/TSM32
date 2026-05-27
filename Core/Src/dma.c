@@ -46,9 +46,8 @@ void MX_DMA_Init(void)
   /* DMA1_Channel1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
-  /* DMA1_Channel7_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 3, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel7_IRQn);
+  /* DMA1_Channel7 removed: was reserved for TIM2 DMA which is unused
+   * (TIM2 operates in IC interrupt mode). Fixes #37. */
 
 }
 

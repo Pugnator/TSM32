@@ -74,8 +74,8 @@ namespace J1850VPW
     const uint8_t headerSize = h.ctx.type ? 1 : 3;
     if (headerSize == 1)
     {
-      // not used in Harleys(?)
-      return true;
+      WARN_LOG("J1850: 1-byte header frame rejected (not used on this network, rx=%u bytes)\r\n", j1850RXctr);
+      return false;
     }
 
     auto destination = convertByteToSourceType(payloadJ1850[1]);

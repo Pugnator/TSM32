@@ -49,6 +49,7 @@ extern "C"
 
     void blinkerDoBlink();
     void hazardToggle();
+    void blinkerHandler();
 
     void enableStarter();
     void disableStarter();
