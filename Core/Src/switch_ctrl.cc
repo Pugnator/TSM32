@@ -167,11 +167,11 @@ extern "C"
           RIGHT_BUTTON == PRESSED)
       {
         DEBUG_LOG("Both switches were ON for %ums.\r\n", pressDuration);
-        leftButtonEvent = false;
-        rightButtonEvent = false;
         hazardToggle();
-        waitLongPress = true;
-        startBlinkerTimer();
+        /* Hazard does not honor long-press / overtake semantics. Just
+         * release the FSM so we don't mutate overtakeMode as a side
+         * effect of holding the buttons. */
+        resetEvent();
         return;
       }
       /* if left button is still pressed */
