@@ -11,8 +11,6 @@
 #define DEG2RAD(x) (x * (M_PI / 180.f))
 #define RAD2DEG(x) (x * (180.f / M_PI))
 
-class Eeprom;
-
 namespace Ahrs
 {
 
@@ -46,9 +44,6 @@ namespace Ahrs
       gyroMinZ_ = 0;
       lastTimeUpdated_ = 0;
     }
-
-    bool staticCalibration(Eeprom *mem = nullptr);
-    bool loadCalibration(Eeprom *mem);
 
     void madgwick6DoF(Quaternion &q, VectorFloat &g, VectorFloat &a);
     void madgwick9DoF(Quaternion &q, VectorFloat &g, VectorFloat &a, VectorFloat &m);
