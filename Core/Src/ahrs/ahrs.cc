@@ -272,7 +272,13 @@ namespace Ahrs
 #if FIXED_AHRS_UPDATE_RATE
       sampleFreq_ = AHRS_UPDATE_RATE;
 #else
-      sampleFreq_ = 1.f / ((sampleTime - lastTimeUpdated_) * 0.001f);
+      // Clamp the elapsed time to >= 1 ms so two samples that land in the
+      // same SysTick millisecond cannot produce a divide-by-zero in the
+      // 1/dt that feeds the Madgwick integrator.
+      uint32_t deltaMs = sampleTime - lastTimeUpdated_;
+      if (deltaMs < 1u)
+        deltaMs = 1u;
+      sampleFreq_ = 1.f / (deltaMs * 0.001f);
 #endif
 
       lastTimeUpdated_ = sampleTime;

@@ -41,6 +41,7 @@ namespace Ahrs
       gyroMinY_ = 0;
       gyroMinZ_ = 0;
       lastTimeUpdated_ = 0;
+      sampleFreq_ = static_cast<float>(AHRS_UPDATE_RATE);
     }
 
     void madgwick6DoF(Quaternion &q, VectorFloat &g, VectorFloat &a);
