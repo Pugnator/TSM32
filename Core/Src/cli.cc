@@ -60,6 +60,7 @@ namespace
 #if MEMS_ENABLED
     int16_t y = 0, p = 0, r = 0;
     cliGetYprDeg(&y, &p, &r);
+    PrintF("IMU     : %s\r\n", cliGetImuOk() ? "OK" : "FAILED (check SPI/CS)");
     PrintF("YPR     : %d / %d / %d  deg\r\n", (int)y, (int)p, (int)r);
     PrintF("Chip T  : %.2f C\r\n", (double)cliGetChipTemperatureC());
 #else

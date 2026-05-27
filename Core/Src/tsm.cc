@@ -51,6 +51,11 @@ extern "C" void cliGetYprDeg(int16_t *yaw, int16_t *pitch, int16_t *roll)
   if (pitch) *pitch = v.y;
   if (roll)  *roll = v.z;
 }
+
+extern "C" bool cliGetImuOk(void)
+{
+  return gAhrs_ && gAhrs_->ok();
+}
 #endif
 
 #ifdef __cplusplus
@@ -120,6 +125,7 @@ extern "C"
     std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, true));
     //std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, true));
     gAhrs_ = mpu.get();
+    PrintF("MEMS: MPU9250 SPI init %s\r\n", gAhrs_->ok() ? "OK" : "FAILED - check SPI/CS wiring");
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)

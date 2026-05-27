@@ -17,6 +17,7 @@ extern "C"
      zero / a clear state until the application registers a real source. */
   float cliGetChipTemperatureC(void);
   void cliGetYprDeg(int16_t *yaw, int16_t *pitch, int16_t *roll);
+  bool cliGetImuOk(void);
 
   /* Bench-mode J1850 transmit hook.  Disables the IC interrupt for the
      duration of the bit-banged frame, calls J1850VPW::sendFrame() with the
