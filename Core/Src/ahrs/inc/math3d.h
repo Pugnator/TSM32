@@ -175,7 +175,7 @@ struct Quaternion
   Quaternion getNormalized()
   {
     Quaternion r(w, x, y, z);
-    if (r.normalize())
+    if (!r.normalize())
       return Quaternion();
 
     return r;
