@@ -23,8 +23,8 @@ namespace Mpu9250
     // accel_fchoice_b bit [3]; in this case the bandwidth is 1.13 kHz
     if (!mpuRead(MPU9250_ACCEL_CONFIG_2, temp_)) // get current ACCEL_CONFIG2 register value
       return false;
-    *temp_ &= ~0x0F; // Clear accel_fchoice_b (bit 3) and A_DLPFG (bits [2:0])
-    *temp_ |= 0x03;  // Set accelerometer rate to 1 kHz and bandwidth to 41 Hz
+    *temp_ &= ~0x0F;          // Clear accel_fchoice_b (bit 3) and A_DLPFG (bits [2:0])
+    *temp_ |= ACCEL_DLPF_CFG; // Accel rate 1 kHz, bandwidth per ahrs_config.h (default 10.2 Hz)
 
     if (!mpuWrite(MPU9250_ACCEL_CONFIG_2, std::move(*temp_))) // Write new ACCEL_CONFIG2 register value
       return false;
