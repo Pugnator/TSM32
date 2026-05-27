@@ -56,7 +56,7 @@ extern "C"
     void adcHandler();
 
     extern uint32_t adcDMAbuffer[ADC_DMA_BUF_SIZE];
-    extern bool adcDMAcompleted;
+    extern volatile bool adcDMAcompleted;
 
 #ifdef __cplusplus
 }

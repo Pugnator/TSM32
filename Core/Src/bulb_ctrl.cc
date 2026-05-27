@@ -21,19 +21,21 @@ extern "C"
 {
 #endif
 
-  bool adcDMAcompleted = false;
+  volatile bool adcDMAcompleted = false;
   uint32_t adcDMAbuffer[ADC_DMA_BUF_SIZE];
   static volatile uint32_t voltageThresholdStartTime = 0;
   static volatile bool wasOverVoltage = false;
 
   void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   {
-    if (ADC1 != hadc->Instance || hazardEnabled)
+    if (ADC1 != hadc->Instance)
     {
       return;
     }
-    /* Only set the flag here; HAL_ADC_Stop_DMA is deferred to adcHandler()
-     * in the main loop to keep this ISR minimal (see issue #41). */
+    /* Always flag completion so adcHandler() can restart DMA.
+     * Hazard-mode gating is done in adcHandler() to avoid permanent
+     * DMA stop after hazard ends (was bug: hazardEnabled here stopped
+     * DMA forever once hazard was used). */
     adcDMAcompleted = true;
   }
 
@@ -94,7 +96,7 @@ void adcHandler()
   uint32_t prevSmoothedAverage = smoothedAverage;
 
   uint32_t currentSampleAverage = 0;
-  for (int i = 1; i < ADC_DMA_BUF_SIZE; i++)
+  for (int i = 0; i < ADC_DMA_BUF_SIZE; i++)
   {
     currentSampleAverage += adcDMAbuffer[i];
   }
@@ -116,6 +118,21 @@ void adcHandler()
 
   // complensation of the resistor's tolerance
   // smoothedAverage *= 0.97f;
+
+  /* Always restart DMA before any early return so the ISR keeps firing
+   * and adcHandler() never processes stale data (was bug: early returns
+   * inside the voltage FSM bypassed this block entirely). */
+  adcDMAcompleted = false;
+  HAL_ADC_Stop_DMA(&hadc1);
+  HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
+
+  /* Freeze FRL/starter state machine during hazard but keep DMA cycling
+   * so monitoring resumes immediately after hazard ends. */
+  if (hazardEnabled)
+  {
+    return;
+  }
+
 #ifdef DEBUG
   float voltage = smoothedAverage * 3.3 / 4095 * voltageDividerFactor;
   DEBUG_LOG("V = %0.2f ADC: %u\r\n", voltage, smoothedAverage);
@@ -123,7 +140,7 @@ void adcHandler()
 
   if (smoothedAverage > ADC_12_8V_VALUE)
   {
-    // if voltage is above 12.8V we want to turn on sidemarks
+    // if voltage is above charging threshold we want to turn on sidemarks
     if (!wasOverVoltage)
     {
       wasOverVoltage = true;
@@ -131,7 +148,7 @@ void adcHandler()
       return;
     }
 
-    // check if voltage is ABOVE 12.8V for more than 15 seconds
+    // check if voltage is above threshold for more than 15 seconds
     if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
     {
       disableStarter();
@@ -149,11 +166,11 @@ void adcHandler()
     if (wasOverVoltage)
     {
       wasOverVoltage = false;
-      // start measuring time when voltage is below 12V
+      // start measuring time when voltage is below threshold
       voltageThresholdStartTime = HAL_GetTick();
       return;
     }
-    // check if voltage is BELOW 12V for more than 15 seconds
+    // check if voltage is below threshold for more than 15 seconds
     if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
     {
       enableStarter();
@@ -162,7 +179,4 @@ void adcHandler()
   }
   LEFT_PWM_OUT = leftEnabled ? LEFT_PWM_OUT : currentSidemarkBrightness;
   RIGHT_PWM_OUT = rightEnabled ? RIGHT_PWM_OUT : currentSidemarkBrightness;
-  adcDMAcompleted = false;
-  HAL_ADC_Stop_DMA(&hadc1);
-  HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
 }
