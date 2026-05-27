@@ -130,7 +130,7 @@ extern "C"
     stopAppExecuting = false;
     while (!stopAppExecuting)
     {
-      cliPoll();
+      // cliPoll();  /* disabled during J1850 RX bench testing */
 
 #if AUTO_LIGHT_ENABLE
       adcHandler();
