@@ -163,10 +163,8 @@ namespace Mpu9250
     bool configureAccelerometer();
     bool configureGyroscope();
     bool configureMagnetometer();
-
     bool gyroCurrentBias();
     bool accelCurrentBias();
-    bool magCurrentBias();
 
     float magFactoryCorrX;
     float magFactoryCorrY;

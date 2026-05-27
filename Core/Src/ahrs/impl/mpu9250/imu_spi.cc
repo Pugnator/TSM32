@@ -59,6 +59,7 @@ namespace Mpu9250
 
     DEBUG_LOG("Accel OK.\r\n");
 
+#if !DISABLE_MAGNETOMETER
     if (magMode_ == MagMode::SlaveMode)
       ok_ = setMagnetometerAsSlave();
 
@@ -67,6 +68,7 @@ namespace Mpu9250
       DEBUG_LOG("I2C: Failed to configure magnetometer.\r\n");
       ok_ = false;
     }
+#endif
   }
 
   bool Mpu9250Spi::setup()
