@@ -109,7 +109,6 @@ CPP_SOURCES =  \
 	Core/Src/uniqueid.cc\
 	Core/Src/vmmu.cc\
 	Core/Src/ahrs/ahrs.cc\
-	Core/Src/ahrs/antijam.cc\
 	Core/Src/ahrs/impl/mpu9250/imu.cc\
 	Core/Src/ahrs/impl/mpu9250/imu_spi.cc\
 	Core/Src/ahrs/impl/mpu9250/imu_i2c.cc\

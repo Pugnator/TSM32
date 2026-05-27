@@ -295,7 +295,6 @@ namespace Ahrs
       madgwick6DoF(quan_, gyro_, acc_);
 #endif
     }
-// antiJam->sample(mag_);
 #if DEBUG
     counter++;
     if (counter == 10 * 100UL)

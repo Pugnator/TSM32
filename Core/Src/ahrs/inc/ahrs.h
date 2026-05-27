@@ -2,7 +2,6 @@
 #include "imu_spi.h"
 #include "imu_i2c.h"
 #include "imu_base.h"
-#include "antijam.h"
 
 #include "math3d.h"
 #include <utility>
@@ -21,7 +20,6 @@ namespace Ahrs
     template <typename... Args>
     AhrsBase(Args &&...args) : MpuType(std::forward<Args>(args)...)
     {
-      antiJam.reset(new MagneticJammingDetector);
       magMaxX_ = 0;
       magMaxY_ = 0;
       magMaxZ_ = 0;
@@ -66,8 +64,6 @@ namespace Ahrs
     const Quaternion &sampleQuant();
 
   private:
-    std::unique_ptr<MagneticJammingDetector> antiJam;
-
     VectorFloat getYawPitchRoll();
 
     float accOffsetX_;

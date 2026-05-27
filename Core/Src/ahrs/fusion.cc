@@ -155,16 +155,6 @@ namespace Ahrs
       return;
     }
 
-    /*
-    antiJam->update(m);
-    if (antiJam->getJammingStatus())
-    {
-      DEBUG_LOG("Jamming detected\r\n");
-      madgwick6DoF(q, g, a);
-      return;
-    }
-    */
-
     // Rate of change of quaternion from gyroscope
     qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
     qDot2 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
