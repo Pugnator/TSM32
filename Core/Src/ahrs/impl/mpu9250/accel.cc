@@ -53,9 +53,15 @@ namespace Mpu9250
     uint16_t _temp = (data[6] << 8 | data[7]);
     chipTemperature_ = ((_temp - 21.0f) / 333.87f) + 21.0f;
 
-    result.x = (float)accX * aMult;
-    result.y = (float)accY * aMult;
-    result.z = (float)accZ * aMult;
+    // Sensor -> body axis remap (motorcycle deployment).
+    // Sensor axes: X=back, Y=right, Z=up.
+    // Body axes:   X=forward, Y=right, Z=up.  (180 deg rotation about Z.)
+    //   x_body = -x_sensor
+    //   y_body =  y_sensor
+    //   z_body =  z_sensor
+    result.x = -(float)accX * aMult;
+    result.y =  (float)accY * aMult;
+    result.z =  (float)accZ * aMult;
     return true;
   }
 
