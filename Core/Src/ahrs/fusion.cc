@@ -8,10 +8,11 @@ Based on the code taken from https://github.com/kriswiner/MPU9250/tree/master
 
 namespace
 {
-
-#define betaDef 0.1f
-
-  volatile float beta = betaDef;
+  // Madgwick gain.  Was previously a volatile file-scope global so it could
+  // be poked from the debugger; nothing in production ever modified it, and
+  // it was shared across template instantiations rather than belonging to
+  // the algorithm.  Promote to a constexpr so the optimiser can fold it.
+  constexpr float beta = 0.1f;
 }
 
 namespace Ahrs
