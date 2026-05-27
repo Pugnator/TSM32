@@ -180,6 +180,13 @@ extern "C"
       return;
     }
 
+    /* Symmetric wrap-around guard: mirrors the check in onFallingEdge. */
+    if (fallEdgeTime > riseEdgeTime)
+    {
+      J1850VPW::messageReset();
+      return;
+    }
+
     const uint32_t pulse = riseEdgeTime - fallEdgeTime;
     if (pulse > RX_IFS_MIN)
     {

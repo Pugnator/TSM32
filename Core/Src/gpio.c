@@ -114,7 +114,8 @@ void MX_GPIO_Init(void)
   __HAL_AFIO_REMAP_PD01_ENABLE();
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  /* Button EXTI: below J1850 timers but above ADC/DMA/blinker (see issue #42). */
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }

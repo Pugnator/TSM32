@@ -32,9 +32,9 @@ extern "C"
     {
       return;
     }
-
+    /* Only set the flag here; HAL_ADC_Stop_DMA is deferred to adcHandler()
+     * in the main loop to keep this ISR minimal (see issue #41). */
     adcDMAcompleted = true;
-    HAL_ADC_Stop_DMA(&hadc1);
   }
 
   void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
@@ -163,5 +163,6 @@ void adcHandler()
   LEFT_PWM_OUT = leftEnabled ? LEFT_PWM_OUT : currentSidemarkBrightness;
   RIGHT_PWM_OUT = rightEnabled ? RIGHT_PWM_OUT : currentSidemarkBrightness;
   adcDMAcompleted = false;
+  HAL_ADC_Stop_DMA(&hadc1);
   HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
 }
