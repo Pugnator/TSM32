@@ -284,6 +284,20 @@ namespace Ahrs
       lastTimeUpdated_ = sampleTime;
       this->readAccelAxis(acc_);
       this->readGyroAxis(gyro_);
+
+      // Refresh chip-die temperature at ~1 Hz (every 100th sample at the
+      // 100 Hz fixed update rate).  Used by the ZUPT model and exposed via
+      // getTemperature() for thermal-bias compensation.
+      {
+        static uint32_t tempDivider = 0;
+        if (++tempDivider >= 100u)
+        {
+          tempDivider = 0;
+          float t;
+          if (this->readChipTemperature(t))
+            this->chipTemperature_ = t;
+        }
+      }
 #if !DISABLE_MAGNETOMETER
 #if MAGNETOMETER_BLOCKING_MODE
       if (!this->readMagAxis(mag_, true))

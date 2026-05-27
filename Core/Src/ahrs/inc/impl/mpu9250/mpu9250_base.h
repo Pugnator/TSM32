@@ -119,6 +119,7 @@ namespace Mpu9250
     bool readMagAxis(VectorFloat &result, bool blocking = true);
     bool readAccelAxis(VectorFloat &result);
     bool readGyroAxis(VectorFloat &result);
+    bool readChipTemperature(float &out);
     bool setMagnetometerAsSlave();
     float getTemperature();
 
