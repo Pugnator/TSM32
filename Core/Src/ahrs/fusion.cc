@@ -10,13 +10,8 @@ namespace
 {
 
 #define betaDef 0.1f
-#define Ki 0.0f
-#define Kp 2.0f * 5.0f
 
   volatile float beta = betaDef;
-  
-  float eInt[3] = {0.0f, 0.0f, 0.0f};
-  float deltat = 0.0f;
 }
 
 namespace Ahrs
@@ -259,125 +254,6 @@ namespace Ahrs
     q.z = q3;
   }
 
-  // Similar to Madgwick scheme but uses proportional and integral filtering on the error between estimated reference vectors and
-  // measured ones.
-  template <typename MpuType>
-  void AhrsBase<MpuType>::mahony9DoF(Quaternion &q, VectorFloat &g, VectorFloat &a, VectorFloat &m)
-  {
-    float q1 = q.w;
-    float q2 = q.x;
-    float q3 = q.y;
-    float q4 = q.z;
-
-    float gx = g.x;
-    float gy = g.y;
-    float gz = g.z;
-
-    float ax = a.x;
-    float ay = a.y;
-    float az = a.z;
-
-    float mx = m.x;
-    float my = m.y;
-    float mz = m.z;
-
-    gx = gx * M_PI / 180.0f;
-    gy = gy * M_PI / 180.0f;
-    gz = gz * M_PI / 180.0f;
-
-    float norm;
-    float hx, hy, bx, bz;
-    float vx, vy, vz, wx, wy, wz;
-    float ex, ey, ez;
-    float pa, pb, pc;
-
-    // Auxiliary variables to avoid repeated arithmetic
-    float q1q1 = q1 * q1;
-    float q1q2 = q1 * q2;
-    float q1q3 = q1 * q3;
-    float q1q4 = q1 * q4;
-    float q2q2 = q2 * q2;
-    float q2q3 = q2 * q3;
-    float q2q4 = q2 * q4;
-    float q3q3 = q3 * q3;
-    float q3q4 = q3 * q4;
-    float q4q4 = q4 * q4;
-
-    // Normalise accelerometer measurement
-    norm = FAST_SQRT(ax * ax + ay * ay + az * az);
-    if (!norm)
-      return;           // handle NaN
-    norm = 1.0f / norm; // use reciprocal for division
-    ax *= norm;
-    ay *= norm;
-    az *= norm;
-
-    // Normalise magnetometer measurement
-    norm = FAST_INV_SQRT(mx * mx + my * my + mz * mz);
-    if (!norm)
-      return; // handle NaN
-
-    mx *= norm;
-    my *= norm;
-    mz *= norm;
-
-    // Reference direction of Earth's magnetic field
-    hx = 2.0f * mx * (0.5f - q3q3 - q4q4) + 2.0f * my * (q2q3 - q1q4) + 2.0f * mz * (q2q4 + q1q3);
-    hy = 2.0f * mx * (q2q3 + q1q4) + 2.0f * my * (0.5f - q2q2 - q4q4) + 2.0f * mz * (q3q4 - q1q2);
-    bx = FAST_SQRT((hx * hx) + (hy * hy));
-    bz = 2.0f * mx * (q2q4 - q1q3) + 2.0f * my * (q3q4 + q1q2) + 2.0f * mz * (0.5f - q2q2 - q3q3);
-
-    // Estimated direction of gravity and magnetic field
-    vx = 2.0f * (q2q4 - q1q3);
-    vy = 2.0f * (q1q2 + q3q4);
-    vz = q1q1 - q2q2 - q3q3 + q4q4;
-    wx = 2.0f * bx * (0.5f - q3q3 - q4q4) + 2.0f * bz * (q2q4 - q1q3);
-    wy = 2.0f * bx * (q2q3 - q1q4) + 2.0f * bz * (q1q2 + q3q4);
-    wz = 2.0f * bx * (q1q3 + q2q4) + 2.0f * bz * (0.5f - q2q2 - q3q3);
-
-    // Error is cross product between estimated direction and measured direction of gravity
-    ex = (ay * vz - az * vy) + (my * wz - mz * wy);
-    ey = (az * vx - ax * vz) + (mz * wx - mx * wz);
-    ez = (ax * vy - ay * vx) + (mx * wy - my * wx);
-    if (Ki > 0.0f)
-    {
-      eInt[0] += ex; // accumulate integral error
-      eInt[1] += ey;
-      eInt[2] += ez;
-    }
-    else
-    {
-      eInt[0] = 0.0f; // prevent integral wind up
-      eInt[1] = 0.0f;
-      eInt[2] = 0.0f;
-    }
-
-    // Apply feedback terms
-    gx = gx + Kp * ex + Ki * eInt[0];
-    gy = gy + Kp * ey + Ki * eInt[1];
-    gz = gz + Kp * ez + Ki * eInt[2];
-
-    // Integrate rate of change of quaternion
-    pa = q2;
-    pb = q3;
-    pc = q4;
-    q1 = q1 + (-q2 * gx - q3 * gy - q4 * gz) * (0.5f * deltat);
-    q2 = pa + (q1 * gx + pb * gz - pc * gy) * (0.5f * deltat);
-    q3 = pb + (q1 * gy - pa * gz + pc * gx) * (0.5f * deltat);
-    q4 = pc + (q1 * gz + pa * gy - pb * gx) * (0.5f * deltat);
-
-    // Normalise quaternion
-    norm = FAST_INV_SQRT(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);
-    q1 *= norm;
-    q2 *= norm;
-    q3 *= norm;
-    q4 *= norm;
-
-    q.w = q1;
-    q.x = q2;
-    q.y = q3;
-    q.z = q4;
-  }  
   template class AhrsBase<Mpu9250::Mpu9250Spi>;
   template class AhrsBase<Mpu9250::Mpu9250I2c>;
 }

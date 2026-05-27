@@ -47,7 +47,6 @@ namespace Ahrs
 
     void madgwick6DoF(Quaternion &q, VectorFloat &g, VectorFloat &a);
     void madgwick9DoF(Quaternion &q, VectorFloat &g, VectorFloat &a, VectorFloat &m);
-    void mahony9DoF(Quaternion &q, VectorFloat &g, VectorFloat &a, VectorFloat &m);
 
     float getHeadingAngle();
     VectorInt16 getYawPitchRollD();
