@@ -54,11 +54,15 @@ namespace Ahrs
     qDot3 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
     qDot4 = 0.5f * (q0 * gz + q1 * gy - q2 * gx);
 
-    // Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
-    if (ax && ay && az)
+    // Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation).
+    // Check on squared magnitude rather than per-axis truthiness: under engine vibration any individual
+    // axis routinely crosses 0.0f while the vector magnitude stays close to 1 g, so the original
+    // (ax && ay && az) test silently dropped legitimate samples on a stationary, level device.
+    float aMagSq = ax * ax + ay * ay + az * az;
+    if (aMagSq > 1e-6f)
     {
       // Normalise accelerometer measurement
-      recipNorm = FAST_INV_SQRT(ax * ax + ay * ay + az * az);
+      recipNorm = FAST_INV_SQRT(aMagSq);
       ax *= recipNorm;
       ay *= recipNorm;
       az *= recipNorm;
