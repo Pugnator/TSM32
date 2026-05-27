@@ -65,8 +65,8 @@ public:
     }
     for (uint32_t i = 0; i < size; ++i)
     {
-      values[i] = ADC_12_2V_VALUE;
-      sum += ADC_12_2V_VALUE;
+      values[i] = ADC_11_1V_VALUE;
+      sum += ADC_11_1V_VALUE;
     }
   }
 
@@ -90,7 +90,7 @@ void adcHandler()
   }
 
   prevSample = HAL_GetTick();
-  static uint32_t smoothedAverage = ADC_12_2V_VALUE;
+  static uint32_t smoothedAverage = ADC_11_1V_VALUE;
 
   static MovingAverage filter(ADC_DMA_BUF_SIZE);
   uint32_t prevSmoothedAverage = smoothedAverage;
@@ -138,7 +138,7 @@ void adcHandler()
   DEBUG_LOG("V = %0.2f ADC: %u\r\n", voltage, smoothedAverage);
 #endif
 
-  if (smoothedAverage > ADC_12_8V_VALUE)
+  if (smoothedAverage > ADC_13_4V_VALUE)
   {
     // if voltage is above charging threshold we want to turn on sidemarks
     if (!wasOverVoltage)
@@ -160,7 +160,7 @@ void adcHandler()
     }
   }
   // we don't want to turn off sidemarks if blinkers are enabled
-  else if (!leftEnabled && !rightEnabled && smoothedAverage <= ADC_12_2V_VALUE)
+  else if (!leftEnabled && !rightEnabled && smoothedAverage <= ADC_11_1V_VALUE)
   {
     // if previously upper threshold was exceeded we want to reset the timer
     if (wasOverVoltage)
