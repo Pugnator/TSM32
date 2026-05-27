@@ -285,6 +285,16 @@ namespace Ahrs
       this->readAccelAxis(acc_);
       this->readGyroAxis(gyro_);
 
+#if ENABLE_ZUPT
+      // Refine the online gyro bias whenever the bike is stationary, then
+      // subtract the current bias estimate from the live gyro reading so
+      // that downstream Madgwick integration sees a drift-corrected signal.
+      updateGyroBiasIfStill();
+      gyro_.x -= gyroBiasOnline_.x;
+      gyro_.y -= gyroBiasOnline_.y;
+      gyro_.z -= gyroBiasOnline_.z;
+#endif
+
       // Refresh chip-die temperature at ~1 Hz (every 100th sample at the
       // 100 Hz fixed update rate).  Used by the ZUPT model and exposed via
       // getTemperature() for thermal-bias compensation.
@@ -327,6 +337,66 @@ namespace Ahrs
 #endif
     return quan_;
   }
+
+#if ENABLE_ZUPT
+  template <typename MpuType>
+  void AhrsBase<MpuType>::updateGyroBiasIfStill()
+  {
+    // Per-axis stillness check.  Gyro is in deg/s straight from the IMU; we
+    // test the raw reading minus the current bias estimate so that a slowly
+    // drifting bias on a truly-stationary bike does not lock us out of the
+    // stillness window forever.  The accel magnitude must also be within a
+    // narrow band around 1 g to reject jolts that happen to cancel across
+    // axes.
+    const float gxRaw = gyro_.x;
+    const float gyRaw = gyro_.y;
+    const float gzRaw = gyro_.z;
+
+    const float gResidualX = gxRaw - gyroBiasOnline_.x;
+    const float gResidualY = gyRaw - gyroBiasOnline_.y;
+    const float gResidualZ = gzRaw - gyroBiasOnline_.z;
+
+    const float aMag = acc_.getMagnitude();
+
+    const bool gyroStill = (fabsf(gResidualX) < ZUPT_GYRO_THRESH_DPS) &&
+                           (fabsf(gResidualY) < ZUPT_GYRO_THRESH_DPS) &&
+                           (fabsf(gResidualZ) < ZUPT_GYRO_THRESH_DPS);
+    const bool accelStill = fabsf(aMag - 1.0f) < ZUPT_ACCEL_THRESH_G;
+
+    if (gyroStill && accelStill)
+    {
+      if (zuptStableCount_ < ZUPT_HOLD_SAMPLES)
+      {
+        if (++zuptStableCount_ == ZUPT_HOLD_SAMPLES && !zuptActive_)
+        {
+          zuptActive_ = true;
+          DEBUG_LOG("ZUPT epoch start, bias=(%.3f, %.3f, %.3f) deg/s, T=%.1fC\r\n",
+                    gyroBiasOnline_.x, gyroBiasOnline_.y, gyroBiasOnline_.z,
+                    this->chipTemperature_);
+        }
+      }
+
+      if (zuptActive_)
+      {
+        // EMA toward the raw reading: bias = (1-a)*bias + a*reading.
+        const float a = ZUPT_BIAS_ALPHA;
+        gyroBiasOnline_.x += a * (gxRaw - gyroBiasOnline_.x);
+        gyroBiasOnline_.y += a * (gyRaw - gyroBiasOnline_.y);
+        gyroBiasOnline_.z += a * (gzRaw - gyroBiasOnline_.z);
+      }
+    }
+    else
+    {
+      if (zuptActive_)
+      {
+        DEBUG_LOG("ZUPT epoch end, bias=(%.3f, %.3f, %.3f) deg/s\r\n",
+                  gyroBiasOnline_.x, gyroBiasOnline_.y, gyroBiasOnline_.z);
+      }
+      zuptStableCount_ = 0;
+      zuptActive_ = false;
+    }
+  }
+#endif
 
   template class AhrsBase<Mpu9250::Mpu9250Spi>;
   template class AhrsBase<Mpu9250::Mpu9250I2c>;

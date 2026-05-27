@@ -42,6 +42,9 @@ namespace Ahrs
       gyroMinZ_ = 0;
       lastTimeUpdated_ = 0;
       sampleFreq_ = static_cast<float>(AHRS_UPDATE_RATE);
+      gyroBiasOnline_ = VectorFloat();
+      zuptStableCount_ = 0;
+      zuptActive_ = false;
     }
 
     void madgwick6DoF(Quaternion &q, VectorFloat &g, VectorFloat &a);
@@ -66,6 +69,9 @@ namespace Ahrs
 
   private:
     VectorFloat getYawPitchRoll();
+#if ENABLE_ZUPT
+    void updateGyroBiasIfStill();
+#endif
 
     float accOffsetX_;
     float accOffsetY_;
@@ -108,5 +114,12 @@ namespace Ahrs
     VectorFloat mag_;
     uint32_t lastTimeUpdated_;
     float sampleFreq_;
+
+    // ZUPT (zero-velocity update) state: a slow EMA of the gyro reading
+    // captured while the bike is stationary, subtracted from every live
+    // gyro sample before it reaches the Madgwick filter.
+    VectorFloat gyroBiasOnline_;
+    uint32_t zuptStableCount_;
+    bool zuptActive_;
   };
 }

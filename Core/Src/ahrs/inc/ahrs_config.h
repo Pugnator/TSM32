@@ -19,3 +19,13 @@
 //                    integrator -- second-scale turn decisions don't need
 //                    bandwidth higher than this)
 #define ACCEL_DLPF_CFG 0x05
+
+// Zero-velocity update (ZUPT) -- online gyro-bias refinement while the bike
+// is stationary.  Compensates for thermal drift (~0.005 deg/s/degC on the
+// MPU-9250 gyro -> ~0.3 deg/s across a 60 degC ride) and for boot-time
+// vibration that contaminates the one-shot hardware bias calibration.
+#define ENABLE_ZUPT 1
+#define ZUPT_GYRO_THRESH_DPS 0.5f // max per-axis |gyro| to count as still
+#define ZUPT_ACCEL_THRESH_G  0.03f // max ||accel|-1g| to count as still
+#define ZUPT_HOLD_SAMPLES    50u  // require ~0.5 s of stillness at 100 Hz
+#define ZUPT_BIAS_ALPHA      0.01f // EMA gain per stationary sample
