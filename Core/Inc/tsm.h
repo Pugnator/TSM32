@@ -35,11 +35,11 @@ extern "C"
 
     extern volatile uint8_t currentSidemarkBrightness;
 
-    extern bool leftEnabled;
-    extern bool rightEnabled;
-    extern bool hazardEnabled;
-    extern bool overtakeMode;
-    extern uint32_t blinkCounter;
+    extern volatile bool leftEnabled;
+    extern volatile bool rightEnabled;
+    extern volatile bool hazardEnabled;
+    extern volatile bool overtakeMode;
+    extern volatile uint32_t blinkCounter;
     extern volatile bool settingsMode;
 
     void leftSideOff();

@@ -8,13 +8,17 @@ extern "C"
 
   // SAE J590b and associated standards specify 60 - 120 flashes per minute for turn signals, with 90 per minute as a target
 
-  bool leftEnabled = false;
-  bool rightEnabled = false;
-  bool hazardEnabled = false;
-  bool overtakeMode = false;
+  /* These flags are written from ISR context (switch_ctrl.cc) and read
+   * from both the ISR and the main loop (tsm.cc). Mark them volatile
+   * so the compiler does not cache them across function boundaries
+   * under -O3 / -flto. */
+  volatile bool leftEnabled = false;
+  volatile bool rightEnabled = false;
+  volatile bool hazardEnabled = false;
+  volatile bool overtakeMode = false;
   uint8_t volatile currentSidemarkBrightness = 0;
 
-  uint32_t blinkCounter = 0;
+  volatile uint32_t blinkCounter = 0;
 
   void leftSideToggle()
   {
