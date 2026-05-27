@@ -327,8 +327,23 @@ namespace Ahrs
       if (sampleTime - lastTimeUpdated_ < fixedUpdateRateMs)
         return quan_; // Old value
 #endif
-      while (this->interruptStatus() != Mpu9250::InterruptSource::DataReady)
-        ;
+      // Bounded poll for the IMU DATA_READY flag.  The previous unconditional
+      // busy-wait monopolised the SPI/I2C bus and would freeze the firmware if
+      // the IMU INT line ever stuck (mis-wire, ESD event, IMU power-down).
+      // At a 100 Hz fixed update rate the IMU always has fresh data by the
+      // time we get here, so a few-ms cap is generous; on time-out we return
+      // the previous quaternion and try again on the next tick.
+      {
+        const uint32_t pollDeadline = sampleTime + 3u;
+        while (this->interruptStatus() != Mpu9250::InterruptSource::DataReady)
+        {
+          if (HAL_GetTick() >= pollDeadline)
+          {
+            DEBUG_LOG("IMU DATA_READY timeout\r\n");
+            return quan_;
+          }
+        }
+      }
         // Frequency Update (Hz) = 1 / (Time Interval (ms) * 0.001)
 
 #if FIXED_AHRS_UPDATE_RATE
