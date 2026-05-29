@@ -143,6 +143,62 @@ extern "C"
         J1850VPW::parseFrame();
         J1850VPW::messageReset();
       }
+
+      // Auto-DTC poll: once the bus is active (>=5 frames), query ECM, BCM
+      // and IPC in sequence with 200 ms gaps, then on the first cycle send a
+      // one-shot clear to ECM (clears P1010 / security lamp), then repeat
+      // the read-only query every 10 s.
+      //
+      // States: 0=wait for bus  1-3=querying modules
+      //         4=one-time clear DTC (first cycle only)  5=cooldown
+      {
+        static uint8_t  dtcState     = 0;
+        static uint32_t dtcNextTick  = 0;
+        static bool     clearedOnce  = false;
+
+        // Modules to query: ECM(0x10), BCM/TSM(0x40), IPC(0x60)
+        static const uint8_t dtcTargets[] = {0x10, 0x40, 0x60};
+
+        if (dtcState == 0 && frameCounter >= 5)
+        {
+          dtcState    = 1;
+          dtcNextTick = HAL_GetTick() + 200;
+        }
+        else if (dtcState >= 1 && dtcState <= 3)
+        {
+          if (HAL_GetTick() >= dtcNextTick)
+          {
+            const uint8_t target = dtcTargets[dtcState - 1];
+            const uint8_t req[7] = {0x6C, target, 0xF1, 0x19, 0x52, 0xFF, 0x00};
+            TRACE_LOG("Auto DTC query -> 0x%02X\r\n", (unsigned)target);
+            cliJ1850TxRaw(req, sizeof(req));
+            dtcNextTick = HAL_GetTick() + 200;
+            dtcState    = (dtcState < 3) ? dtcState + 1 : 4;
+          }
+        }
+        else if (dtcState == 4 && HAL_GetTick() >= dtcNextTick)
+        {
+          if (!clearedOnce)
+          {
+            // One-time clear of all ECM DTCs after the first read cycle.
+            // This dismisses P1010 (Missing Password) so the security lamp
+            // goes off.  P1010 is historic — it won't recur until the ECM
+            // actively re-challenges and gets no reply.
+            const uint8_t clr[4] = {0x6C, 0x10, 0xF1, 0x14};
+            PrintF("[%lu] Auto DTC clear -> ECM (MIL should go off)\r\n",
+                   (unsigned long)HAL_GetTick());
+            cliJ1850TxRaw(clr, sizeof(clr));
+            clearedOnce = true;
+          }
+          dtcState    = 5;
+          dtcNextTick = HAL_GetTick() + 10000;
+        }
+        else if (dtcState == 5 && HAL_GetTick() >= dtcNextTick)
+        {
+          dtcState    = 1;
+          dtcNextTick = HAL_GetTick() + 200;
+        }
+      }
 #endif
 
 #if BLINKER_ENABLED

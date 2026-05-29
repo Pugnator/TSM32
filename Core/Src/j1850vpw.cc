@@ -22,6 +22,13 @@ bool mil = 0;
 bool sil = 0;
 uint8_t dtc = 0;
 uint32_t trip = 0;
+int8_t gear_num = 0;       // 0=unknown, 1-6
+bool in_neutral = false;
+bool clutch_engaged = false;
+uint8_t turn_signals = 0;  // 0=off 1=left 2=right 3=both
+uint8_t engine_temp_f = 0; // degrees Fahrenheit
+uint32_t fuel_ticks = 0;   // 0.000040 L per tick
+uint8_t fuel_gauge_level = 0; // 0-15
 
 namespace J1850VPW
 {
@@ -312,7 +319,7 @@ extern "C"
     J1850VPW::messageReset();
     J1850VPW::J1850error rc = J1850VPW::sendFrame(bytes, len);
     HAL_TIM_IC_Start_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
-    PrintF("j1850 tx: %u bytes -> %s\r\n",
+    TRACE_LOG("j1850 tx: %u bytes -> %s\r\n",
            (unsigned)len,
            rc == J1850VPW::J1850error::OK ? "OK" :
            rc == J1850VPW::J1850error::IncorrectFrame ? "BAD_FRAME" : "LOST_ARB");

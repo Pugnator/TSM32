@@ -14,6 +14,13 @@ extern "C"
   extern bool sil;
   extern uint8_t dtc;
   extern uint32_t trip;
+  extern int8_t gear_num;
+  extern bool in_neutral;
+  extern bool clutch_engaged;
+  extern uint8_t turn_signals;
+  extern uint8_t engine_temp_f;
+  extern uint32_t fuel_ticks;
+  extern uint8_t fuel_gauge_level;
 
   extern uint8_t payloadJ1850[J1850_PAYLOAD_SIZE];
   extern volatile uint8_t j1850RXctr;
@@ -68,7 +75,8 @@ namespace J1850VPW
     NET = 0xFE,
     SECURITY = 0x93,
     VSC = 0x63,
-    ENGSTAT = 0xFF
+    ENGSTAT = 0xFF,
+    SCANNER = 0xF1
   } sourceType;
 
   const char *sourceToStr(sourceType type);

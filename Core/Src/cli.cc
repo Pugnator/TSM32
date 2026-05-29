@@ -40,6 +40,7 @@ namespace
            "  j1850                 J1850 link status (RX counters)\r\n"
            "  j1850 trace on|off    auto-dump every RX frame on this CLI\r\n"
            "  j1850 tx HH HH ...    send one frame (CRC appended), max 10 bytes\r\n"
+           "  j1850 dtc [ecm|bcm|abs|ipc|immo]  request DTCs (default: ecm)\r\n"
            "  j1850 clear           send DTC-clear request (6C 00 F1 14)\r\n"
            "  reset                 software CPU reset\r\n");
   }
@@ -164,6 +165,30 @@ namespace
         return;
       }
       cliJ1850TxRaw(frame, n);
+      return;
+    }
+
+    if (!strcmp(sub, "dtc"))
+    {
+      // KWP2000 service 0x19 (ReadDTCByStatus), sub-function 0xC2 = current codes.
+      // Target defaults to ECM (0x10); optionally specify module.
+      uint8_t target = 0x10; // ECM
+      if (tail && *tail)
+      {
+        if      (!strcmp(tail, "bcm"))  target = 0x40;
+        else if (!strcmp(tail, "abs"))  target = 0x28;
+        else if (!strcmp(tail, "ipc"))  target = 0x60;
+        else if (!strcmp(tail, "immo")) target = 0xC0;
+        else if (!strcmp(tail, "ecm"))  target = 0x10;
+        else
+        {
+          PrintF("j1850 dtc: unknown module '%s'. Use ecm|bcm|abs|ipc|immo\r\n", tail);
+          return;
+        }
+      }
+      const uint8_t req[7] = {0x6C, target, 0xF1, 0x19, 0x52, 0xFF, 0x00};
+      PrintF("Requesting DTCs from 0x%02X...\r\n", (unsigned)target);
+      cliJ1850TxRaw(req, sizeof(req));
       return;
     }
 

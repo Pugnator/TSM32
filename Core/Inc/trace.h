@@ -8,6 +8,7 @@
 #if DEBUG
 #define LOG_LEVEL_INFO
 #define LOG_LEVEL_DEBUG
+#define LOG_LEVEL_TRACE
 #endif
 
 #ifdef LOG_LEVEL_DEBUG
@@ -26,6 +27,14 @@
 #define WARN_LOG PrintF
 #else
 #define WARN_LOG(...)
+#endif
+
+// TRACE_LOG: verbose output (J1850 frames, state changes).
+// Active only when LOG_LEVEL_TRACE is defined.
+#ifdef LOG_LEVEL_TRACE
+#define TRACE_LOG PrintF
+#else
+#define TRACE_LOG(...)
 #endif
 
 #define Print printf_

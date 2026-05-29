@@ -1,0 +1,2167 @@
+# SEGGER J-Link RTT Viewer V9.10 Terminal Log File
+# Compiled: 11:38:17 on Jan 14 2026
+# Logging started @ 29 May 2026 10:54:35
+00> Device ID 066eff484954856767150937
+00> TSM 29/05/2026, 01:50 v0.9 (g2cd8f68.42) started
+00> MEMS: MPU9250 SPI init FAILED - check SPI/CS wiring
+00> Empty/corrupted frame [=0]
+00> Empty/corrupted frame [=0]
+00> [317952] #1 OK  5B pri=4 Network Control<-Engine Control Module : 8C FE 10 60 1F
+00> [317957] #2 OK  6B pri=1 Engine status<-Engine Control Module : 28 FF 10 01 07 07
+00> [317962] #3 OK  6B pri=1 Engine status<-Engine Control Module : 28 FF 10 01 07 07
+00> [318083] #4 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [318088] #5 OK  6B pri=1 Vehicle Security<-Engine Control Module : 28 93 10 02 00 8C
+00> [318094] #6 OK  7B pri=2 Speedometer<-Engine Control Module : Speed=0 km/h
+00> [318099] #7 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [318103] #8 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [318109] #9 OK  7B pri=5 Odometer<-Engine Control Module : Odo=0 ticks
+00> [318114] #10 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> Auto DTC query -> 0x10
+00> j1850 tx: 7 bytes -> OK
+00> Auto DTC query -> 0x40
+00> j1850 tx: 7 bytes -> OK
+00> [318602] #11 OK  8B pri=3 Scanner<-Engine Control Module : DTC reply src=0x10
+00> DTC response from 0x10 [historic] (1 code):
+00>   P1010
+00> [318608] #12 OK  8B pri=3 Scanner<-Engine Control Module : DTC reply src=0x10
+00> DTC response from 0x10 [historic] (1 code):
+00> [318665] #13 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> Auto DTC query -> 0x60
+00> j1850 tx: 7 bytes -> OK
+00> [318730] #14 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [318794] #15 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [318810] #16 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [318815] #17 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [318859] #18 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [318891] #19 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [318924] #20 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [318929] #21 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [318989] #22 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319053] #23 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319101] #24 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [319118] #25 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319134] #26 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [319183] #27 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319247] #28 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319312] #29 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319317] #30 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [319344] #31 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [319377] #32 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319442] #33 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319506] #34 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319571] #35 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319636] #36 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319701] #37 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319765] #38 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319830] #39 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319895] #40 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [319910] #41 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [319926] #42 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [319959] #43 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [320024] #44 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [320089] #45 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [320120] #46 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [320137] #47 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [320153] #48 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [320218] #49 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [320224] #50 OK  6B pri=1 Engine status<-Engine Control Module : 28 FF 10 01 06 1A
+00> [320229] #51 OK  6B pri=1 Engine status<-Engine Control Module : 28 FF 10 01 06 1A
+00> Empty/corrupted frame [=0]
+00> Empty/corrupted frame [=0]
+00> [320520] #52 OK  5B pri=4 Network Control<-Engine Control Module : 8C FE 10 60 1F
+00> [320525] #53 OK  6B pri=1 Engine status<-Engine Control Module : 28 FF 10 01 07 07
+00> [320530] #54 OK  6B pri=1 Engine status<-Engine Control Module : 28 FF 10 01 07 07
+00> [320651] #55 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [320656] #56 OK  6B pri=1 Vehicle Security<-Engine Control Module : 28 93 10 02 00 8C
+00> [320662] #57 OK  7B pri=2 Speedometer<-Engine Control Module : Speed=0 km/h
+00> [320667] #58 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [320671] #59 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [320677] #60 OK  7B pri=5 Odometer<-Engine Control Module : Odo=0 ticks
+00> [320682] #61 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [321233] #62 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321298] #63 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321363] #64 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321378] #65 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [321383] #66 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [321427] #67 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321459] #68 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [321492] #69 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321497] #70 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [321557] #71 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321622] #72 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321669] #73 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [321686] #74 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321702] #75 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [321751] #76 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321816] #77 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321880] #78 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [321885] #79 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [321913] #80 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [321945] #81 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322010] #82 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322075] #83 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322139] #84 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322204] #85 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322269] #86 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322334] #87 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322398] #88 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322463] #89 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322478] #90 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [322495] #91 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [322528] #92 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322592] #93 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322657] #94 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322688] #95 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [322705] #96 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [322722] #97 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322787] #98 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322851] #99 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322882] #100 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [322899] #101 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [322916] #102 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [322921] #103 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [322981] #104 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323045] #105 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323110] #106 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323175] #107 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323239] #108 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323304] #109 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323369] #110 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323434] #111 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323465] #112 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [323498] #113 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323530] #114 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [323563] #115 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323628] #116 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323676] #117 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [323693] #118 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323741] #119 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [323757] #120 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323822] #121 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323887] #122 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323892] #123 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [323952] #124 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [323956] #125 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [324016] #126 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324081] #127 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324146] #128 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324210] #129 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324275] #130 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324340] #131 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324405] #132 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324452] #133 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [324469] #134 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324534] #135 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324566] #136 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [324599] #137 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324664] #138 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324668] #139 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [324728] #140 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324776] #141 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [324793] #142 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324858] #143 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324873] #144 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [324922] #145 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324954] #146 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [324987] #147 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [324992] #148 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [325052] #149 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325117] #150 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325181] #151 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325246] #152 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325311] #153 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325375] #154 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325440] #155 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325445] #156 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [325505] #157 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325570] #158 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325601] #159 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [325634] #160 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325650] #161 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [325699] #162 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325764] #163 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325811] #164 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [325828] #165 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325860] #166 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [325893] #167 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [325958] #168 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326023] #169 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326027] #170 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [326087] #171 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326152] #172 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326217] #173 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326281] #174 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326346] #175 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326411] #176 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326426] #177 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [326476] #178 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326540] #179 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326605] #180 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326636] #181 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [326641] #182 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [326670] #183 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326735] #184 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326799] #185 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326847] #186 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [326852] #187 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [326864] #188 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326929] #189 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [326994] #190 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327025] #191 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [327058] #192 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327063] #193 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [327123] #194 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327188] #195 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327252] #196 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327317] #197 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327382] #198 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327413] #199 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [327447] #200 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327511] #201 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327576] #202 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327624] #203 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [327641] #204 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327672] #205 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [327705] #206 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327770] #207 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327835] #208 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327839] #209 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [327883] #210 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [327900] #211 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [327964] #212 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328029] #213 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328094] #214 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328099] #215 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [328158] #216 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328223] #217 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328288] #218 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328353] #219 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328400] #220 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [328417] #221 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328482] #222 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328547] #223 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328612] #224 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328616] #225 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [328676] #226 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328709] #227 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [328741] #228 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328806] #229 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328822] #230 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [328870] #231 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [328918] #232 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [328935] #233 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329000] #234 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329065] #235 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329096] #236 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [329129] #237 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329134] #238 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [329194] #239 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329259] #240 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329324] #241 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329388] #242 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329393] #243 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [329453] #244 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329518] #245 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329582] #246 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329598] #247 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [329647] #248 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329712] #249 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329743] #250 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [329776] #251 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329808] #252 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [329841] #253 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329906] #254 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [329954] #255 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [329971] #256 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330035] #257 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330100] #258 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330165] #259 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330170] #260 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [330230] #261 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330294] #262 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330359] #263 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330375] #264 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [330424] #265 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330489] #266 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330553] #267 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330585] #268 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [330618] #269 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330683] #270 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330747] #271 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330779] #272 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [330795] #273 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [330812] #274 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330877] #275 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330942] #276 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [330990] #277 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [331006] #278 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331071] #279 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331136] #280 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331167] #281 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [331201] #282 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331205] #283 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [331265] #284 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331330] #285 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331362] #286 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [331394] #287 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331459] #288 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331524] #289 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331572] #290 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [331589] #291 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331654] #292 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331718] #293 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331783] #294 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331788] #295 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [331815] #296 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [331848] #297 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331912] #298 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [331977] #299 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332025] #300 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [332042] #301 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332107] #302 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332171] #303 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332236] #304 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332241] #305 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [332301] #306 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332348] #307 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [332365] #308 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332430] #309 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332495] #310 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332560] #311 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332564] #312 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [332624] #313 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332689] #314 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332754] #315 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332770] #316 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [332819] #317 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332851] #318 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [332883] #319 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [332948] #320 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333013] #321 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333060] #322 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [333078] #323 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333142] #324 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333207] #325 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333239] #326 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [333272] #327 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333277] #328 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [333336] #329 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333341] #330 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [333401] #331 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333466] #332 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333531] #333 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333546] #334 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [333595] #335 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333660] #336 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333725] #337 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333756] #338 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [333789] #339 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333854] #340 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333886] #341 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [333919] #342 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [333984] #343 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334048] #344 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334096] #345 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [334113] #346 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334178] #347 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334242] #348 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334307] #349 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334312] #350 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [334323] #351 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [334372] #352 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334437] #353 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334501] #354 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334533] #355 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [334566] #356 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334631] #357 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334696] #358 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334743] #359 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [334760] #360 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334825] #361 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334890] #362 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [334921] #363 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [334955] #364 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335019] #365 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335084] #366 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335132] #367 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [335149] #368 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335213] #369 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335278] #370 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335309] #371 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [335314] #372 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [335343] #373 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335348] #374 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [335407] #375 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335472] #376 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335520] #377 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [335537] #378 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335602] #379 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335667] #380 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335731] #381 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335736] #382 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [335796] #383 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335861] #384 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335925] #385 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [335957] #386 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [335990] #387 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336055] #388 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336119] #389 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336168] #390 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [336184] #391 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336249] #392 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336296] #393 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [336314] #394 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336378] #395 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336383] #396 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [336443] #397 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336508] #398 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336512] #399 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [336573] #400 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336637] #401 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336702] #402 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336718] #403 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [336767] #404 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336831] #405 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336896] #406 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336961] #407 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [336993] #408 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [337026] #409 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337090] #410 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337155] #411 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337202] #412 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [337220] #413 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337284] #414 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337289] #415 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [337349] #416 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337381] #417 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [337414] #418 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337419] #419 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [337479] #420 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337493] #421 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [337543] #422 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337608] #423 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337673] #424 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337704] #425 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [337738] #426 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337802] #427 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337867] #428 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337932] #429 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [337997] #430 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338028] #431 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [338061] #432 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338126] #433 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338191] #434 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338239] #435 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [338255] #436 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338270] #437 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [338320] #438 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338385] #439 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338449] #440 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338454] #441 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [338481] #442 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [338514] #443 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338579] #444 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338644] #445 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338691] #446 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [338708] #447 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338773] #448 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338838] #449 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338902] #450 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [338967] #451 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339032] #452 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339064] #453 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [339097] #454 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339162] #455 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339226] #456 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339257] #457 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [339274] #458 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [339291] #459 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339356] #460 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339420] #461 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339451] #462 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [339468] #463 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [339485] #464 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339490] #465 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [339550] #466 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339615] #467 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339679] #468 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339684] #469 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [339744] #470 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339809] #471 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339873] #472 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [339938] #473 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340003] #474 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340068] #475 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340100] #476 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [340132] #477 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340197] #478 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340245] #479 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [340262] #480 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340309] #481 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [340326] #482 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340391] #483 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340456] #484 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340460] #485 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [340521] #486 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340525] #487 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [340585] #488 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340650] #489 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340665] #490 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [340715] #491 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340780] #492 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340844] #493 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340909] #494 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [340974] #495 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341038] #496 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341103] #497 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341135] #498 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [341168] #499 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341233] #500 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341237] #501 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [341297] #502 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341345] #503 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [341362] #504 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341427] #505 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341442] #506 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [341491] #507 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341523] #508 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [341556] #509 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341561] #510 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [341621] #511 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341652] #512 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [341686] #513 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341750] #514 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341815] #515 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341880] #516 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [341944] #517 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342009] #518 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342074] #519 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342139] #520 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342171] #521 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [342203] #522 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342218] #523 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [342268] #524 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342333] #525 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342380] #526 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [342397] #527 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342429] #528 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [342462] #529 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342527] #530 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342592] #531 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342597] #532 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [342639] #533 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [342656] #534 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342721] #535 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342786] #536 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342850] #537 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342915] #538 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [342980] #539 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343045] #540 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343109] #541 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343174] #542 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343206] #543 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [343211] #544 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [343239] #545 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343304] #546 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343368] #547 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343416] #548 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [343421] #549 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [343433] #550 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343498] #551 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343563] #552 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343594] #553 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [343627] #554 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343632] #555 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [343636] #556 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [343692] #557 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343757] #558 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343821] #559 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343886] #560 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [343951] #561 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344016] #562 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344080] #563 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344145] #564 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344193] #565 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [344210] #566 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344241] #567 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [344274] #568 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344339] #569 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344404] #570 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344408] #571 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [344452] #572 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [344469] #573 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344533] #574 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344598] #575 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344613] #576 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [344663] #577 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344667] #578 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [344727] #579 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344792] #580 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344857] #581 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344921] #582 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [344986] #583 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345051] #584 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345116] #585 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345180] #586 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345185] #587 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [345245] #588 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345277] #589 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [345310] #590 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345375] #591 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345390] #592 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [345439] #593 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345488] #594 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [345504] #595 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345569] #596 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345600] #597 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [345633] #598 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345665] #599 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [345698] #600 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345703] #601 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [345763] #602 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345828] #603 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345892] #604 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [345957] #605 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346022] #606 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346086] #607 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346151] #608 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346167] #609 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [346216] #610 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346281] #611 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346313] #612 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [346345] #613 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346377] #614 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [346410] #615 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346475] #616 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346522] #617 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [346540] #618 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346587] #619 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [346604] #620 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346669] #621 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346734] #622 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346739] #623 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [346799] #624 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346863] #625 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346928] #626 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [346992] #627 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347057] #628 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347122] #629 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347153] #630 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [347187] #631 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347252] #632 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347316] #633 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347348] #634 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [347364] #635 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [347381] #636 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347446] #637 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347510] #638 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347559] #639 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [347575] #640 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347580] #641 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [347640] #642 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347704] #643 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347736] #644 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [347769] #645 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347774] #646 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [347834] #647 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347899] #648 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [347963] #649 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348028] #650 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348093] #651 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348141] #652 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [348158] #653 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348222] #654 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348287] #655 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348352] #656 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348356] #657 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [348383] #658 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [348416] #659 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348481] #660 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348546] #661 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348561] #662 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [348594] #663 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [348611] #664 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348675] #665 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348740] #666 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348805] #667 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348810] #668 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [348870] #669 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348934] #670 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [348999] #671 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349064] #672 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349129] #673 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349133] #674 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [349193] #675 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349258] #676 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349323] #677 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349337] #678 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [349387] #679 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349419] #680 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [349452] #681 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349517] #682 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349548] #683 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [349582] #684 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349630] #685 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [349646] #686 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349711] #687 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349776] #688 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349807] #689 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [349840] #690 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349845] #691 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [349905] #692 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [349970] #693 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350035] #694 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350099] #695 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350114] #696 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [350164] #697 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350229] #698 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350294] #699 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350325] #700 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [350358] #701 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350423] #702 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350454] #703 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [350488] #704 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350536] #705 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [350552] #706 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350617] #707 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350665] #708 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [350682] #709 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350747] #710 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350811] #711 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350876] #712 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [350881] #713 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [350941] #714 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351005] #715 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351070] #716 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351101] #717 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [351135] #718 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351199] #719 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351264] #720 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351312] #721 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [351329] #722 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351394] #723 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351458] #724 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351490] #725 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [351523] #726 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351528] #727 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [351588] #728 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351653] #729 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351701] #730 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [351717] #731 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351782] #732 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351847] #733 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351878] #734 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [351911] #735 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [351916] #736 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [351976] #737 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352041] #738 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352088] #739 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [352106] #740 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352170] #741 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352235] #742 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352300] #743 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352304] #744 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [352364] #745 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352429] #746 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352494] #747 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352509] #748 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [352526] #749 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [352559] #750 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352623] #751 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352688] #752 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352736] #753 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [352753] #754 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352818] #755 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352882] #756 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352947] #757 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [352952] #758 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [353012] #759 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353076] #760 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353081] #761 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [353141] #762 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353206] #763 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353271] #764 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353286] #765 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [353336] #766 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353400] #767 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353465] #768 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353496] #769 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [353530] #770 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353561] #771 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [353594] #772 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353659] #773 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353724] #774 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353772] #775 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [353788] #776 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353853] #777 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353918] #778 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353950] #779 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [353982] #780 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [353987] #781 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [354047] #782 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354063] #783 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [354112] #784 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354177] #785 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354241] #786 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354272] #787 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [354306] #788 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354371] #789 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354435] #790 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354483] #791 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [354500] #792 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354565] #793 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354596] #794 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [354630] #795 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354695] #796 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354759] #797 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354807] #798 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [354824] #799 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354889] #800 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [354953] #801 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355018] #802 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355023] #803 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [355049] #804 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [355083] #805 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355147] #806 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355212] #807 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355260] #808 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [355277] #809 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355342] #810 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355406] #811 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355471] #812 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355476] #813 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [355536] #814 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355601] #815 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355632] #816 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [355665] #817 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355730] #818 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355795] #819 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355843] #820 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [355860] #821 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355924] #822 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [355989] #823 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356020] #824 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [356036] #825 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [356054] #826 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356058] #827 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [356118] #828 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356183] #829 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356248] #830 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356252] #831 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [356312] #832 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356377] #833 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356442] #834 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356457] #835 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [356507] #836 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356571] #837 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356636] #838 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356668] #839 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [356701] #840 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356766] #841 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356830] #842 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356878] #843 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [356895] #844 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [356960] #845 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357024] #846 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357029] #847 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [357089] #848 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357094] #849 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [357154] #850 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357218] #851 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357234] #852 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [357283] #853 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357348] #854 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357413] #855 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357444] #856 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [357478] #857 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357542] #858 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357607] #859 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357672] #860 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357703] #861 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [357736] #862 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357801] #863 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357866] #864 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357914] #865 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [357931] #866 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [357995] #867 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358011] #868 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [358060] #869 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358091] #870 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [358125] #871 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358129] #872 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [358189] #873 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358220] #874 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [358254] #875 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358319] #876 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358383] #877 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358431] #878 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [358448] #879 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358513] #880 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358578] #881 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358643] #882 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358707] #883 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358739] #884 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [358772] #885 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358837] #886 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358901] #887 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358949] #888 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [358966] #889 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [358997] #890 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [359031] #891 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359096] #892 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359160] #893 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359165] #894 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [359208] #895 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [359225] #896 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359290] #897 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359355] #898 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359419] #899 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359424] #900 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [359484] #901 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359549] #902 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359613] #903 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359678] #904 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359743] #905 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359774] #906 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [359807] #907 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359872] #908 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359937] #909 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [359984] #910 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [359989] #911 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [360002] #912 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360066] #913 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360131] #914 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360163] #915 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [360196] #916 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360200] #917 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [360205] #918 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [360260] #919 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360325] #920 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360390] #921 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360405] #922 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [360454] #923 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360519] #924 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360584] #925 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360649] #926 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360713] #927 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360778] #928 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360810] #929 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [360843] #930 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360908] #931 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360972] #932 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [360977] #933 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [361020] #934 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [361037] #935 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361102] #936 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361166] #937 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361182] #938 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [361231] #939 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361236] #940 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [361296] #941 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361361] #942 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361392] #943 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [361425] #944 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361490] #945 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361555] #946 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361619] #947 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361684] #948 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361749] #949 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361814] #950 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361846] #951 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [361878] #952 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361943] #953 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [361958] #954 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [362008] #955 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362055] #956 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [362072] #957 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362137] #958 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362168] #959 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [362202] #960 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362233] #961 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [362266] #962 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362271] #963 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [362331] #964 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362379] #965 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [362396] #966 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362461] #967 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362525] #968 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362590] #969 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362655] #970 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362720] #971 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362784] #972 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362849] #973 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362881] #974 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [362914] #975 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [362945] #976 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [362979] #977 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363043] #978 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363091] #979 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [363108] #980 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363156] #981 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [363172] #982 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363237] #983 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363302] #984 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363307] #985 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [363367] #986 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363371] #987 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [363431] #988 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363496] #989 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363561] #990 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363626] #991 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363690] #992 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363755] #993 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363820] #994 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363885] #995 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [363916] #996 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [363932] #997 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [363949] #998 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364014] #999 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364079] #1000 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364127] #1001 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [364143] #1002 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364148] #1003 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [364208] #1004 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364273] #1005 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364304] #1006 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [364338] #1007 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364343] #1008 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [364353] #1009 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [364402] #1010 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364467] #1011 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364532] #1012 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364596] #1013 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364661] #1014 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364726] #1015 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364791] #1016 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364855] #1017 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364920] #1018 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [364925] #1019 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [364952] #1020 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [364985] #1021 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365049] #1022 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365114] #1023 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365130] #1024 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [365162] #1025 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [365179] #1026 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365244] #1027 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365308] #1028 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365340] #1029 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [365373] #1030 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365378] #1031 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [365438] #1032 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365502] #1033 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365567] #1034 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365632] #1035 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365697] #1036 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365761] #1037 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365826] #1038 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365891] #1039 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365906] #1040 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [365956] #1041 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [365988] #1042 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [366020] #1043 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366085] #1044 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366116] #1045 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [366150] #1046 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366197] #1047 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [366215] #1048 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366279] #1049 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366327] #1050 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [366344] #1051 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366375] #1052 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [366409] #1053 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366413] #1054 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [366473] #1055 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366538] #1056 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366603] #1057 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366668] #1058 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366732] #1059 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366797] #1060 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366862] #1061 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366894] #1062 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [366926] #1063 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [366991] #1064 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367023] #1065 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [367056] #1066 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367103] #1067 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [367121] #1068 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367185] #1069 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367233] #1070 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [367250] #1071 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367315] #1072 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367319] #1073 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [367380] #1074 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367444] #1075 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367449] #1076 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [367509] #1077 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367573] #1078 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367638] #1079 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367703] #1080 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367768] #1081 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367832] #1082 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367880] #1083 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [367897] #1084 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [367962] #1085 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368027] #1086 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368059] #1087 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [368091] #1088 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368096] #1089 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [368156] #1090 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368221] #1091 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368269] #1092 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [368286] #1093 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368301] #1094 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [368350] #1095 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368415] #1096 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368447] #1097 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [368480] #1098 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368485] #1099 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [368544] #1100 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368609] #1101 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368674] #1102 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368739] #1103 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368803] #1104 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368868] #1105 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368872] #1106 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [368933] #1107 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [368997] #1108 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369062] #1109 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369078] #1110 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [369094] #1111 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [369127] #1112 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369192] #1113 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369256] #1114 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369288] #1115 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [369304] #1116 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [369321] #1117 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369386] #1118 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369450] #1119 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369515] #1120 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369520] #1121 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [369580] #1122 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369645] #1123 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369709] #1124 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369774] #1125 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369839] #1126 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369854] #1127 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [369903] #1128 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [369968] #1129 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370033] #1130 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370064] #1131 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [370097] #1132 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370129] #1133 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [370162] #1134 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370227] #1135 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370274] #1136 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [370292] #1137 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370340] #1138 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [370357] #1139 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370421] #1140 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370486] #1141 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370517] #1142 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [370551] #1143 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370556] #1144 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [370615] #1145 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370680] #1146 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370745] #1147 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370810] #1148 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370841] #1149 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [370874] #1150 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [370939] #1151 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371004] #1152 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371051] #1153 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [371068] #1154 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371133] #1155 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371165] #1156 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [371198] #1157 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371263] #1158 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371267] #1159 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [371327] #1160 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371375] #1161 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [371392] #1162 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371457] #1163 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371521] #1164 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371586] #1165 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371591] #1166 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [371651] #1167 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371716] #1168 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371780] #1169 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371828] #1170 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [371845] #1171 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371910] #1172 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [371974] #1173 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372039] #1174 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372044] #1175 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [372104] #1176 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372169] #1177 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372200] #1178 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [372233] #1179 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372249] #1180 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [372298] #1181 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372363] #1182 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372411] #1183 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [372428] #1184 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372492] #1185 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372557] #1186 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372589] #1187 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [372622] #1188 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372627] #1189 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [372686] #1190 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372751] #1191 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372816] #1192 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372820] #1193 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [372881] #1194 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [372945] #1195 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373010] #1196 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373026] #1197 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [373075] #1198 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373139] #1199 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373204] #1200 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373235] #1201 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [373240] #1202 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [373269] #1203 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373334] #1204 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373398] #1205 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373446] #1206 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [373463] #1207 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373528] #1208 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373592] #1209 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373657] #1210 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373662] #1211 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [373722] #1212 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373787] #1213 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373802] #1214 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [373851] #1215 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373916] #1216 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [373981] #1217 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374012] #1218 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [374045] #1219 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374110] #1220 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374175] #1221 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374222] #1222 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [374240] #1223 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374271] #1224 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [374304] #1225 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374369] #1226 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374434] #1227 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374482] #1228 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [374499] #1229 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374563] #1230 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374628] #1231 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374659] #1232 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [374693] #1233 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374698] #1234 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [374757] #1235 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374789] #1236 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [374822] #1237 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374887] #1238 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374952] #1239 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [374999] #1240 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [375016] #1241 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375081] #1242 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375146] #1243 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375210] #1244 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375215] #1245 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [375275] #1246 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375307] #1247 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [375340] #1248 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375405] #1249 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375469] #1250 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375518] #1251 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [375534] #1252 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375599] #1253 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375664] #1254 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375729] #1255 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375733] #1256 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [375776] #1257 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [375793] #1258 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375858] #1259 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375922] #1260 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375987] #1261 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [375992] #1262 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [376052] #1263 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376117] #1264 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376181] #1265 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376197] #1266 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [376246] #1267 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376311] #1268 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376343] #1269 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [376375] #1270 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376440] #1271 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376505] #1272 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376553] #1273 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [376570] #1274 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376635] #1275 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376699] #1276 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376730] #1277 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [376764] #1278 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376768] #1279 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [376773] #1280 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [376828] #1281 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376893] #1282 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376958] #1283 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [376973] #1284 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [377023] #1285 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377088] #1286 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377152] #1287 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377183] #1288 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [377217] #1289 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377282] #1290 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377346] #1291 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377378] #1292 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [377411] #1293 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377476] #1294 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377540] #1295 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377589] #1296 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [377605] #1297 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377670] #1298 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377735] #1299 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377750] #1300 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [377799] #1301 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377804] #1302 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [377864] #1303 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377929] #1304 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [377961] #1305 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [377994] #1306 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378058] #1307 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378123] #1308 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378170] #1309 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [378188] #1310 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378252] #1311 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378317] #1312 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378382] #1313 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378413] #1314 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [378447] #1315 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378512] #1316 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378576] #1317 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378624] #1318 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [378641] #1319 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378705] #1320 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378737] #1321 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [378770] #1322 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378801] #1323 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [378835] #1324 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378840] #1325 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [378900] #1326 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [378948] #1327 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [378964] #1328 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379029] #1329 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379094] #1330 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379159] #1331 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379163] #1332 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [379223] #1333 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379288] #1334 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379353] #1335 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379417] #1336 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379450] #1337 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [379482] #1338 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379547] #1339 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379612] #1340 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379660] #1341 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [379676] #1342 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379724] #1343 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [379741] #1344 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379806] #1345 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379870] #1346 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379875] #1347 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [379935] #1348 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [379940] #1349 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [380000] #1350 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380065] #1351 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380129] #1352 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380145] #1353 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [380194] #1354 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380259] #1355 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380324] #1356 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380388] #1357 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380453] #1358 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380485] #1359 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [380518] #1360 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380583] #1361 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380647] #1362 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380695] #1363 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [380712] #1364 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380716] #1365 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [380777] #1366 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380841] #1367 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380873] #1368 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [380906] #1369 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [380911] #1370 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [380921] #1371 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [380971] #1372 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381035] #1373 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381100] #1374 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381131] #1375 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [381165] #1376 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381230] #1377 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381294] #1378 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381359] #1379 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381424] #1380 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381488] #1381 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381520] #1382 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [381553] #1383 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381618] #1384 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381682] #1385 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381698] #1386 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [381731] #1387 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [381747] #1388 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381812] #1389 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381877] #1390 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381908] #1391 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [381942] #1392 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [381946] #1393 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [382006] #1394 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382071] #1395 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382118] #1396 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [382136] #1397 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382200] #1398 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382265] #1399 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382330] #1400 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382394] #1401 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382459] #1402 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382524] #1403 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382556] #1404 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [382589] #1405 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382654] #1406 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382685] #1407 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [382718] #1408 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382766] #1409 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [382783] #1410 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382848] #1411 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382895] #1412 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [382912] #1413 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382944] #1414 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [382977] #1415 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [382982] #1416 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [383042] #1417 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383107] #1418 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383111] #1419 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [383171] #1420 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383236] #1421 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383301] #1422 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383365] #1423 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383430] #1424 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383495] #1425 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383560] #1426 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383591] #1427 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [383624] #1428 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383672] #1429 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [383689] #1430 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383754] #1431 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383802] #1432 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [383818] #1433 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383883] #1434 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [383888] #1435 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [383948] #1436 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384013] #1437 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384017] #1438 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [384077] #1439 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384093] #1440 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [384142] #1441 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384207] #1442 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384272] #1443 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384336] #1444 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384401] #1445 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384466] #1446 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384530] #1447 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384595] #1448 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384627] #1449 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [384660] #1450 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384664] #1451 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [384724] #1452 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384789] #1453 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384837] #1454 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [384854] #1455 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384869] #1456 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [384919] #1457 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [384983] #1458 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385015] #1459 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [385048] #1460 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385053] #1461 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [385079] #1462 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [385113] #1463 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385178] #1464 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385242] #1465 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385307] #1466 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385372] #1467 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385436] #1468 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385501] #1469 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385566] #1470 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385631] #1471 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385645] #1472 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [385662] #1473 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [385695] #1474 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385760] #1475 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385825] #1476 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385856] #1477 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [385873] #1478 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [385890] #1479 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [385954] #1480 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386019] #1481 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386066] #1482 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [386084] #1483 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386089] #1484 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [386148] #1485 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386213] #1486 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386278] #1487 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386343] #1488 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386407] #1489 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386472] #1490 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386537] #1491 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386602] #1492 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386633] #1493 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [386666] #1494 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386698] #1495 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [386731] #1496 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386796] #1497 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386843] #1498 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [386860] #1499 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386908] #1500 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [386925] #1501 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [386990] #1502 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387054] #1503 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387059] #1504 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [387086] #1505 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [387119] #1506 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387124] #1507 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [387184] #1508 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387249] #1509 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387314] #1510 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387378] #1511 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387443] #1512 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387508] #1513 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387572] #1514 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387620] #1515 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [387637] #1516 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387702] #1517 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387733] #1518 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [387767] #1519 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387831] #1520 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387836] #1521 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [387896] #1522 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [387943] #1523 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [387961] #1524 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388025] #1525 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388041] #1526 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [388090] #1527 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388155] #1528 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388160] #1529 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [388220] #1530 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388284] #1531 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388349] #1532 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388414] #1533 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388478] #1534 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388543] #1535 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388608] #1536 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388612] #1537 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [388672] #1538 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388737] #1539 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388769] #1540 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [388802] #1541 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388818] #1542 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [388867] #1543 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388931] #1544 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [388979] #1545 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [388996] #1546 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389028] #1547 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [389061] #1548 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389126] #1549 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389157] #1550 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [389190] #1551 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389195] #1552 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [389255] #1553 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389320] #1554 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389385] #1555 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389449] #1556 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389514] #1557 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389579] #1558 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389594] #1559 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [389644] #1560 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389708] #1561 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389773] #1562 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389804] #1563 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [389809] #1564 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [389838] #1565 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389902] #1566 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [389967] #1567 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390015] #1568 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [390020] #1569 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [390032] #1570 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390097] #1571 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390161] #1572 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390226] #1573 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390231] #1574 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [390291] #1575 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390355] #1576 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390420] #1577 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390485] #1578 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390550] #1579 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390580] #1580 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [390614] #1581 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390679] #1582 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390744] #1583 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390791] #1584 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [390809] #1585 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390840] #1586 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [390873] #1587 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [390938] #1588 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391003] #1589 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391007] #1590 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [391051] #1591 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [391067] #1592 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391132] #1593 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391197] #1594 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391228] #1595 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [391262] #1596 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391266] #1597 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [391326] #1598 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391391] #1599 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391456] #1600 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391520] #1601 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391568] #1602 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [391585] #1603 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391650] #1604 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391715] #1605 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391779] #1606 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391784] #1607 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [391844] #1608 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391876] #1609 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [391909] #1610 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391973] #1611 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [391989] #1612 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [392038] #1613 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392087] #1614 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [392103] #1615 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392168] #1616 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392232] #1617 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392297] #1618 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392302] #1619 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [392362] #1620 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392427] #1621 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392491] #1622 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392556] #1623 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392561] #1624 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [392621] #1625 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392686] #1626 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392750] #1627 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392766] #1628 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [392815] #1629 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392880] #1630 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392911] #1631 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [392944] #1632 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [392976] #1633 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [393009] #1634 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393074] #1635 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393121] #1636 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [393138] #1637 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393203] #1638 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393268] #1639 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393300] #1640 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [393333] #1641 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393337] #1642 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [393397] #1643 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393462] #1644 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393527] #1645 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393542] #1646 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [393592] #1647 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393656] #1648 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393721] #1649 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393752] #1650 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [393786] #1651 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393851] #1652 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393915] #1653 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [393947] #1654 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [393963] #1655 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [393980] #1656 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394045] #1657 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394109] #1658 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394157] #1659 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [394174] #1660 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394239] #1661 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394303] #1662 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394368] #1663 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394373] #1664 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [394433] #1665 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394498] #1666 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394529] #1667 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [394562] #1668 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394627] #1669 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394692] #1670 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394739] #1671 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [394756] #1672 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394821] #1673 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394886] #1674 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394951] #1675 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [394955] #1676 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [394982] #1677 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [395015] #1678 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395080] #1679 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395145] #1680 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395193] #1681 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [395210] #1682 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395274] #1683 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395339] #1684 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395370] #1685 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [395404] #1686 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395409] #1687 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [395469] #1688 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395516] #1689 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [395533] #1690 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395598] #1691 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395663] #1692 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395728] #1693 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395732] #1694 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [395792] #1695 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395857] #1696 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395922] #1697 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [395936] #1698 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [395986] #1699 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396018] #1700 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [396051] #1701 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396116] #1702 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396180] #1703 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396228] #1704 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [396245] #1705 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396310] #1706 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396374] #1707 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396439] #1708 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396444] #1709 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [396504] #1710 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396508] #1711 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [396569] #1712 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396633] #1713 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396698] #1714 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396714] #1715 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [396763] #1716 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396828] #1717 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396892] #1718 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [396924] #1719 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [396957] #1720 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397022] #1721 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397053] #1722 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [397086] #1723 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397151] #1724 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397216] #1725 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397264] #1726 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [397281] #1727 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397345] #1728 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397410] #1729 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397441] #1730 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [397475] #1731 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397480] #1732 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [397490] #1733 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [397540] #1734 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397604] #1735 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397669] #1736 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397701] #1737 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [397734] #1738 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397798] #1739 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397863] #1740 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397911] #1741 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [397928] #1742 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [397993] #1743 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398058] #1744 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398090] #1745 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [398122] #1746 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398187] #1747 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398251] #1748 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398300] #1749 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [398316] #1750 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398381] #1751 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398446] #1752 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398478] #1753 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [398510] #1754 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398515] #1755 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [398575] #1756 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398640] #1757 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398687] #1758 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [398705] #1759 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398769] #1760 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398834] #1761 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398899] #1762 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [398903] #1763 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [398963] #1764 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399028] #1765 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399093] #1766 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399125] #1767 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [399157] #1768 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399222] #1769 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399287] #1770 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399335] #1771 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [399352] #1772 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399417] #1773 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399464] #1774 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [399481] #1775 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399513] #1776 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [399546] #1777 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399551] #1778 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [399611] #1779 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399675] #1780 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399680] #1781 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [399740] #1782 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399805] #1783 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399869] #1784 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399884] #1785 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [399934] #1786 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [399999] #1787 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400064] #1788 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400129] #1789 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400161] #1790 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [400193] #1791 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400258] #1792 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400323] #1793 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400371] #1794 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [400387] #1795 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400452] #1796 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400456] #1797 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [400517] #1798 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400581] #1799 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400586] #1800 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [400646] #1801 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400661] #1802 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [400711] #1803 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400776] #1804 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400841] #1805 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400871] #1806 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [400905] #1807 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [400970] #1808 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401035] #1809 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401099] #1810 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401164] #1811 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401195] #1812 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [401229] #1813 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401293] #1814 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401358] #1815 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401406] #1816 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [401423] #1817 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401439] #1818 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [401487] #1819 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401552] #1820 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401583] #1821 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [401617] #1822 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401622] #1823 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [401648] #1824 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [401682] #1825 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401746] #1826 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401811] #1827 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401859] #1828 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [401876] #1829 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [401941] #1830 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402005] #1831 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402070] #1832 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402135] #1833 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402199] #1834 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402231] #1835 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [402264] #1836 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402329] #1837 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402394] #1838 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402425] #1839 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [402442] #1840 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [402458] #1841 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402523] #1842 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402588] #1843 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402636] #1844 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [402653] #1845 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402658] #1846 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [402717] #1847 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402782] #1848 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402847] #1849 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402851] #1850 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [402911] #1851 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [402976] #1852 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403041] #1853 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403106] #1854 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403170] #1855 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403235] #1856 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403267] #1857 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [403300] #1858 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403364] #1859 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403412] #1860 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [403429] #1861 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403477] #1862 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [403494] #1863 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403559] #1864 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403623] #1865 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403628] #1866 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [403655] #1867 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [403688] #1868 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403693] #1869 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [403753] #1870 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403818] #1871 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403832] #1872 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [403882] #1873 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [403947] #1874 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404012] #1875 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404077] #1876 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404141] #1877 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404206] #1878 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404270] #1879 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404302] #1880 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [404335] #1881 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404400] #1882 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404404] #1883 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [404465] #1884 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404512] #1885 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [404529] #1886 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404594] #1887 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404610] #1888 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [404659] #1889 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404724] #1890 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404729] #1891 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [404788] #1892 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404820] #1893 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [404853] #1894 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404918] #1895 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [404983] #1896 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405047] #1897 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405112] #1898 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405177] #1899 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405241] #1900 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405306] #1901 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405338] #1902 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [405371] #1903 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405386] #1904 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [405435] #1905 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405500] #1906 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405549] #1907 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [405565] #1908 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405596] #1909 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [405630] #1910 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405694] #1911 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405726] #1912 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [405759] #1913 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405764] #1914 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [405807] #1915 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [405824] #1916 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405889] #1917 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [405953] #1918 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406018] #1919 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406083] #1920 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406147] #1921 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406212] #1922 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406277] #1923 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406341] #1924 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406373] #1925 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [406378] #1926 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [406406] #1927 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406471] #1928 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406536] #1929 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406583] #1930 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [406588] #1931 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [406600] #1932 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406665] #1933 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406730] #1934 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406795] #1935 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406799] #1936 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [406804] #1937 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [406859] #1938 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406924] #1939 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [406989] #1940 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407053] #1941 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407118] #1942 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407183] #1943 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407247] #1944 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407312] #1945 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407360] #1946 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [407377] #1947 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407409] #1948 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [407442] #1949 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407506] #1950 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407571] #1951 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407576] #1952 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [407619] #1953 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [407636] #1954 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407701] #1955 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407765] #1956 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407780] #1957 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [407797] #1958 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [407830] #1959 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407835] #1960 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [407895] #1961 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [407959] #1962 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408024] #1963 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408089] #1964 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408154] #1965 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408218] #1966 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408283] #1967 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408348] #1968 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408352] #1969 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [408412] #1970 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408444] #1971 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [408477] #1972 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408542] #1973 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408557] #1974 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [408607] #1975 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408655] #1976 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [408671] #1977 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408736] #1978 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408768] #1979 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [408801] #1980 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408866] #1981 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408870] #1982 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [408930] #1983 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [408995] #1984 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409060] #1985 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409124] #1986 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409189] #1987 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409254] #1988 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409319] #1989 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409334] #1990 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [409383] #1991 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409448] #1992 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409480] #1993 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [409513] #1994 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409545] #1995 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [409577] #1996 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409642] #1997 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409691] #1998 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [409707] #1999 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409754] #2000 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [409771] #2001 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409836] #2002 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409868] #2003 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [409901] #2004 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [409906] #2005 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [409966] #2006 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410030] #2007 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410095] #2008 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410160] #2009 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410225] #2010 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410289] #2011 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410321] #2012 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [410354] #2013 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410419] #2014 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410483] #2015 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410515] #2016 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [410531] #2017 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [410548] #2018 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410613] #2019 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410678] #2020 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410726] #2021 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [410742] #2022 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410747] #2023 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [410807] #2024 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410872] #2025 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410937] #2026 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [410941] #2027 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [411001] #2028 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411066] #2029 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411131] #2030 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411195] #2031 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411260] #2032 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411308] #2033 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [411325] #2034 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411390] #2035 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411454] #2036 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411519] #2037 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411524] #2038 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [411551] #2039 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [411584] #2040 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411648] #2041 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411713] #2042 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411729] #2043 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [411761] #2044 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [411778] #2045 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411843] #2046 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411907] #2047 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411938] #2048 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [411972] #2049 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [411977] #2050 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [412037] #2051 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412101] #2052 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412166] #2053 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412231] #2054 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412296] #2055 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412300] #2056 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [412360] #2057 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412425] #2058 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412490] #2059 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412505] #2060 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [412554] #2061 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412586] #2062 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [412619] #2063 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412684] #2064 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412715] #2065 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [412749] #2066 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412797] #2067 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [412813] #2068 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412878] #2069 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [412943] #2070 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413007] #2071 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413012] #2072 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [413072] #2073 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413137] #2074 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413202] #2075 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413266] #2076 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413281] #2077 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [413331] #2078 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413396] #2079 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413460] #2080 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413492] #2081 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [413525] #2082 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413590] #2083 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413622] #2084 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [413655] #2085 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413703] #2086 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [413719] #2087 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413784] #2088 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413832] #2089 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [413849] #2090 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413914] #2091 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [413978] #2092 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414009] #2093 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [414043] #2094 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414048] #2095 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [414108] #2096 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414173] #2097 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414237] #2098 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414268] #2099 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [414302] #2100 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414367] #2101 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414431] #2102 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414479] #2103 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [414496] #2104 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414561] #2105 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414625] #2106 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414657] #2107 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [414690] #2108 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414695] #2109 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [414755] #2110 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414820] #2111 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414867] #2112 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [414884] #2113 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [414949] #2114 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415014] #2115 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415078] #2116 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415083] #2117 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [415143] #2118 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415208] #2119 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415255] #2120 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [415273] #2121 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415337] #2122 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415402] #2123 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415467] #2124 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415471] #2125 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [415532] #2126 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415596] #2127 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415661] #2128 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415676] #2129 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [415693] #2130 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [415726] #2131 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415790] #2132 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415855] #2133 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415903] #2134 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [415920] #2135 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [415985] #2136 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [416049] #2137 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [416081] #2138 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [416114] #2139 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [416119] #2140 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [416179] #2141 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [416243] #2142 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [416248] #2143 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [416308] #2144 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [416314] #2145 OK  6B pri=1 Engine status<-Engine Control Module : 28 FF 10 01 06 1A
+00> [416319] #2146 OK  6B pri=1 Engine status<-Engine Control Module : 28 FF 10 01 06 1A
+
+# Logging stopped @ 29 May 2026 11:02:04
