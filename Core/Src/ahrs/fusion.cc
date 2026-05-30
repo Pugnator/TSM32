@@ -245,6 +245,9 @@ namespace Ahrs
     q.z = q3;
   }
 
+#if IMU_USE_SPI
   template class AhrsBase<Mpu9250::Mpu9250Spi>;
+#elif IMU_USE_I2C
   template class AhrsBase<Mpu9250::Mpu9250I2c>;
+#endif
 }

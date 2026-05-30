@@ -29,6 +29,10 @@ uint8_t turn_signals = 0;  // 0=off 1=left 2=right 3=both
 uint8_t engine_temp_f = 0; // degrees Fahrenheit
 uint32_t fuel_ticks = 0;   // 0.000040 L per tick
 uint8_t fuel_gauge_level = 0; // 0-15
+bool passwordDtcSeen = false;
+bool ecmSeen         = false;
+bool bcmDtcSeen      = false;
+bool ipcDtcSeen      = false; // set when P1009/P1010 seen in DTC response
 
 namespace J1850VPW
 {
@@ -43,11 +47,17 @@ namespace J1850VPW
 
   void messageReset()
   {
-    messageCollected = false;
+    /* The receive ISR uses messageCollected as the "frame is being
+     * processed, ignore further edges" gate. It must be released LAST,
+     * after every other piece of state has been reset, otherwise an
+     * incoming bus edge can re-enter the ISR against half-cleared state
+     * (Fixes #47). */
     memset(payloadJ1850, 0, sizeof(payloadJ1850));
     bitCounter = 0;
     j1850RXctr = 0;
     messageStarted = false;
+    __DMB();
+    messageCollected = false;
   }
 
   static void startEOFtimer()
@@ -138,7 +148,7 @@ extern "C"
     if (pulse <= RX_SOF_MAX && pulse > RX_SOF_MIN)
     {
       frameCounter++;
-      DEBUG_LOG("Start Of Frame, %uus\r\n", pulse);
+      TRACE_LOG("Start Of Frame, %uus\r\n", pulse);
       messageStarted = true;
       fallEdgeTime = 0;
       __HAL_TIM_SET_COUNTER(&J1850_IC_INSTANCE, 0);
@@ -153,17 +163,17 @@ extern "C"
 
     if (pulse <= RX_LONG_MAX && pulse > RX_LONG_MIN)
     {
-      DEBUG_LOG("Active 0, %uus\r\n", pulse);
+      TRACE_LOG("Active 0, %uus\r\n", pulse);
       payloadJ1850[j1850RXctr] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
     }
     else if (pulse <= RX_SHORT_MAX && pulse > RX_SHORT_MIN)
     {
-      DEBUG_LOG("Active 1, %uus\r\n", pulse);
+      TRACE_LOG("Active 1, %uus\r\n", pulse);
       payloadJ1850[j1850RXctr] |= 1UL << (BIT_PER_BYTE - bitCounter++);
     }
     else
     {
-      DEBUG_LOG("Unknown signal. Active, %uus\r\n", pulse);
+      TRACE_LOG("Unknown signal. Active, %uus\r\n", pulse);
     }
   }
 
@@ -197,32 +207,32 @@ extern "C"
     const uint32_t pulse = riseEdgeTime - fallEdgeTime;
     if (pulse > RX_IFS_MIN)
     {
-      DEBUG_LOG("\r\nIFS, %uus\r\n", pulse);
+      TRACE_LOG("\r\nIFS, %uus\r\n", pulse);
       messageStarted = false;
     }
     else if (pulse > RX_EOF_MIN)
     {
-      DEBUG_LOG("\r\nEOF, %uus\r\n", pulse);
+      TRACE_LOG("\r\nEOF, %uus\r\n", pulse);
       messageStarted = false;
     }
     else if (RX_EOD_MAX >= pulse && pulse > RX_EOD_MIN)
     {
-      DEBUG_LOG("\r\nEOD, %uus\r\n", pulse);
+      TRACE_LOG("\r\nEOD, %uus\r\n", pulse);
       messageStarted = false;
     }
     else if (RX_LONG_MAX >= pulse && pulse > RX_LONG_MIN)
     {
-      DEBUG_LOG("Passive 1, %uus\r\n", pulse);
+      TRACE_LOG("Passive 1, %uus\r\n", pulse);
       payloadJ1850[j1850RXctr] |= 1UL << (BIT_PER_BYTE - bitCounter++);
     }
     else if (RX_SHORT_MAX >= pulse && pulse > RX_SHORT_MIN)
     {
-      DEBUG_LOG("Passive 0, %uus\r\n", pulse);
+      TRACE_LOG("Passive 0, %uus\r\n", pulse);
       payloadJ1850[j1850RXctr] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
     }
     else
     {
-      DEBUG_LOG("Unknown signal. Passive, %uus\r\n", pulse);
+      TRACE_LOG("Unknown signal. Passive, %uus\r\n", pulse);
     }
   }
 
@@ -258,12 +268,12 @@ extern "C"
     }
     if (bitCounter == 8)
     {
-      DEBUG_LOG("J1850: the bit counter == 8 [0x%.2X]\r\n", payloadJ1850[j1850RXctr]);
+      TRACE_LOG("J1850: the bit counter == 8 [0x%.2X]\r\n", payloadJ1850[j1850RXctr]);
       bitCounter = 0;
       j1850RXctr++;
       if (j1850RXctr >= J1850_PAYLOAD_SIZE)
       {
-        DEBUG_LOG("J1850: frame is too large: %u\r\n", J1850_PAYLOAD_SIZE);
+        TRACE_LOG("J1850: frame is too large: %u\r\n", J1850_PAYLOAD_SIZE);
         J1850VPW::messageReset();
       }
     }
@@ -317,7 +327,7 @@ extern "C"
     }
     HAL_TIM_IC_Stop_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
     J1850VPW::messageReset();
-    J1850VPW::J1850error rc = J1850VPW::sendFrame(bytes, len);
+    [[maybe_unused]] J1850VPW::J1850error rc = J1850VPW::sendFrame(bytes, len);
     HAL_TIM_IC_Start_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
     TRACE_LOG("j1850 tx: %u bytes -> %s\r\n",
            (unsigned)len,

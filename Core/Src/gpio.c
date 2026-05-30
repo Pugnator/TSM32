@@ -72,10 +72,12 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : BATTERY_ADC_Pin PA3 PA4 PA8
-                           PA9 PA12 PA15 */
-  GPIO_InitStruct.Pin = BATTERY_ADC_Pin|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_8
-                          |GPIO_PIN_9|GPIO_PIN_12|GPIO_PIN_15;
+  /*Configure GPIO pins : BATTERY_ADC_Pin PA3 PA4 PA5
+                           PA6 PA7 PA8 PA9
+                           PA12 PA15 */
+  GPIO_InitStruct.Pin = BATTERY_ADC_Pin|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5
+                          |GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9
+                          |GPIO_PIN_12|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -95,12 +97,10 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PB1 PB2 PB10 PB11
                            PB14 PB15 PB3 PB4
-                           PB5 PB6 PB7 PB8
-                           PB9 */
+                           PB5 PB8 PB9 */
   GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10|GPIO_PIN_11
                           |GPIO_PIN_14|GPIO_PIN_15|GPIO_PIN_3|GPIO_PIN_4
-                          |GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8
-                          |GPIO_PIN_9;
+                          |GPIO_PIN_5|GPIO_PIN_8|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
@@ -114,8 +114,7 @@ void MX_GPIO_Init(void)
   __HAL_AFIO_REMAP_PD01_ENABLE();
 
   /* EXTI interrupt init*/
-  /* Button EXTI: below J1850 timers but above ADC/DMA/blinker (see issue #42). */
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 2, 0);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }

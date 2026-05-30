@@ -28,8 +28,6 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-/* hdma_tim2_ch2_ch4 removed: TIM2 uses IC interrupt mode, DMA was never
- * started and the channel was stale (Fixes #37). */
 
 /* TIM1 init function */
 void MX_TIM1_Init(void)
@@ -121,8 +119,6 @@ void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  /* J1850 input capture: tick = 1 us (72 MHz / (PSC+1) = 1 MHz) so the
-   * SAE-J1850 pulse-width thresholds in j1850.h read directly as us. */
   htim2.Init.Prescaler = 71;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 65535;
@@ -274,7 +270,6 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     HAL_GPIO_Init(J1850RX_GPIO_Port, &GPIO_InitStruct);
 
     /* TIM2 interrupt Init */
-    /* J1850 input-capture: highest priority so no other ISR blocks edge servicing. */
     HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(TIM2_IRQn);
   /* USER CODE BEGIN TIM2_MspInit 1 */
@@ -290,8 +285,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     __HAL_RCC_TIM3_CLK_ENABLE();
 
     /* TIM3 interrupt Init */
-    /* J1850 EOF one-shot: just below IC so the EOF flag is still timely. */
-    HAL_NVIC_SetPriority(TIM3_IRQn, 1, 0);
+    HAL_NVIC_SetPriority(TIM3_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(TIM3_IRQn);
   /* USER CODE BEGIN TIM3_MspInit 1 */
 
@@ -306,8 +300,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     __HAL_RCC_TIM4_CLK_ENABLE();
 
     /* TIM4 interrupt Init */
-    /* Blinker FSM: lowest priority; body is heavy (see issue #40). */
-    HAL_NVIC_SetPriority(TIM4_IRQn, 4, 0);
+    HAL_NVIC_SetPriority(TIM4_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(TIM4_IRQn);
   /* USER CODE BEGIN TIM4_MspInit 1 */
 
@@ -367,10 +360,6 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
     PA1     ------> TIM2_CH2
     */
     HAL_GPIO_DeInit(J1850RX_GPIO_Port, J1850RX_Pin);
-
-    /* TIM2 DMA DeInit */
-    HAL_DMA_DeInit(tim_baseHandle->hdma[TIM_DMA_ID_CC2]);
-    HAL_DMA_DeInit(tim_baseHandle->hdma[TIM_DMA_ID_CC4]);
 
     /* TIM2 interrupt Deinit */
     HAL_NVIC_DisableIRQ(TIM2_IRQn);

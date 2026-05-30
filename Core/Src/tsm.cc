@@ -1,14 +1,11 @@
 #include "tsm.h"
 #include "settings.h"
 #include "j1850.h"
-#include "spi.h"
 #include "cli.h"
 
 #if MEMS_ENABLED
-#include "spi.h"
-#include "imu_spi.h"
-#include "imu_i2c.h"
 #include "ahrs.h"
+#include "engine_state.h"
 #endif
 
 #include <stdio.h>
@@ -30,7 +27,7 @@ uint32_t initialTime = 0;
 // Raw, non-owning pointer used by the CLI accessors below to read live
 // AHRS state without having to be templated on MpuType.  Owned by the
 // unique_ptr in tsmRunApp(); cleared at scope exit.
-static Ahrs::AhrsBase<Mpu9250::Mpu9250Spi> *gAhrs_ = nullptr;
+static Ahrs::AhrsBase<Imu::Bus> *gAhrs_ = nullptr;
 
 extern "C" float cliGetChipTemperatureC(void)
 {
@@ -122,10 +119,12 @@ extern "C"
 #endif
 
 #if MEMS_ENABLED
-    std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250Spi>(&hspi1, true));
-    //std::unique_ptr<Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>> mpu(new Ahrs::AhrsBase<Mpu9250::Mpu9250I2c>(&hi2c1, true));
+    std::unique_ptr<Ahrs::AhrsBase<Imu::Bus>> mpu(
+        new Ahrs::AhrsBase<Imu::Bus>(IMU_BUS_HANDLE, true));
     gAhrs_ = mpu.get();
-    PrintF("MEMS: MPU9250 SPI init %s\r\n", gAhrs_->ok() ? "OK" : "FAILED - check SPI/CS wiring");
+    PrintF("MEMS: MPU9250 %s init %s\r\n",
+           Imu::kBusName,
+           gAhrs_->ok() ? "OK" : "FAILED - check bus / wiring");
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
@@ -144,6 +143,8 @@ extern "C"
         J1850VPW::messageReset();
       }
 
+      Engine::handler();
+
       // Auto-DTC poll: once the bus is active (>=5 frames), query ECM, BCM
       // and IPC in sequence with 200 ms gaps, then on the first cycle send a
       // one-shot clear to ECM (clears P1010 / security lamp), then repeat
@@ -152,51 +153,92 @@ extern "C"
       // States: 0=wait for bus  1-3=querying modules
       //         4=one-time clear DTC (first cycle only)  5=cooldown
       {
+        /* Wrap-safe deadlines: store the start tick and an interval, then
+         * compare via unsigned subtraction. Raw HAL_GetTick() >= deadline
+         * comparisons stalled or fired continuously across the 49.7-day
+         * tick wrap (Fixes #49). */
         static uint8_t  dtcState     = 0;
-        static uint32_t dtcNextTick  = 0;
+        static uint32_t dtcLastTick  = 0;
+        static uint32_t dtcInterval  = 0;
         static bool     clearedOnce  = false;
 
         // Modules to query: ECM(0x10), BCM/TSM(0x40), IPC(0x60)
         static const uint8_t dtcTargets[] = {0x10, 0x40, 0x60};
 
+        const uint32_t now = HAL_GetTick();
+
         if (dtcState == 0 && frameCounter >= 5)
         {
           dtcState    = 1;
-          dtcNextTick = HAL_GetTick() + 200;
+          dtcLastTick = now;
+          dtcInterval = 200;
         }
         else if (dtcState >= 1 && dtcState <= 3)
         {
-          if (HAL_GetTick() >= dtcNextTick)
+          if ((now - dtcLastTick) >= dtcInterval)
           {
             const uint8_t target = dtcTargets[dtcState - 1];
             const uint8_t req[7] = {0x6C, target, 0xF1, 0x19, 0x52, 0xFF, 0x00};
             TRACE_LOG("Auto DTC query -> 0x%02X\r\n", (unsigned)target);
             cliJ1850TxRaw(req, sizeof(req));
-            dtcNextTick = HAL_GetTick() + 200;
+            dtcLastTick = HAL_GetTick();
+            dtcInterval = 200;
             dtcState    = (dtcState < 3) ? dtcState + 1 : 4;
           }
         }
-        else if (dtcState == 4 && HAL_GetTick() >= dtcNextTick)
+        else if (dtcState == 4 && (now - dtcLastTick) >= dtcInterval)
         {
-          if (!clearedOnce)
+          if (!clearedOnce && passwordDtcSeen)
           {
-            // One-time clear of all ECM DTCs after the first read cycle.
-            // This dismisses P1010 (Missing Password) so the security lamp
-            // goes off.  P1010 is historic — it won't recur until the ECM
-            // actively re-challenges and gets no reply.
-            const uint8_t clr[4] = {0x6C, 0x10, 0xF1, 0x14};
-            PrintF("[%lu] Auto DTC clear -> ECM (MIL should go off)\r\n",
+            // Clear ECM DTCs (P1009/P1010 password fault drives MIL).
+            const uint8_t clrEcm[4] = {0x6C, 0x10, 0xF1, 0x14};
+            PrintF("[%lu] Auto DTC clear -> ECM (password DTC present)\r\n",
                    (unsigned long)HAL_GetTick());
-            cliJ1850TxRaw(clr, sizeof(clr));
+            cliJ1850TxRaw(clrEcm, sizeof(clrEcm));
+            // Clear BCM DTCs if any were returned (BCM can hold U1064 etc.
+            // which independently keep the SIL on).
+            if (bcmDtcSeen)
+            {
+              const uint8_t clrBcm[4] = {0x6C, 0x40, 0xF1, 0x14};
+              PrintF("[%lu] Auto DTC clear -> BCM\r\n",
+                     (unsigned long)HAL_GetTick());
+              cliJ1850TxRaw(clrBcm, sizeof(clrBcm));
+            }
+            // Clear IPC DTCs if any were returned (IPC can hold U1064
+            // "Loss of TSM/TSSM Serial Data" which drives SIL independently
+            // of ECM).
+            if (ipcDtcSeen)
+            {
+              const uint8_t clrIpc[4] = {0x6C, 0x61, 0xF1, 0x14};
+              PrintF("[%lu] Auto DTC clear -> IPC\r\n",
+                     (unsigned long)HAL_GetTick());
+              cliJ1850TxRaw(clrIpc, sizeof(clrIpc));
+            }
             clearedOnce = true;
           }
           dtcState    = 5;
-          dtcNextTick = HAL_GetTick() + 10000;
+          dtcLastTick = HAL_GetTick();
+          dtcInterval = 10000;
         }
-        else if (dtcState == 5 && HAL_GetTick() >= dtcNextTick)
+        else if (dtcState == 5)
         {
-          dtcState    = 1;
-          dtcNextTick = HAL_GetTick() + 200;
+          // If ECM just appeared on the bus, skip the rest of the cooldown
+          // so the query-and-clear cycle fires immediately instead of waiting
+          // up to 10 s (cuts the SIL-on window from ~16 s to ~2 s).
+          static bool ecmWasSeen = false;
+          if (ecmSeen && !ecmWasSeen)
+          {
+            ecmWasSeen  = true;
+            dtcState    = 1;
+            dtcLastTick = now;
+            dtcInterval = 200;
+          }
+          else if ((now - dtcLastTick) >= dtcInterval)
+          {
+            dtcState    = 1;
+            dtcLastTick = now;
+            dtcInterval = 200;
+          }
         }
       }
 #endif

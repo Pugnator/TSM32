@@ -12,6 +12,9 @@
 #define AZIMUTH_AVERAGE_COUNT 2  // Parameter for a Kalman filter
 #define DLR_BRIGHTNESS_VALUE 10
 #define VOLTAGE_DETECTION_THRESHOLD 15 * 1000
+/* Low-voltage debounce: avoid disabling DRL on short transients
+ * (idle + stop lights, cranking). Only react to a sustained drop. */
+#define LOW_VOLTAGE_DETECTION_THRESHOLD (5 * 60 * 1000)
 
 #define USE_STATIC_ALLOC
 
@@ -26,18 +29,45 @@
 #define BLINKER_ENABLED 1
 #define J1850_ENABLED 1
 #define MEMS_ENABLED 1
+
+/* Set to 1 to log every J1850 frame on the bus (all sources/destinations).
+ * Use this to capture real motorcycle traffic for analysis.
+ * Disabled by default — produces heavy RTT output at idle. */
+#define J1850_BUS_TRACE 1
+
+/* Pick exactly one IMU transport. Override at the make command line via
+ * `make IMU_BUS=I2C` to switch; the default is SPI. */
+#ifndef IMU_USE_SPI
+#define IMU_USE_SPI 0
+#endif
+#ifndef IMU_USE_I2C
+#define IMU_USE_I2C 1
+#endif
+#if MEMS_ENABLED && (IMU_USE_SPI + IMU_USE_I2C) != 1
+#error "Define exactly one of IMU_USE_SPI / IMU_USE_I2C"
+#endif
+
 #define STARTER_LOCK_ENABLE 1
 #define STARTER_DISABLE_THRESHOLD (5 * 60 * 1000)
 #define STARTER_UNLOCK_DISABLE 1
+
+/* J1850-based engine-state starter lock (issue #54) */
+#define ENGINE_RUNNING_RPM_MIN    1000u  /* RPM threshold to consider engine on     */
+#define ENGINE_RUNNING_KPH_MIN    10u    /* KPH threshold to confirm bike is moving */
+#define ENGINE_OFF_DEBOUNCE_MS    5000u  /* ms of RPM=0+KPH=0 before Off confirmed  */
+#define J1850_BUS_TIMEOUT_MS      10000u /* ms of bus silence → fall back to voltage FSM */
 #define AUTO_LIGHT_ENABLE 1
 
 #define IMU_STARTUP_TIME (30 * 1000)
 
 #define ADC_DMA_BUF_SIZE 128
-#define ADC_10V_VALUE 2865
-#define ADC_11_1V_VALUE 2919
-#define ADC_13_4V_VALUE 3522
-#define ADC_14_3V_VALUE 4095
+/* Calibrated from bench measurement: raw=2882 @ 11.90V actual.
+ * ADC_VCAL corrects for resistor tolerance in the voltage divider. */
+#define ADC_VCAL 1.0893f
+#define ADC_10V_VALUE   2422
+#define ADC_11_1V_VALUE 2688
+#define ADC_13_4V_VALUE 3245
+#define ADC_14_3V_VALUE 3463
 
 #define TURN_ANGLE_THRESHOLD 60
 #define TURN_MAX_TIME_MS 5 * 60 * 1000

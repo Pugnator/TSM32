@@ -8,7 +8,8 @@
 #if DEBUG
 #define LOG_LEVEL_INFO
 #define LOG_LEVEL_DEBUG
-#define LOG_LEVEL_TRACE
+// Uncomment to enable verbose bus-level tracing (J1850 pulse timings, voltage, etc.)
+// #define LOG_LEVEL_TRACE
 #endif
 
 #ifdef LOG_LEVEL_DEBUG

@@ -43,7 +43,7 @@ namespace Mpu9250
 
     if (!configureGyroscope())
     {
-      DEBUG_LOG("I2C: Failed to configure gyroscope.\r\n");
+      DEBUG_LOG("SPI: Failed to configure gyroscope.\r\n");
       ok_ = false;
       return;
     }
@@ -52,7 +52,7 @@ namespace Mpu9250
 
     if (ok_ && !configureAccelerometer())
     {
-      DEBUG_LOG("I2C: Failed to configure accelerometer.\r\n");
+      DEBUG_LOG("SPI: Failed to configure accelerometer.\r\n");
       ok_ = false;
       return;
     }
@@ -65,7 +65,7 @@ namespace Mpu9250
 
     if (ok_ && !configureMagnetometer())
     {
-      DEBUG_LOG("I2C: Failed to configure magnetometer.\r\n");
+      DEBUG_LOG("SPI: Failed to configure magnetometer.\r\n");
       ok_ = false;
     }
 #endif
@@ -116,6 +116,23 @@ namespace Mpu9250
       DEBUG_LOG("MPU9250 is NOT detected [%.2X]\r\n", wai);
       return false;
     }
+
+    // DLPF bandwidth 41 Hz (matches I2C reference config)
+    if (!mpuWrite(MPU9250_CONFIG, 0x03))
+      return false;
+
+    if (!useDmp_)
+    {
+      // INT pin: active-high, push-pull, latch, cleared on any read (0b00100010)
+      if (!mpuWrite(MPU9250_INT_PIN_CFG, 0x22))
+        return false;
+    }
+
+    // Enable data-ready interrupt
+    if (!mpuWrite(MPU9250_INT_ENABLE, 0x01))
+      return false;
+
+    HAL_Delay(200);
     return true;
   }
 }

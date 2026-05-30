@@ -21,6 +21,10 @@ extern "C"
   extern uint8_t engine_temp_f;
   extern uint32_t fuel_ticks;
   extern uint8_t fuel_gauge_level;
+  extern bool passwordDtcSeen;
+  extern bool ecmSeen;          /* true once the first ECM (0x10) frame is parsed */
+  extern bool bcmDtcSeen;       /* true if BCM (0x40) returned any non-P0000 DTC    */
+  extern bool ipcDtcSeen;       /* true if IPC (0x61) returned any non-P0000 DTC    */
 
   extern uint8_t payloadJ1850[J1850_PAYLOAD_SIZE];
   extern volatile uint8_t j1850RXctr;

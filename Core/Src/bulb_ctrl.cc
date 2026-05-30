@@ -1,5 +1,6 @@
 #include "tsm.h"
 #include "settings.h"
+#include "engine_state.h"
 #include <cmath>
 #include <cstring>
 #include <algorithm>
@@ -134,8 +135,17 @@ void adcHandler()
   }
 
 #ifdef DEBUG
-  float voltage = smoothedAverage * 3.3 / 4095 * voltageDividerFactor;
-  DEBUG_LOG("V = %0.2f ADC: %u\r\n", voltage, smoothedAverage);
+  [[maybe_unused]] float voltage = smoothedAverage * 3.3f / 4095.0f * voltageDividerFactor * ADC_VCAL;
+  static bool voltageReported = false;
+  if (!voltageReported)
+  {
+    // Use the unfiltered DMA burst mean so the seed value of smoothedAverage
+    // does not corrupt the startup reading.
+    float rawV = currentSampleAverage * 3.3f / 4095.0f * voltageDividerFactor * ADC_VCAL;
+    PrintF("ADC startup: V = %.2f (raw=%u)\r\n", rawV, (unsigned)currentSampleAverage);
+    voltageReported = true;
+  }
+  TRACE_LOG("V = %0.2f ADC: %u\r\n", voltage, smoothedAverage);
 #endif
 
   if (smoothedAverage > ADC_13_4V_VALUE)
@@ -148,8 +158,11 @@ void adcHandler()
       return;
     }
 
-    // check if voltage is above threshold for more than 15 seconds
-    if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
+    // check if voltage is above threshold for more than 15 seconds.
+    // Only act when J1850 engine state is unknown (no live bus) so the
+    // J1850 FSM in engine_state.cc remains the authoritative source.
+    if (Engine::getState() == Engine::State::Unknown &&
+        HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
     {
       disableStarter();
 #if AUTO_LIGHT_ENABLE
@@ -170,8 +183,11 @@ void adcHandler()
       voltageThresholdStartTime = HAL_GetTick();
       return;
     }
-    // check if voltage is below threshold for more than 15 seconds
-    if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
+    // check if voltage is below threshold for more than the low-voltage
+    // debounce window (long enough to ignore idle+stoplight droop, cranking).
+    // Voltage FSM only acts when J1850 engine state is unknown.
+    if (Engine::getState() == Engine::State::Unknown &&
+        HAL_GetTick() - voltageThresholdStartTime > LOW_VOLTAGE_DETECTION_THRESHOLD)
     {
       enableStarter();
       currentSidemarkBrightness = 0;

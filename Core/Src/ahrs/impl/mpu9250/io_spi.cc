@@ -6,12 +6,17 @@ namespace Mpu9250
   bool Mpu9250Spi::mpuWrite(uint8_t address, uint8_t *byte, uint32_t len)
   {
     mpuSelect();
-    HAL_SPI_Transmit(bus_, &address, 1, 100);
+    if (HAL_SPI_Transmit(bus_, &address, 1, 100) != HAL_OK)
+    {
+      mpuDeselect();
+      return false;
+    }
     uint8_t temp_val = 0;
     for (uint32_t i = 0; i < len; i++)
     {
       if (HAL_SPI_TransmitReceive(bus_, &byte[i], &temp_val, 1, 100) != HAL_OK)
       {
+        mpuDeselect();
         return false;
       }
     }

@@ -1,0 +1,1141 @@
+# SEGGER J-Link RTT Viewer V8.96 Terminal Log File
+# Compiled: 16:53:53 on Dec 18 2025
+# Logging started @ 30 May 2026 18:11:12
+00> [14218] #27 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [14246] #28 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [16057] #29 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [16208] #30 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [16236] #31 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [18047] #32 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [18198] #33 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [18226] #34 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [20037] #35 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [20188] #36 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [20216] #37 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [22027] #38 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [22178] #39 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [22206] #40 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [24016] #41 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [24168] #42 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [24195] #43 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [26006] #44 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [26158] #45 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [26185] #46 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [27996] #47 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [28148] #48 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [28175] #49 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [29986] #50 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [30138] #51 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [30165] #52 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [31977] #53 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [32128] #54 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [32156] #55 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [33967] #56 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [34118] #57 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [34146] #58 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [35957] #59 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [36108] #60 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [36136] #61 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [37947] #62 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [38099] #63 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [38126] #64 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [39937] #65 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [40089] #66 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [40116] #67 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [41928] #68 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [42079] #69 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [42107] #70 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [43918] #71 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [44070] #72 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [44097] #73 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [45908] #74 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [46060] #75 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [46087] #76 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [47899] #77 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [48050] #78 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [48078] #79 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [49889] #80 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [49927] #81 OK  5B pri=4 Network Control<-Engine Control Module : 8C FE 10 60 1F
+00> [49938] #82 OK  6B pri=1 Engine status<-Engine Control Module : 28 FF 10 01 07 07
+00> [50058] #83 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [50070] #84 OK  7B pri=2 Speedometer<-Engine Control Module : Speed=0 km/h
+00> [50084] #85 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [50093] #86 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [50104] #87 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [50115] #88 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [50573] #89 OK  5B pri=3 Vehicle Security<-Instrument Cluster Panel : 69 93 61 2A 54
+00> [50641] #90 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [50705] #91 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [50752] #92 OK  5B pri=3 Vehicle Security<-Instrument Cluster Panel : 69 93 61 2A 54
+00> [50770] #93 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [50835] #94 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [50866] #95 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [50877] #96 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [50899] #97 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [50916] #98 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [50964] #99 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51029] #100 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51093] #101 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51158] #102 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51223] #103 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51287] #104 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51352] #105 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51417] #106 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51482] #107 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51546] #108 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51611] #109 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51676] #110 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51741] #111 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51805] #112 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51870] #113 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51885] #114 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [51902] #115 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [51935] #116 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [51999] #117 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52064] #118 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52096] #119 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [52113] #120 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [52149] #123 OK  5B pri=4 Network Control<-HUD : 8C FE 62 60 AC
+00> [52193] #124 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52258] #125 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52290] #126 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [52306] #127 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [52323] #128 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52388] #129 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52452] #130 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52466] #131 BAD 4B pri=4 Network Control<-Instrument Cluster Panel : 8C FE 61 60
+00> J1850: CRC mismatch got=0x60 expected=0xBF rx=4
+00> [52471] #132 BAD 2B pri=4 Network Control<-Unknown source : 8C FE
+00> J1850: CRC mismatch got=0xFE expected=0x81 rx=2
+00> [52482] #133 OK  5B pri=4 Network Control<-Instrument Cluster Panel : 8C FE 61 60 78
+00> [52517] #134 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52560] #135 OK  5B pri=4 Network Control<-HUD : 8C FE 62 60 AC
+00> [52582] #136 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52647] #137 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52711] #138 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52731] #139 OK  5B pri=1 Network Control<-Instrument Cluster Panel : 29 FE 61 01 5D
+00> [52741] #140 OK  5B pri=1 Network Control<-HUD : 29 FE 62 01 89
+00> [52755] #141 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [52776] #142 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52841] #143 OK  7B pri=1 RPMs<-Engine Control Module : RPM=0
+00> [52872] #144 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [52879] #145 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [52894] #146 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [52906] #147 OK  7B pri=1 RPMs<-Engine Control Module : RPM=265
+00> [52937] #148 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [52949] #149 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [52970] #150 OK  7B pri=1 RPMs<-Engine Control Module : RPM=265
+00> [53035] #151 OK  7B pri=1 RPMs<-Engine Control Module : RPM=265
+00> [53100] #152 OK  7B pri=1 RPMs<-Engine Control Module : RPM=304
+00> [53164] #153 OK  7B pri=1 RPMs<-Engine Control Module : RPM=509
+00> [53177] #154 OK  5B pri=1 Unknown source<-Engine Control Module : 29 92 10 01 60
+00> [53229] #155 OK  7B pri=1 RPMs<-Engine Control Module : RPM=953
+00> [53294] #156 OK  7B pri=1 RPMs<-Engine Control Module : RPM=997
+00> [53359] #157 OK  7B pri=1 RPMs<-Engine Control Module : RPM=914
+00> [53374] #158 OK  5B pri=1 Unknown source<-Engine Control Module : 29 92 10 01 60
+00> [53384] #159 OK  7B pri=2 Speedometer<-Engine Control Module : Speed=0 km/h
+00> [53423] #160 OK  7B pri=1 RPMs<-Engine Control Module : RPM=835
+00> [53488] #161 OK  7B pri=1 RPMs<-Engine Control Module : RPM=837
+00> [53552] #162 OK  7B pri=1 RPMs<-Engine Control Module : RPM=869
+00> [53583] #163 OK  5B pri=1 Unknown source<-Engine Control Module : 29 92 10 01 60
+00> [53617] #164 OK  7B pri=1 RPMs<-Engine Control Module : RPM=852
+00> [53682] #165 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [53747] #166 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [53795] #167 OK  6B pri=1 Vehicle Security<-Engine Control Module : 28 93 10 02 01 91
+00> [53812] #168 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [53859] #169 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [53867] #170 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [53877] #171 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [53941] #172 OK  7B pri=1 RPMs<-Engine Control Module : RPM=829
+00> [53972] #173 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [53983] #174 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [54006] #175 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [54071] #176 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [54135] #177 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [54200] #178 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [54265] #179 OK  7B pri=1 RPMs<-Engine Control Module : RPM=767
+00> [54329] #180 OK  7B pri=1 RPMs<-Engine Control Module : RPM=767
+00> [54361] #181 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [54394] #182 OK  7B pri=1 RPMs<-Engine Control Module : RPM=753
+00> [54459] #183 OK  7B pri=1 RPMs<-Engine Control Module : RPM=763
+00> [54524] #184 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [54589] #185 OK  7B pri=1 RPMs<-Engine Control Module : RPM=752
+00> [54653] #186 OK  7B pri=1 RPMs<-Engine Control Module : RPM=747
+00> [54718] #187 OK  7B pri=1 RPMs<-Engine Control Module : RPM=747
+00> [54768] #188 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [54782] #189 OK  7B pri=1 RPMs<-Engine Control Module : RPM=769
+00> [54847] #190 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [54862] #191 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [54912] #192 OK  7B pri=1 RPMs<-Engine Control Module : RPM=766
+00> [54976] #193 OK  7B pri=1 RPMs<-Engine Control Module : RPM=749
+00> [55008] #194 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [55017] #195 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [55041] #196 OK  7B pri=1 RPMs<-Engine Control Module : RPM=761
+00> [55106] #197 OK  7B pri=1 RPMs<-Engine Control Module : RPM=761
+00> [55235] #199 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [55300] #200 OK  7B pri=1 RPMs<-Engine Control Module : RPM=754
+00> [55365] #201 OK  7B pri=1 RPMs<-Engine Control Module : RPM=750
+00> [55430] #202 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [55494] #203 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [55559] #204 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [55624] #205 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [55689] #206 OK  7B pri=1 RPMs<-Engine Control Module : RPM=767
+00> [55753] #207 OK  7B pri=1 RPMs<-Engine Control Module : RPM=790
+00> [55818] #208 OK  7B pri=1 RPMs<-Engine Control Module : RPM=804
+00> [55833] #209 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [55842] #210 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [55882] #211 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [55947] #212 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [56012] #213 OK  7B pri=1 RPMs<-Engine Control Module : RPM=759
+00> [56043] #214 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [56052] #215 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [56077] #216 OK  7B pri=1 RPMs<-Engine Control Module : RPM=761
+00> [56141] #217 OK  7B pri=1 RPMs<-Engine Control Module : RPM=777
+00> [56206] #218 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [56271] #219 OK  7B pri=1 RPMs<-Engine Control Module : RPM=761
+00> [56336] #220 OK  7B pri=1 RPMs<-Engine Control Module : RPM=761
+00> [56400] #221 OK  7B pri=1 RPMs<-Engine Control Module : RPM=769
+00> [56431] #222 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [56465] #223 OK  7B pri=1 RPMs<-Engine Control Module : RPM=781
+00> [56530] #224 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [56594] #225 OK  7B pri=1 RPMs<-Engine Control Module : RPM=770
+00> [56659] #226 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [56724] #227 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [56758] #228 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [56788] #229 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [56819] #230 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [56829] #231 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [56852] #232 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [56918] #233 OK  7B pri=1 RPMs<-Engine Control Module : RPM=769
+00> [56983] #234 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [57047] #235 OK  7B pri=1 RPMs<-Engine Control Module : RPM=800
+00> [57078] #236 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [57086] #237 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [57112] #238 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [57177] #239 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [57241] #240 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [57306] #241 OK  7B pri=1 RPMs<-Engine Control Module : RPM=821
+00> [57371] #242 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [57436] #243 OK  7B pri=1 RPMs<-Engine Control Module : RPM=764
+00> [57500] #244 OK  7B pri=1 RPMs<-Engine Control Module : RPM=755
+00> [57565] #245 OK  7B pri=1 RPMs<-Engine Control Module : RPM=770
+00> [57630] #246 OK  7B pri=1 RPMs<-Engine Control Module : RPM=814
+00> [57695] #247 OK  7B pri=1 RPMs<-Engine Control Module : RPM=814
+00> [57759] #248 OK  7B pri=1 RPMs<-Engine Control Module : RPM=812
+00> [57806] #249 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [57816] #250 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [57824] #251 OK  7B pri=1 RPMs<-Engine Control Module : RPM=756
+00> [57889] #252 OK  7B pri=1 RPMs<-Engine Control Module : RPM=744
+00> [57953] #253 OK  7B pri=1 RPMs<-Engine Control Module : RPM=749
+00> [58018] #254 OK  7B pri=1 RPMs<-Engine Control Module : RPM=755
+00> [58083] #255 OK  7B pri=1 RPMs<-Engine Control Module : RPM=829
+00> [58114] #256 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [58120] #257 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [58147] #258 OK  7B pri=1 RPMs<-Engine Control Module : RPM=829
+00> [58212] #259 OK  7B pri=1 RPMs<-Engine Control Module : RPM=872
+00> [58277] #260 OK  7B pri=1 RPMs<-Engine Control Module : RPM=827
+00> [58313] #261 OK  5B pri=3 Vehicle Security<-Instrument Cluster Panel : 69 93 61 2A 54
+00> [58342] #262 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [58406] #263 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [58471] #264 OK  7B pri=1 RPMs<-Engine Control Module : RPM=781
+00> [58502] #265 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [58536] #266 OK  7B pri=1 RPMs<-Engine Control Module : RPM=835
+00> [58600] #267 OK  7B pri=1 RPMs<-Engine Control Module : RPM=833
+00> [58665] #268 OK  7B pri=1 RPMs<-Engine Control Module : RPM=833
+00> [58730] #269 OK  7B pri=1 RPMs<-Engine Control Module : RPM=775
+00> [58749] #270 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [58795] #271 OK  7B pri=1 RPMs<-Engine Control Module : RPM=770
+00> [58812] #272 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [58843] #273 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [58859] #274 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [58924] #275 OK  7B pri=1 RPMs<-Engine Control Module : RPM=777
+00> [58989] #276 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [59053] #277 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [59118] #278 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [59149] #279 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [59161] #280 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [59183] #281 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [59247] #282 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [59312] #283 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [59377] #284 OK  7B pri=1 RPMs<-Engine Control Module : RPM=831
+00> [59441] #285 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [59506] #286 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [59571] #287 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [59635] #288 OK  7B pri=1 RPMs<-Engine Control Module : RPM=757
+00> [59700] #289 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [59765] #290 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [59780] #291 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [59791] #292 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [59830] #293 OK  7B pri=1 RPMs<-Engine Control Module : RPM=826
+00> [59894] #294 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [59959] #295 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [60024] #296 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [60089] #297 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [60153] #298 OK  7B pri=1 RPMs<-Engine Control Module : RPM=781
+00> [60185] #299 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [60195] #300 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [60218] #301 OK  7B pri=1 RPMs<-Engine Control Module : RPM=824
+00> [60283] #302 OK  7B pri=1 RPMs<-Engine Control Module : RPM=829
+00> [60347] #303 OK  7B pri=1 RPMs<-Engine Control Module : RPM=766
+00> [60412] #304 OK  7B pri=1 RPMs<-Engine Control Module : RPM=744
+00> [60477] #305 OK  7B pri=1 RPMs<-Engine Control Module : RPM=744
+00> [60542] #306 OK  7B pri=1 RPMs<-Engine Control Module : RPM=737
+00> [60573] #307 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [60606] #308 OK  7B pri=1 RPMs<-Engine Control Module : RPM=750
+00> [60671] #309 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [60736] #310 OK  7B pri=1 RPMs<-Engine Control Module : RPM=830
+00> [60767] #311 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [60778] #312 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [60800] #313 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [60833] #314 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [60865] #315 OK  7B pri=1 RPMs<-Engine Control Module : RPM=755
+00> [60930] #316 OK  7B pri=1 RPMs<-Engine Control Module : RPM=755
+00> [60995] #317 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [61059] #318 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [61124] #319 OK  7B pri=1 RPMs<-Engine Control Module : RPM=776
+00> [61189] #320 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [61220] #321 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [61229] #322 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [61253] #323 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [61318] #324 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [61383] #325 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [61447] #326 OK  7B pri=1 RPMs<-Engine Control Module : RPM=781
+00> [61512] #327 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [61577] #328 OK  7B pri=1 RPMs<-Engine Control Module : RPM=769
+00> [61642] #329 OK  7B pri=1 RPMs<-Engine Control Module : RPM=740
+00> [61706] #330 OK  7B pri=1 RPMs<-Engine Control Module : RPM=735
+00> [61754] #331 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [61766] #332 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [61836] #333 OK  7B pri=1 RPMs<-Engine Control Module : RPM=757
+00> [61900] #334 OK  7B pri=1 RPMs<-Engine Control Module : RPM=786
+00> [61965] #335 OK  7B pri=1 RPMs<-Engine Control Module : RPM=774
+00> [62030] #336 OK  7B pri=1 RPMs<-Engine Control Module : RPM=731
+00> [62095] #337 OK  7B pri=1 RPMs<-Engine Control Module : RPM=729
+00> [62159] #338 OK  7B pri=1 RPMs<-Engine Control Module : RPM=729
+00> [62224] #339 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [62255] #340 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [62263] #341 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [62289] #342 OK  7B pri=1 RPMs<-Engine Control Module : RPM=833
+00> [62354] #343 OK  7B pri=1 RPMs<-Engine Control Module : RPM=800
+00> [62418] #344 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [62483] #345 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [62548] #346 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [62612] #347 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [62644] #348 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [62677] #349 OK  7B pri=1 RPMs<-Engine Control Module : RPM=765
+00> [62729] #350 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [62742] #351 OK  7B pri=1 RPMs<-Engine Control Module : RPM=754
+00> [62754] #352 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [62806] #353 OK  7B pri=1 RPMs<-Engine Control Module : RPM=770
+00> [62823] #354 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [62871] #355 OK  7B pri=1 RPMs<-Engine Control Module : RPM=777
+00> [62936] #356 OK  7B pri=1 RPMs<-Engine Control Module : RPM=766
+00> [63001] #357 OK  7B pri=1 RPMs<-Engine Control Module : RPM=766
+00> [63065] #358 OK  7B pri=1 RPMs<-Engine Control Module : RPM=753
+00> [63130] #359 OK  7B pri=1 RPMs<-Engine Control Module : RPM=767
+00> [63195] #360 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [63260] #361 OK  7B pri=1 RPMs<-Engine Control Module : RPM=779
+00> [63291] #362 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [63298] #363 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [63324] #364 OK  7B pri=1 RPMs<-Engine Control Module : RPM=767
+00> [63389] #365 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [63453] #366 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [63518] #367 OK  7B pri=1 RPMs<-Engine Control Module : RPM=783
+00> [63583] #368 OK  7B pri=1 RPMs<-Engine Control Module : RPM=750
+00> [63648] #369 OK  7B pri=1 RPMs<-Engine Control Module : RPM=759
+00> [63712] #370 OK  7B pri=1 RPMs<-Engine Control Module : RPM=804
+00> [63727] #371 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [63741] #372 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [63777] #373 OK  7B pri=1 RPMs<-Engine Control Module : RPM=811
+00> [63842] #374 OK  7B pri=1 RPMs<-Engine Control Module : RPM=776
+00> [63906] #375 OK  7B pri=1 RPMs<-Engine Control Module : RPM=776
+00> [63971] #376 OK  7B pri=1 RPMs<-Engine Control Module : RPM=769
+00> [64036] #377 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [64101] #378 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [64165] #379 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [64230] #380 OK  7B pri=1 RPMs<-Engine Control Module : RPM=781
+00> [64295] #381 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [64326] #382 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [64339] #383 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [64360] #384 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [64424] #385 OK  7B pri=1 RPMs<-Engine Control Module : RPM=808
+00> [64489] #386 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [64554] #387 OK  7B pri=1 RPMs<-Engine Control Module : RPM=763
+00> [64618] #388 OK  7B pri=1 RPMs<-Engine Control Module : RPM=804
+00> [64683] #389 OK  7B pri=1 RPMs<-Engine Control Module : RPM=819
+00> [64714] #390 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [64724] #391 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [64735] #392 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [64748] #393 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [64812] #394 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [64877] #395 OK  7B pri=1 RPMs<-Engine Control Module : RPM=763
+00> [64942] #396 OK  7B pri=1 RPMs<-Engine Control Module : RPM=811
+00> [65006] #397 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [65071] #398 OK  7B pri=1 RPMs<-Engine Control Module : RPM=762
+00> [65136] #399 OK  7B pri=1 RPMs<-Engine Control Module : RPM=750
+00> [65201] #400 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [65265] #401 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [65330] #402 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [65361] #403 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [65373] #404 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [65395] #405 OK  7B pri=1 RPMs<-Engine Control Module : RPM=777
+00> [65460] #406 OK  7B pri=1 RPMs<-Engine Control Module : RPM=744
+00> [65524] #407 OK  7B pri=1 RPMs<-Engine Control Module : RPM=754
+00> [65589] #408 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [65653] #409 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [65701] #410 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=ON
+00> [65708] #411 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=ON (fault/armed)
+00> [65718] #412 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [65783] #413 OK  7B pri=1 RPMs<-Engine Control Module : RPM=749
+00> [65848] #414 OK  7B pri=1 RPMs<-Engine Control Module : RPM=755
+00> [65912] #415 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [65977] #416 OK  7B pri=1 RPMs<-Engine Control Module : RPM=814
+00> [65998] #417 OK  8B pri=3 Scanner<-Engine Control Module : DTC reply src=0x10
+00> [66042] #418 OK  7B pri=1 RPMs<-Engine Control Module : RPM=789
+00> [66107] #419 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [66171] #420 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [66236] #421 OK  7B pri=1 RPMs<-Engine Control Module : RPM=833
+00> [66301] #422 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [66365] #423 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [66415] #425 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [66430] #426 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [66495] #427 OK  7B pri=1 RPMs<-Engine Control Module : RPM=834
+00> [66560] #428 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [66603] Auto DTC clear -> ECM (password DTC present)
+00> [66611] #429 OK  5B pri=3 Scanner<-Engine Control Module : 6C F1 10 54 4C
+00> [66624] #430 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [66689] #431 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [66703] #432 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [66710] #433 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [66754] #434 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [66785] #435 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [66804] #436 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [66818] #437 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [66883] #438 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [66948] #439 OK  7B pri=1 RPMs<-Engine Control Module : RPM=781
+00> [67012] #440 OK  7B pri=1 RPMs<-Engine Control Module : RPM=765
+00> [67077] #441 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [67142] #442 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [67207] #443 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [67271] #444 OK  7B pri=1 RPMs<-Engine Control Module : RPM=764
+00> [67336] #445 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [67401] #446 OK  7B pri=1 RPMs<-Engine Control Module : RPM=830
+00> [67432] #447 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [67441] #448 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [67465] #449 OK  7B pri=1 RPMs<-Engine Control Module : RPM=819
+00> [67530] #450 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [67595] #451 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [67659] #452 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [67674] #453 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [67682] #454 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [67724] #455 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [67789] #456 OK  7B pri=1 RPMs<-Engine Control Module : RPM=847
+00> [67854] #457 OK  7B pri=1 RPMs<-Engine Control Module : RPM=854
+00> [67918] #458 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [67983] #459 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [68048] #460 OK  7B pri=1 RPMs<-Engine Control Module : RPM=769
+00> [68112] #461 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [68177] #462 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [68242] #463 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [68307] #464 OK  7B pri=1 RPMs<-Engine Control Module : RPM=812
+00> [68371] #465 OK  7B pri=1 RPMs<-Engine Control Module : RPM=773
+00> [68436] #466 OK  7B pri=1 RPMs<-Engine Control Module : RPM=760
+00> [68467] #467 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [68475] #468 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [68501] #469 OK  7B pri=1 RPMs<-Engine Control Module : RPM=755
+00> [68565] #470 OK  7B pri=1 RPMs<-Engine Control Module : RPM=755
+00> [68630] #471 OK  7B pri=1 RPMs<-Engine Control Module : RPM=764
+00> [68661] #472 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [68670] #473 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [68695] #474 OK  7B pri=1 RPMs<-Engine Control Module : RPM=836
+00> [68701] #475 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [68759] #476 OK  7B pri=1 RPMs<-Engine Control Module : RPM=865
+00> [68794] #477 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [68824] #478 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [68855] #479 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [68889] #480 OK  7B pri=1 RPMs<-Engine Control Module : RPM=789
+00> [68953] #481 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [69018] #482 OK  7B pri=1 RPMs<-Engine Control Module : RPM=775
+00> [69083] #483 OK  7B pri=1 RPMs<-Engine Control Module : RPM=775
+00> [69148] #484 OK  7B pri=1 RPMs<-Engine Control Module : RPM=758
+00> [69212] #485 OK  7B pri=1 RPMs<-Engine Control Module : RPM=757
+00> [69277] #486 OK  7B pri=1 RPMs<-Engine Control Module : RPM=773
+00> [69342] #487 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [69406] #488 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [69471] #489 OK  7B pri=1 RPMs<-Engine Control Module : RPM=770
+00> [69503] #490 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [69509] #491 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [69536] #492 OK  7B pri=1 RPMs<-Engine Control Module : RPM=770
+00> [69601] #493 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [69648] #494 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [69657] #495 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [69665] #496 OK  7B pri=1 RPMs<-Engine Control Module : RPM=789
+00> [69730] #497 OK  7B pri=1 RPMs<-Engine Control Module : RPM=830
+00> [69795] #498 OK  7B pri=1 RPMs<-Engine Control Module : RPM=815
+00> [69860] #499 OK  7B pri=1 RPMs<-Engine Control Module : RPM=756
+00> [69924] #500 OK  7B pri=1 RPMs<-Engine Control Module : RPM=758
+00> [69989] #501 OK  7B pri=1 RPMs<-Engine Control Module : RPM=758
+00> [70054] #502 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [70118] #503 OK  7B pri=1 RPMs<-Engine Control Module : RPM=756
+00> [70183] #504 OK  7B pri=1 RPMs<-Engine Control Module : RPM=776
+00> [70248] #505 OK  7B pri=1 RPMs<-Engine Control Module : RPM=822
+00> [70312] #506 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [70377] #507 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [70442] #508 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [70507] #509 OK  7B pri=1 RPMs<-Engine Control Module : RPM=739
+00> [70538] #510 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [70551] #511 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [70572] #512 OK  7B pri=1 RPMs<-Engine Control Module : RPM=751
+00> [70636] #513 OK  7B pri=1 RPMs<-Engine Control Module : RPM=834
+00> [70652] #514 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [70690] #515 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [70701] #516 OK  7B pri=1 RPMs<-Engine Control Module : RPM=871
+00> [70766] #517 OK  7B pri=1 RPMs<-Engine Control Module : RPM=827
+00> [70784] #518 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [70830] #519 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [70895] #520 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [70926] #521 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [70960] #522 OK  7B pri=1 RPMs<-Engine Control Module : RPM=814
+00> [71024] #523 OK  7B pri=1 RPMs<-Engine Control Module : RPM=814
+00> [71089] #524 OK  7B pri=1 RPMs<-Engine Control Module : RPM=825
+00> [71154] #525 OK  7B pri=1 RPMs<-Engine Control Module : RPM=822
+00> [71218] #526 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [71283] #527 OK  7B pri=1 RPMs<-Engine Control Module : RPM=776
+00> [71348] #528 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [71412] #529 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [71477] #530 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [71542] #531 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [71573] #532 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [71585] #533 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [71607] #534 OK  7B pri=1 RPMs<-Engine Control Module : RPM=767
+00> [71621] #535 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [71632] #536 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [71671] #537 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [71736] #538 OK  7B pri=1 RPMs<-Engine Control Module : RPM=856
+00> [71801] #539 OK  7B pri=1 RPMs<-Engine Control Module : RPM=836
+00> [71865] #540 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [71930] #541 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [71995] #542 OK  7B pri=1 RPMs<-Engine Control Module : RPM=783
+00> [72059] #543 OK  7B pri=1 RPMs<-Engine Control Module : RPM=783
+00> [72124] #544 OK  7B pri=1 RPMs<-Engine Control Module : RPM=814
+00> [72189] #545 OK  7B pri=1 RPMs<-Engine Control Module : RPM=815
+00> [72254] #546 OK  7B pri=1 RPMs<-Engine Control Module : RPM=767
+00> [72319] #547 OK  7B pri=1 RPMs<-Engine Control Module : RPM=759
+00> [72383] #548 OK  7B pri=1 RPMs<-Engine Control Module : RPM=786
+00> [72448] #549 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [72513] #550 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [72577] #551 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [72608] #552 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [72620] #553 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [72626] #554 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [72642] #555 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [72681] #556 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [72707] #557 OK  7B pri=1 RPMs<-Engine Control Module : RPM=823
+00> [72771] #558 OK  7B pri=1 RPMs<-Engine Control Module : RPM=847
+00> [72836] #559 OK  7B pri=1 RPMs<-Engine Control Module : RPM=814
+00> [72901] #560 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [72966] #561 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [72997] #562 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [73030] #563 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [73095] #564 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [73160] #565 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [73224] #566 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [73289] #567 OK  7B pri=1 RPMs<-Engine Control Module : RPM=789
+00> [73353] #568 OK  7B pri=1 RPMs<-Engine Control Module : RPM=765
+00> [73418] #569 OK  7B pri=1 RPMs<-Engine Control Module : RPM=758
+00> [73483] #570 OK  7B pri=1 RPMs<-Engine Control Module : RPM=758
+00> [73548] #571 OK  7B pri=1 RPMs<-Engine Control Module : RPM=767
+00> [73595] #572 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [73607] #573 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [73644] #574 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [73653] #575 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [73677] #576 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [73742] #577 OK  7B pri=1 RPMs<-Engine Control Module : RPM=751
+00> [73807] #578 OK  7B pri=1 RPMs<-Engine Control Module : RPM=738
+00> [73871] #579 OK  7B pri=1 RPMs<-Engine Control Module : RPM=738
+00> [73936] #580 OK  7B pri=1 RPMs<-Engine Control Module : RPM=754
+00> [74001] #581 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [74065] #582 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [74130] #583 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [74195] #584 OK  7B pri=1 RPMs<-Engine Control Module : RPM=764
+00> [74260] #585 OK  7B pri=1 RPMs<-Engine Control Module : RPM=737
+00> [74324] #586 OK  7B pri=1 RPMs<-Engine Control Module : RPM=737
+00> [74389] #587 OK  7B pri=1 RPMs<-Engine Control Module : RPM=761
+00> [74454] #588 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [74518] #589 OK  7B pri=1 RPMs<-Engine Control Module : RPM=818
+00> [74583] #590 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [74595] #591 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [74648] #592 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [74671] #593 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [74679] #594 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [74687] #595 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [74713] #596 OK  7B pri=1 RPMs<-Engine Control Module : RPM=825
+00> [74765] #597 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [74777] #598 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [74842] #599 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [74906] #600 OK  7B pri=1 RPMs<-Engine Control Module : RPM=769
+00> [74971] #601 OK  7B pri=1 RPMs<-Engine Control Module : RPM=765
+00> [75036] #602 OK  7B pri=1 RPMs<-Engine Control Module : RPM=790
+00> [75067] #603 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [75101] #604 OK  7B pri=1 RPMs<-Engine Control Module : RPM=830
+00> [75165] #605 OK  7B pri=1 RPMs<-Engine Control Module : RPM=836
+00> [75230] #606 OK  7B pri=1 RPMs<-Engine Control Module : RPM=818
+00> [75295] #607 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [75359] #608 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [75424] #609 OK  7B pri=1 RPMs<-Engine Control Module : RPM=757
+00> [75489] #610 OK  7B pri=1 RPMs<-Engine Control Module : RPM=781
+00> [75553] #611 OK  7B pri=1 RPMs<-Engine Control Module : RPM=861
+00> [75568] #612 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [75581] #613 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [75618] #614 OK  7B pri=1 RPMs<-Engine Control Module : RPM=861
+00> [75683] #615 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [75714] #616 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [75721] #617 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [75748] #618 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [75812] #619 OK  7B pri=1 RPMs<-Engine Control Module : RPM=828
+00> [75877] #620 OK  7B pri=1 RPMs<-Engine Control Module : RPM=826
+00> [75942] #621 OK  7B pri=1 RPMs<-Engine Control Module : RPM=826
+00> [76007] #622 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [76071] #623 OK  7B pri=1 RPMs<-Engine Control Module : RPM=775
+00> [76136] #624 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [76201] #625 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [76265] #626 OK  7B pri=1 RPMs<-Engine Control Module : RPM=790
+00> [76330] #627 OK  7B pri=1 RPMs<-Engine Control Module : RPM=766
+00> [76395] #628 OK  7B pri=1 RPMs<-Engine Control Module : RPM=766
+00> [76460] #629 OK  7B pri=1 RPMs<-Engine Control Module : RPM=806
+00> [76524] #630 OK  7B pri=1 RPMs<-Engine Control Module : RPM=847
+00> [76555] #631 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [76569] #632 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [76589] #633 OK  7B pri=1 RPMs<-Engine Control Module : RPM=818
+00> [76653] #634 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [76662] #635 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [76718] #636 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [76750] #637 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [76756] #638 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [76763] #639 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [76783] #640 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [76820] #641 OK  8B pri=3 Scanner<-Engine Control Module : DTC reply src=0x10
+00> [76848] #642 OK  7B pri=1 RPMs<-Engine Control Module : RPM=775
+00> [76913] #643 OK  7B pri=1 RPMs<-Engine Control Module : RPM=775
+00> [76977] #644 OK  7B pri=1 RPMs<-Engine Control Module : RPM=769
+00> [77042] #645 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [77107] #646 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [77137] #647 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [77171] #648 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [77236] #649 OK  7B pri=1 RPMs<-Engine Control Module : RPM=758
+00> [77301] #650 OK  7B pri=1 RPMs<-Engine Control Module : RPM=783
+00> [77365] #651 OK  7B pri=1 RPMs<-Engine Control Module : RPM=783
+00> [77430] #652 OK  7B pri=1 RPMs<-Engine Control Module : RPM=806
+00> [77495] #653 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [77542] #654 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [77548] #655 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [77560] #656 OK  7B pri=1 RPMs<-Engine Control Module : RPM=804
+00> [77624] #657 OK  7B pri=1 RPMs<-Engine Control Module : RPM=853
+00> [77689] #658 OK  7B pri=1 RPMs<-Engine Control Module : RPM=881
+00> [77754] #659 OK  7B pri=1 RPMs<-Engine Control Module : RPM=838
+00> [77785] #660 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [77797] #661 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [77819] #662 OK  7B pri=1 RPMs<-Engine Control Module : RPM=814
+00> [77883] #663 OK  7B pri=1 RPMs<-Engine Control Module : RPM=817
+00> [77948] #664 OK  7B pri=1 RPMs<-Engine Control Module : RPM=806
+00> [78013] #665 OK  7B pri=1 RPMs<-Engine Control Module : RPM=806
+00> [78077] #666 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [78142] #667 OK  7B pri=1 RPMs<-Engine Control Module : RPM=777
+00> [78206] #668 OK  7B pri=1 RPMs<-Engine Control Module : RPM=825
+00> [78271] #669 OK  7B pri=1 RPMs<-Engine Control Module : RPM=856
+00> [78336] #670 OK  7B pri=1 RPMs<-Engine Control Module : RPM=819
+00> [78401] #671 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [78466] #672 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [78530] #673 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [78544] #674 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [78595] #675 OK  7B pri=1 RPMs<-Engine Control Module : RPM=777
+00> [78651] #676 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [78659] #677 OK  7B pri=1 RPMs<-Engine Control Module : RPM=835
+00> [78724] #678 OK  7B pri=1 RPMs<-Engine Control Module : RPM=843
+00> [78745] #679 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [78789] #680 OK  7B pri=1 RPMs<-Engine Control Module : RPM=783
+00> [78820] #681 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [78831] #682 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [78854] #683 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [78918] #684 OK  7B pri=1 RPMs<-Engine Control Module : RPM=817
+00> [78983] #685 OK  7B pri=1 RPMs<-Engine Control Module : RPM=823
+00> [79048] #686 OK  7B pri=1 RPMs<-Engine Control Module : RPM=823
+00> [79112] #687 OK  7B pri=1 RPMs<-Engine Control Module : RPM=786
+00> [79177] #688 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [79208] #689 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [79242] #690 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [79307] #691 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [79371] #692 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [79436] #693 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [79501] #694 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [79516] #695 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [79523] #696 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [79566] #697 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [79630] #698 OK  7B pri=1 RPMs<-Engine Control Module : RPM=825
+00> [79695] #699 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [79760] #700 OK  7B pri=1 RPMs<-Engine Control Module : RPM=779
+00> [79824] #701 OK  7B pri=1 RPMs<-Engine Control Module : RPM=789
+00> [79856] #702 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [79865] #703 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [79889] #704 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [79954] #705 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [80018] #706 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [80083] #707 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [80148] #708 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [80212] #709 OK  7B pri=1 RPMs<-Engine Control Module : RPM=783
+00> [80277] #710 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [80342] #711 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [80407] #712 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [80471] #713 OK  7B pri=1 RPMs<-Engine Control Module : RPM=762
+00> [80502] #714 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [80510] #715 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [80536] #716 OK  7B pri=1 RPMs<-Engine Control Module : RPM=762
+00> [80601] #717 OK  7B pri=1 RPMs<-Engine Control Module : RPM=767
+00> [80642] #718 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [80665] #719 OK  7B pri=1 RPMs<-Engine Control Module : RPM=779
+00> [80730] #720 OK  7B pri=1 RPMs<-Engine Control Module : RPM=774
+00> [80737] #721 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [80795] #722 OK  7B pri=1 RPMs<-Engine Control Module : RPM=754
+00> [80859] #723 OK  7B pri=1 RPMs<-Engine Control Module : RPM=757
+00> [80891] #724 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [80899] #725 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [80924] #726 OK  7B pri=1 RPMs<-Engine Control Module : RPM=757
+00> [80989] #727 OK  7B pri=1 RPMs<-Engine Control Module : RPM=790
+00> [81054] #728 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [81119] #729 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [81183] #730 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [81248] #731 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [81279] #732 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [81313] #733 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [81377] #734 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [81442] #735 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [81489] #736 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [81498] #737 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [81507] #738 OK  7B pri=1 RPMs<-Engine Control Module : RPM=811
+00> [81571] #739 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [81636] #740 OK  7B pri=1 RPMs<-Engine Control Module : RPM=790
+00> [81701] #741 OK  7B pri=1 RPMs<-Engine Control Module : RPM=806
+00> [81765] #742 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [81830] #743 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [81895] #744 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [81926] #745 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [81933] #746 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [81960] #747 OK  7B pri=1 RPMs<-Engine Control Module : RPM=811
+00> [82024] #748 OK  7B pri=1 RPMs<-Engine Control Module : RPM=822
+00> [82089] #749 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [82154] #750 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [82218] #751 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [82283] #752 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [82348] #753 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [82413] #754 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [82478] #755 OK  7B pri=1 RPMs<-Engine Control Module : RPM=770
+00> [82493] #756 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [82542] #757 OK  7B pri=1 RPMs<-Engine Control Module : RPM=781
+00> [82607] #758 OK  7B pri=1 RPMs<-Engine Control Module : RPM=812
+00> [82632] #759 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [82671] #760 OK  7B pri=1 RPMs<-Engine Control Module : RPM=823
+00> [82726] #761 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [82736] #762 OK  7B pri=1 RPMs<-Engine Control Module : RPM=815
+00> [82801] #763 OK  7B pri=1 RPMs<-Engine Control Module : RPM=835
+00> [82866] #764 OK  7B pri=1 RPMs<-Engine Control Module : RPM=859
+00> [82930] #765 OK  7B pri=1 RPMs<-Engine Control Module : RPM=830
+00> [82962] #766 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [82975] #767 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [82995] #768 OK  7B pri=1 RPMs<-Engine Control Module : RPM=830
+00> [83060] #769 OK  7B pri=1 RPMs<-Engine Control Module : RPM=800
+00> [83124] #770 OK  7B pri=1 RPMs<-Engine Control Module : RPM=785
+00> [83189] #771 OK  7B pri=1 RPMs<-Engine Control Module : RPM=785
+00> [83253] #772 OK  7B pri=1 RPMs<-Engine Control Module : RPM=837
+00> [83319] #773 OK  7B pri=1 RPMs<-Engine Control Module : RPM=876
+00> [83349] #774 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [83383] #775 OK  7B pri=1 RPMs<-Engine Control Module : RPM=844
+00> [83448] #776 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [83463] #777 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [83472] #778 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [83513] #779 OK  7B pri=1 RPMs<-Engine Control Module : RPM=817
+00> [83577] #780 OK  7B pri=1 RPMs<-Engine Control Module : RPM=823
+00> [83642] #781 OK  7B pri=1 RPMs<-Engine Control Module : RPM=823
+00> [83707] #782 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [83771] #783 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [83836] #784 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [83901] #785 OK  7B pri=1 RPMs<-Engine Control Module : RPM=800
+00> [83966] #786 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [83997] #787 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [84009] #788 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [84030] #789 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [84095] #790 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [84159] #791 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [84225] #792 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [84289] #793 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [84354] #794 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [84418] #795 OK  7B pri=1 RPMs<-Engine Control Module : RPM=818
+00> [84449] #796 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [84460] #797 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [84483] #798 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [84548] #799 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [84612] #800 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [84623] #801 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [84677] #802 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [84716] #803 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [84742] #804 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [84807] #805 OK  7B pri=1 RPMs<-Engine Control Module : RPM=811
+00> [84872] #806 OK  7B pri=1 RPMs<-Engine Control Module : RPM=820
+00> [84936] #807 OK  7B pri=1 RPMs<-Engine Control Module : RPM=820
+00> [85001] #808 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [85032] #809 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [85043] #810 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [85066] #811 OK  7B pri=1 RPMs<-Engine Control Module : RPM=800
+00> [85130] #812 OK  7B pri=1 RPMs<-Engine Control Module : RPM=827
+00> [85195] #813 OK  7B pri=1 RPMs<-Engine Control Module : RPM=824
+00> [85260] #814 OK  7B pri=1 RPMs<-Engine Control Module : RPM=824
+00> [85324] #815 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [85389] #816 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [85420] #817 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [85436] #818 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [85447] #819 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [85454] #820 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [85519] #821 OK  7B pri=1 RPMs<-Engine Control Module : RPM=811
+00> [85583] #822 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [85648] #823 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [85712] #824 OK  7B pri=1 RPMs<-Engine Control Module : RPM=837
+00> [85778] #825 OK  7B pri=1 RPMs<-Engine Control Module : RPM=859
+00> [85842] #826 OK  7B pri=1 RPMs<-Engine Control Module : RPM=859
+00> [85907] #827 OK  7B pri=1 RPMs<-Engine Control Module : RPM=823
+00> [85971] #828 OK  7B pri=1 RPMs<-Engine Control Module : RPM=785
+00> [86036] #829 OK  7B pri=1 RPMs<-Engine Control Module : RPM=777
+00> [86067] #830 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [86077] #831 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [86101] #832 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [86166] #833 OK  7B pri=1 RPMs<-Engine Control Module : RPM=838
+00> [86230] #834 OK  7B pri=1 RPMs<-Engine Control Module : RPM=829
+00> [86295] #835 OK  7B pri=1 RPMs<-Engine Control Module : RPM=829
+00> [86360] #836 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [86424] #837 OK  7B pri=1 RPMs<-Engine Control Module : RPM=786
+00> [86435] #838 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [86489] #839 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [86554] #840 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [86613] #841 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [86683] #842 OK  7B pri=1 RPMs<-Engine Control Module : RPM=844
+00> [86707] #843 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [86748] #844 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [86813] #845 OK  7B pri=1 RPMs<-Engine Control Module : RPM=790
+00> [86877] #846 OK  7B pri=1 RPMs<-Engine Control Module : RPM=790
+00> [86942] #847 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [87007] #848 OK  7B pri=1 RPMs<-Engine Control Module : RPM=800
+00> [87071] #849 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [87103] #850 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [87111] #851 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [87136] #852 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [87201] #853 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [87266] #854 OK  7B pri=1 RPMs<-Engine Control Module : RPM=840
+00> [87331] #855 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [87396] #856 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [87410] #857 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [87422] #858 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [87460] #859 OK  7B pri=1 RPMs<-Engine Control Module : RPM=783
+00> [87490] #860 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [87525] #861 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [87589] #862 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [87638] #863 OK  8B pri=3 Scanner<-Engine Control Module : DTC reply src=0x10
+00> [87654] #864 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [87719] #865 OK  7B pri=1 RPMs<-Engine Control Module : RPM=779
+00> [87784] #866 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [87848] #867 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [87913] #868 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [87977] #869 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [88107] #870 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [88138] #871 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [88145] #872 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [88172] #873 OK  7B pri=1 RPMs<-Engine Control Module : RPM=827
+00> [88237] #874 OK  7B pri=1 RPMs<-Engine Control Module : RPM=806
+00> [88301] #875 OK  7B pri=1 RPMs<-Engine Control Module : RPM=789
+00> [88366] #876 OK  7B pri=1 RPMs<-Engine Control Module : RPM=789
+00> [88397] #877 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [88409] #878 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [88430] #879 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [88495] #880 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [88560] #881 OK  7B pri=1 RPMs<-Engine Control Module : RPM=790
+00> [88603] #882 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [88624] #883 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [88689] #884 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [88698] #885 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [88754] #886 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [88819] #887 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [88883] #888 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [88948] #889 OK  7B pri=1 RPMs<-Engine Control Module : RPM=779
+00> [89013] #890 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [89077] #891 OK  7B pri=1 RPMs<-Engine Control Module : RPM=829
+00> [89142] #892 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [89174] #893 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [89187] #894 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [89207] #895 OK  7B pri=1 RPMs<-Engine Control Module : RPM=777
+00> [89271] #896 OK  7B pri=1 RPMs<-Engine Control Module : RPM=820
+00> [89336] #897 OK  7B pri=1 RPMs<-Engine Control Module : RPM=856
+00> [89383] #898 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [89396] #899 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [89466] #900 OK  7B pri=1 RPMs<-Engine Control Module : RPM=825
+00> [89530] #901 OK  7B pri=1 RPMs<-Engine Control Module : RPM=790
+00> [89561] #902 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [89595] #903 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [89660] #904 OK  7B pri=1 RPMs<-Engine Control Module : RPM=810
+00> [89724] #905 OK  7B pri=1 RPMs<-Engine Control Module : RPM=823
+00> [89789] #906 OK  7B pri=1 RPMs<-Engine Control Module : RPM=819
+00> [89854] #907 OK  7B pri=1 RPMs<-Engine Control Module : RPM=806
+00> [89918] #908 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [89983] #909 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [90048] #910 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [90113] #911 OK  7B pri=1 RPMs<-Engine Control Module : RPM=840
+00> [90178] #912 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [90209] #913 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [90221] #914 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [90242] #915 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [90307] #916 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [90372] #917 OK  7B pri=1 RPMs<-Engine Control Module : RPM=824
+00> [90385] #918 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [90436] #919 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [90501] #920 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [90566] #921 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [90593] #922 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [90631] #923 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [90687] #924 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [90695] #925 OK  7B pri=1 RPMs<-Engine Control Module : RPM=819
+00> [90760] #926 OK  7B pri=1 RPMs<-Engine Control Module : RPM=779
+00> [90824] #927 OK  7B pri=1 RPMs<-Engine Control Module : RPM=762
+00> [90889] #928 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [90954] #929 OK  7B pri=1 RPMs<-Engine Control Module : RPM=847
+00> [91019] #930 OK  7B pri=1 RPMs<-Engine Control Module : RPM=818
+00> [91083] #931 OK  7B pri=1 RPMs<-Engine Control Module : RPM=818
+00> [91148] #932 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [91212] #933 OK  7B pri=1 RPMs<-Engine Control Module : RPM=785
+00> [91244] #934 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [91254] #935 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [91277] #936 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [91342] #937 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [91357] #938 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [91363] #939 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [91407] #940 OK  7B pri=1 RPMs<-Engine Control Module : RPM=800
+00> [91471] #941 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [91536] #942 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [91601] #943 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [91632] #944 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [91665] #945 OK  7B pri=1 RPMs<-Engine Control Module : RPM=824
+00> [91730] #946 OK  7B pri=1 RPMs<-Engine Control Module : RPM=844
+00> [91795] #947 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [91859] #948 OK  7B pri=1 RPMs<-Engine Control Module : RPM=789
+00> [91924] #949 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [91989] #950 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [92054] #951 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [92119] #952 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [92183] #953 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [92248] #954 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [92279] #955 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [92288] #956 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [92313] #957 OK  7B pri=1 RPMs<-Engine Control Module : RPM=806
+00> [92344] #958 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [92351] #959 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [92377] #960 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [92442] #961 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [92507] #962 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [92571] #963 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [92584] #964 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [92636] #965 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [92677] #966 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [92701] #967 OK  7B pri=1 RPMs<-Engine Control Module : RPM=820
+00> [92765] #968 OK  7B pri=1 RPMs<-Engine Control Module : RPM=828
+00> [92830] #969 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [92895] #970 OK  7B pri=1 RPMs<-Engine Control Module : RPM=775
+00> [92959] #971 OK  7B pri=1 RPMs<-Engine Control Module : RPM=829
+00> [93024] #972 OK  7B pri=1 RPMs<-Engine Control Module : RPM=843
+00> [93089] #973 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [93154] #974 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [93218] #975 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [93283] #976 OK  7B pri=1 RPMs<-Engine Control Module : RPM=833
+00> [93314] #977 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [93322] #978 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [93330] #979 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [93338] #980 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [93348] #981 OK  7B pri=1 RPMs<-Engine Control Module : RPM=856
+00> [93412] #982 OK  7B pri=1 RPMs<-Engine Control Module : RPM=824
+00> [93477] #983 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [93542] #984 OK  7B pri=1 RPMs<-Engine Control Module : RPM=814
+00> [93606] #985 OK  7B pri=1 RPMs<-Engine Control Module : RPM=821
+00> [93671] #986 OK  7B pri=1 RPMs<-Engine Control Module : RPM=830
+00> [93702] #987 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [93736] #988 OK  7B pri=1 RPMs<-Engine Control Module : RPM=829
+00> [93800] #989 OK  7B pri=1 RPMs<-Engine Control Module : RPM=824
+00> [93865] #990 OK  7B pri=1 RPMs<-Engine Control Module : RPM=824
+00> [93930] #991 OK  7B pri=1 RPMs<-Engine Control Module : RPM=815
+00> [93995] #992 OK  7B pri=1 RPMs<-Engine Control Module : RPM=806
+00> [94059] #993 OK  7B pri=1 RPMs<-Engine Control Module : RPM=817
+00> [94124] #994 OK  7B pri=1 RPMs<-Engine Control Module : RPM=836
+00> [94189] #995 OK  7B pri=1 RPMs<-Engine Control Module : RPM=835
+00> [94253] #996 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [94318] #997 OK  7B pri=1 RPMs<-Engine Control Module : RPM=795
+00> [94333] #998 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [94350] #999 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [94356] #1000 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [94383] #1001 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [94448] #1002 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [94513] #1003 OK  7B pri=1 RPMs<-Engine Control Module : RPM=813
+00> [94573] #1004 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [94641] #1005 OK  7B pri=1 RPMs<-Engine Control Module : RPM=831
+00> [94667] #1006 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [94706] #1007 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [94771] #1008 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [94836] #1009 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [94901] #1010 OK  7B pri=1 RPMs<-Engine Control Module : RPM=811
+00> [94965] #1011 OK  7B pri=1 RPMs<-Engine Control Module : RPM=811
+00> [95030] #1012 OK  7B pri=1 RPMs<-Engine Control Module : RPM=808
+00> [95095] #1013 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [95159] #1014 OK  7B pri=1 RPMs<-Engine Control Module : RPM=822
+00> [95224] #1015 OK  7B pri=1 RPMs<-Engine Control Module : RPM=857
+00> [95289] #1016 OK  7B pri=1 RPMs<-Engine Control Module : RPM=834
+00> [95303] #1017 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [95312] #1018 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [95353] #1019 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [95385] #1020 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [95398] #1021 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [95418] #1022 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [95483] #1023 OK  7B pri=1 RPMs<-Engine Control Module : RPM=822
+00> [95547] #1024 OK  7B pri=1 RPMs<-Engine Control Module : RPM=837
+00> [95612] #1025 OK  7B pri=1 RPMs<-Engine Control Module : RPM=837
+00> [95677] #1026 OK  7B pri=1 RPMs<-Engine Control Module : RPM=815
+00> [95741] #1027 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [95772] #1028 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [95806] #1029 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [95871] #1030 OK  7B pri=1 RPMs<-Engine Control Module : RPM=843
+00> [95936] #1031 OK  7B pri=1 RPMs<-Engine Control Module : RPM=838
+00> [96000] #1032 OK  7B pri=1 RPMs<-Engine Control Module : RPM=781
+00> [96065] #1033 OK  7B pri=1 RPMs<-Engine Control Module : RPM=765
+00> [96130] #1034 OK  7B pri=1 RPMs<-Engine Control Module : RPM=765
+00> [96194] #1035 OK  7B pri=1 RPMs<-Engine Control Module : RPM=774
+00> [96259] #1036 OK  7B pri=1 RPMs<-Engine Control Module : RPM=775
+00> [96290] #1037 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [96299] #1038 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [96324] #1039 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [96389] #1040 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [96420] #1041 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [96432] #1042 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [96453] #1043 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+00> [96518] #1044 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [96563] #1045 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [96583] #1046 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [96647] #1047 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [96658] #1048 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [96712] #1049 OK  7B pri=1 RPMs<-Engine Control Module : RPM=791
+00> [96777] #1050 OK  7B pri=1 RPMs<-Engine Control Module : RPM=812
+00> [96841] #1051 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [96906] #1052 OK  7B pri=1 RPMs<-Engine Control Module : RPM=750
+00> [96971] #1053 OK  7B pri=1 RPMs<-Engine Control Module : RPM=753
+00> [97036] #1054 OK  7B pri=1 RPMs<-Engine Control Module : RPM=753
+00> [97100] #1055 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [97165] #1056 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [97230] #1057 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [97277] #1058 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [97287] #1059 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [97294] #1060 OK  7B pri=1 RPMs<-Engine Control Module : RPM=778
+00> [97359] #1061 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [97424] #1062 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [97455] #1063 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [97465] #1064 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [97488] #1065 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [97553] #1066 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [97618] #1067 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [97682] #1068 OK  7B pri=1 RPMs<-Engine Control Module : RPM=788
+00> [97747] #1069 OK  7B pri=1 RPMs<-Engine Control Module : RPM=771
+00> [97812] #1070 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [97843] #1071 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [97877] #1072 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [97941] #1073 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [98006] #1074 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [98071] #1075 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [98135] #1076 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [98200] #1077 OK  7B pri=1 RPMs<-Engine Control Module : RPM=812
+00> [98265] #1078 OK  7B pri=1 RPMs<-Engine Control Module : RPM=799
+00> [98282] #1079 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [98330] #1080 OK  7B pri=1 RPMs<-Engine Control Module : RPM=789
+00> [98394] #1081 OK  7B pri=1 RPMs<-Engine Control Module : RPM=820
+00> [98456] #1082 OK  8B pri=3 Scanner<-Engine Control Module : DTC reply src=0x10
+00> [98491] #1083 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [98499] #1084 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [98524] #1085 OK  7B pri=1 RPMs<-Engine Control Module : RPM=822
+00> [98553] #1086 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [98589] #1087 OK  7B pri=1 RPMs<-Engine Control Module : RPM=822
+00> [98647] #1088 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [98718] #1089 OK  7B pri=1 RPMs<-Engine Control Module : RPM=797
+00> [98783] #1090 OK  7B pri=1 RPMs<-Engine Control Module : RPM=800
+00> [98847] #1091 OK  7B pri=1 RPMs<-Engine Control Module : RPM=827
+00> [98912] #1092 OK  7B pri=1 RPMs<-Engine Control Module : RPM=823
+00> [98977] #1093 OK  7B pri=1 RPMs<-Engine Control Module : RPM=766
+00> [99042] #1094 OK  7B pri=1 RPMs<-Engine Control Module : RPM=754
+00> [99106] #1095 OK  7B pri=1 RPMs<-Engine Control Module : RPM=754
+00> [99171] #1096 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [99235] #1097 OK  7B pri=1 RPMs<-Engine Control Module : RPM=772
+00> [99250] #1098 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [99261] #1099 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [99300] #1100 OK  7B pri=1 RPMs<-Engine Control Module : RPM=809
+00> [99365] #1101 OK  7B pri=1 RPMs<-Engine Control Module : RPM=832
+00> [99429] #1102 OK  7B pri=1 RPMs<-Engine Control Module : RPM=793
+00> [99494] #1103 OK  7B pri=1 RPMs<-Engine Control Module : RPM=770
+00> [99526] #1104 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [99533] #1105 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [99559] #1106 OK  7B pri=1 RPMs<-Engine Control Module : RPM=770
+00> [99623] #1107 OK  7B pri=1 RPMs<-Engine Control Module : RPM=784
+00> [99688] #1108 OK  7B pri=1 RPMs<-Engine Control Module : RPM=801
+00> [99753] #1109 OK  7B pri=1 RPMs<-Engine Control Module : RPM=812
+00> [99818] #1110 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [99882] #1111 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [99914] #1112 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [99947] #1113 OK  7B pri=1 RPMs<-Engine Control Module : RPM=802
+00> [100012] #1114 OK  7B pri=1 RPMs<-Engine Control Module : RPM=821
+00> [100077] #1115 OK  7B pri=1 RPMs<-Engine Control Module : RPM=821
+00> [100141] #1116 OK  7B pri=1 RPMs<-Engine Control Module : RPM=808
+00> [100206] #1117 OK  7B pri=1 RPMs<-Engine Control Module : RPM=768
+00> [100237] #1118 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [100249] #1119 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [100271] #1120 OK  7B pri=1 RPMs<-Engine Control Module : RPM=766
+00> [100335] #1121 OK  7B pri=1 RPMs<-Engine Control Module : RPM=782
+00> [100400] #1122 OK  7B pri=1 RPMs<-Engine Control Module : RPM=783
+00> [100465] #1123 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [100529] #1124 OK  7B pri=1 RPMs<-Engine Control Module : RPM=794
+00> [100543] #1125 OK  5B pri=3 Engine status<-Instrument Cluster Panel : 68 FF 61 03 E1
+00> [100561] #1126 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [100568] #1127 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [100594] #1128 OK  7B pri=1 RPMs<-Engine Control Module : RPM=805
+00> [100638] #1129 OK  5B pri=3 Engine status<-HUD : 68 FF 62 03 35
+00> [100659] #1130 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [100724] #1131 OK  7B pri=1 RPMs<-Engine Control Module : RPM=786
+00> [100788] #1132 OK  7B pri=1 RPMs<-Engine Control Module : RPM=815
+00> [100853] #1133 OK  7B pri=1 RPMs<-Engine Control Module : RPM=837
+00> [100918] #1134 OK  7B pri=1 RPMs<-Engine Control Module : RPM=816
+00> [100983] #1135 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [101047] #1136 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [101112] #1137 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [101176] #1138 OK  7B pri=1 RPMs<-Engine Control Module : RPM=807
+00> [101223] #1139 OK  5B pri=3 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [101236] #1140 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [101306] #1141 OK  7B pri=1 RPMs<-Engine Control Module : RPM=786
+00> [101371] #1142 OK  7B pri=1 RPMs<-Engine Control Module : RPM=800
+00> [101435] #1143 OK  7B pri=1 RPMs<-Engine Control Module : RPM=822
+00> [101500] #1144 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [101565] #1145 OK  7B pri=1 RPMs<-Engine Control Module : RPM=798
+00> [101596] #1146 OK  5B pri=6 Malfunction Indicator Lamp<-Engine Control Module : MIL=off
+00> [101609] #1147 OK  5B pri=7 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [101629] #1148 OK  7B pri=1 RPMs<-Engine Control Module : RPM=763
+00> [101694] #1149 OK  7B pri=1 RPMs<-Engine Control Module : RPM=779
+00> [101759] #1150 OK  7B pri=1 RPMs<-Engine Control Module : RPM=812
+00> [101824] #1151 OK  7B pri=1 RPMs<-Engine Control Module : RPM=792
+00> [101888] #1152 OK  7B pri=1 RPMs<-Engine Control Module : RPM=780
+00> [101953] #1153 OK  7B pri=1 RPMs<-Engine Control Module : RPM=803
+00> [101984] #1154 OK  5B pri=3 Engine status<-Engine Control Module : 68 FF 10 03 86
+00> [102018] #1155 OK  7B pri=1 RPMs<-Engine Control Module : RPM=808
+00> [102082] #1156 OK  7B pri=1 RPMs<-Engine Control Module : RPM=808
+00> [102147] #1157 OK  7B pri=1 RPMs<-Engine Control Module : RPM=787
+00> [102212] #1158 OK  7B pri=1 RPMs<-Engine Control Module : RPM=786
+00> [102224] #1159 OK  5B pri=6 Security Indicator Lamp<-Instrument Cluster Panel : SIL=off
+00> [102277] #1160 OK  7B pri=1 RPMs<-Engine Control Module : RPM=822
+00> [102341] #1161 OK  7B pri=1 RPMs<-Engine Control Module : RPM=835
+00> [102406] #1162 OK  7B pri=1 RPMs<-Engine Control Module : RPM=796
+(Connection lost)
+
+# Logging stopped @ 30 May 2026 18:12:38

@@ -37,7 +37,14 @@ void __wrap___aeabi_unwind_cpp_pr0()
 void *operator new(size_t n)
 {
   void *const p = stalloc(n);
-  assert(p);
+  if (!p)
+  {
+    /* assert() compiles out under NDEBUG, leaving callers to dereference
+     * a nullptr return. Trap unconditionally so OOM is observable in
+     * release builds (Fixes #46). */
+    PrintF("FATAL: operator new(%u) OOM\r\n", (unsigned)n);
+    NVIC_SystemReset();
+  }
   return p;
 }
 

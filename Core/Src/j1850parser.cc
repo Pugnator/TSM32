@@ -150,6 +150,10 @@ namespace J1850VPW
       return false;
     }
 
+    // Mark ECM as present the first time we see a valid 3-byte-header frame from 0x10.
+    if (headerSize == 3 && payloadJ1850[2] == 0x10)
+      ecmSeen = true;
+
     auto destination = convertByteToSourceType(payloadJ1850[1]);
 
     if (destination == RPM)
@@ -223,7 +227,11 @@ namespace J1850VPW
         const uint8_t subfn = payloadJ1850[headerSize];
         if ((subfn & 0x7F) == 0x0A && j1850RXctr >= 7)
         {
-          uint16_t ticks = (uint16_t)(payloadJ1850[headerSize + 1] << 8) | payloadJ1850[headerSize + 2];
+          /* ticks must be 32-bit; subfn bit7 indicates a 65536-tick wrap.
+           * The previous uint16_t accumulator made the +=65536 a no-op
+           * and silently dropped 2.6 L per wrap event (Fixes #44). */
+          uint32_t ticks = ((uint32_t)payloadJ1850[headerSize + 1] << 8)
+                         |  (uint32_t)payloadJ1850[headerSize + 2];
           if (subfn & 0x80)
             ticks += 65536u; // wraparound
           fuel_ticks += ticks;
@@ -275,7 +283,8 @@ namespace J1850VPW
         if (realCount == 0)
           return true; // all P0000 padding — suppress entirely
         // Per HarleyDroid: src=0x10 (ECM) = historic DTCs, src=0x40 (BCM) = current DTCs
-        const char *dtcType = (src == 0x10) ? "historic" : (src == 0x40) ? "current" : "stored";
+        [[maybe_unused]] const char *dtcType =
+            (src == 0x10) ? "historic" : (src == 0x40) ? "current" : "stored";
         TRACE_LOG("DTC response from 0x%02X [%s] (%u code%s):\r\n",
                (unsigned)src, dtcType, (unsigned)realCount, realCount == 1 ? "" : "s");
         static const char typeChar[] = {'P', 'C', 'B', 'U'};
@@ -293,6 +302,15 @@ namespace J1850VPW
           code[3] = hex[(lo >> 4) & 0x0F];
           code[4] = hex[lo & 0x0F];
           code[5] = '\0';
+          // P1009 (hi=0x10,lo=0x09) = Incorrect Password
+          // P1010 (hi=0x10,lo=0x10) = Missing Password
+          if (hi == 0x10 && (lo == 0x09 || lo == 0x10))
+            passwordDtcSeen = true;
+          // Track per-module DTC presence for targeted clears.
+          if (src == 0x40)
+            bcmDtcSeen = true;
+          else if (src == 0x61)
+            ipcDtcSeen = true;
           const char *desc = dtcLookup(code);
           if (desc)
             TRACE_LOG("  %s: %s\r\n", code, desc);
@@ -320,6 +338,8 @@ namespace J1850VPW
     const uint8_t hs      = h.ctx.type ? 1 : 3;
 
     // Only log frames addressed to TSM (0x40), SIL (0x89), or SECURITY (0x93).
+    // When J1850_BUS_TRACE is enabled, log every frame regardless of destination.
+#if !J1850_BUS_TRACE
     if (hs != 3)
       return;
     {
@@ -327,16 +347,17 @@ namespace J1850VPW
       if (dst != 0x40 && dst != 0x89 && dst != 0x93)
         return;
     }
+#endif
 
     // Print the frame header prefix (no newline yet).
     if (hs == 3)
-      TRACE_LOG("[%lu] #%lu %s %uB pri=%u %s<-%s : ",
+      DEBUG_LOG("[%lu] #%lu %s %uB pri=%u %s<-%s : ",
              (unsigned long)HAL_GetTick(), (unsigned long)frameCounter,
              crcOk ? "OK " : "BAD", (unsigned)n, (unsigned)h.ctx.priority,
              sourceToStr(static_cast<sourceType>(payloadJ1850[1])),
              sourceToStr(static_cast<sourceType>(payloadJ1850[2])));
     else
-      TRACE_LOG("[%lu] #%lu %s %uB pri=%u 1B-hdr : ",
+      DEBUG_LOG("[%lu] #%lu %s %uB pri=%u 1B-hdr : ",
              (unsigned long)HAL_GetTick(), (unsigned long)frameCounter,
              crcOk ? "OK " : "BAD", (unsigned)n, (unsigned)h.ctx.priority);
 
@@ -355,7 +376,7 @@ namespace J1850VPW
       case RPM:
         if (dlen >= 3)
         {
-          TRACE_LOG("RPM=%u", (unsigned)(((uint16_t)d[1] << 8 | d[2]) / 4));
+          DEBUG_LOG("RPM=%u", (unsigned)(((uint16_t)d[1] << 8 | d[2]) / 4));
           known = true;
         }
         break;
@@ -363,7 +384,7 @@ namespace J1850VPW
       case SPEED:
         if (dlen >= 3)
         {
-          PrintF("Speed=%u km/h", (unsigned)(((uint16_t)d[1] << 8 | d[2]) / 128));
+          DEBUG_LOG("Speed=%u km/h", (unsigned)(((uint16_t)d[1] << 8 | d[2]) / 128));
           known = true;
         }
         break;
@@ -371,7 +392,7 @@ namespace J1850VPW
       case MIL:
         if (dlen >= 1)
         {
-          PrintF("MIL=%s", (d[0] & 0x80) ? "ON" : "off");
+          DEBUG_LOG("MIL=%s", (d[0] & 0x80) ? "ON" : "off");
           known = true;
         }
         break;
@@ -379,7 +400,7 @@ namespace J1850VPW
       case SIL:
         if (dlen >= 1)
         {
-          PrintF("SIL=%s", (d[0] & 0x80) ? "ON (fault/armed)" : "off");
+          DEBUG_LOG("SIL=%s", (d[0] & 0x80) ? "ON (fault/armed)" : "off");
           known = true;
         }
         break;
@@ -387,8 +408,8 @@ namespace J1850VPW
       case BLINKER:
         if (dlen >= 2 && d[0] == 0x39)
         {
-          static const char *const sigN[] = {"off", "left", "right", "both"};
-          PrintF("Turn=%s", sigN[d[1] & 0x03]);
+          [[maybe_unused]] static const char *const sigN[] = {"off", "left", "right", "both"};
+          DEBUG_LOG("Turn=%s", sigN[d[1] & 0x03]);
           known = true;
         }
         break;
@@ -397,7 +418,7 @@ namespace J1850VPW
         if (src == 0x40 && dlen >= 1)
         {
           // 48 3b 40 xx : bit7=neutral+clutch
-          PrintF("%s clutch=%s",
+          DEBUG_LOG("%s clutch=%s",
                  (d[0] & 0x80) ? "neutral" : "engaged",
                  (d[0] & 0x80) ? "in" : "out");
           known = true;
@@ -407,7 +428,7 @@ namespace J1850VPW
           // a8 3b 10 03 xx : bitmask 1,3,7,15,31,63 = gears 1-6
           uint8_t tmp = d[1]; int8_t g = 0;
           while (tmp) { tmp >>= 1; g++; }
-          PrintF("Gear=%d", (int)g);
+          DEBUG_LOG("Gear=%d", (int)g);
           known = true;
         }
         break;
@@ -415,7 +436,7 @@ namespace J1850VPW
       case TEMP:
         if (dlen >= 2 && d[0] == 0x10)
         {
-          PrintF("Temp=%uF / %dC",
+          DEBUG_LOG("Temp=%uF / %dC",
                  (unsigned)d[1], ((int)d[1] - 32) * 5 / 9);
           known = true;
         }
@@ -424,13 +445,13 @@ namespace J1850VPW
       case FUEL:
         if (src == 0x10 && dlen >= 3 && (d[0] & 0x7F) == 0x0A)
         {
-          PrintF("Fuel ticks=%u",
+          DEBUG_LOG("Fuel ticks=%u",
                  (unsigned)(((uint16_t)d[1] << 8) | d[2]));
           known = true;
         }
         else if (src == 0x61 && dlen >= 2 && d[0] == 0x12)
         {
-          PrintF("Fuel gauge=%u/15", (unsigned)(d[1] & 0x0F));
+          DEBUG_LOG("Fuel gauge=%u/15", (unsigned)(d[1] & 0x0F));
           known = true;
         }
         break;
@@ -438,7 +459,7 @@ namespace J1850VPW
       case ODO:
         if (dlen >= 3)
         {
-          PrintF("Odo=%u ticks",
+          DEBUG_LOG("Odo=%u ticks",
                  (unsigned)(((uint16_t)d[1] << 8) | d[2]));
           known = true;
         }
@@ -448,7 +469,7 @@ namespace J1850VPW
         // KWP2000 DTC positive response (service 0x59)
         if (dlen >= 1 && d[0] == 0x59)
         {
-          PrintF("DTC reply src=0x%02X", (unsigned)src);
+          DEBUG_LOG("DTC reply src=0x%02X", (unsigned)src);
           known = true;
         }
         break;
@@ -458,15 +479,15 @@ namespace J1850VPW
     if (!known)
     {
       // Raw hex dump for unrecognised frames.
-      static const char H[] = "0123456789ABCDEF";
+      [[maybe_unused]] static const char H[] = "0123456789ABCDEF";
       for (uint8_t i = 0; i < n; ++i)
       {
-        TRACE_LOG("%c%c", H[payloadJ1850[i] >> 4], H[payloadJ1850[i] & 0xF]);
-        if (i + 1 < n) TRACE_LOG(" ");
+        DEBUG_LOG("%c%c", H[payloadJ1850[i] >> 4], H[payloadJ1850[i] & 0xF]);
+        if (i + 1 < n) DEBUG_LOG(" ");
       }
     }
 
-    TRACE_LOG("\r\n");
+    DEBUG_LOG("\r\n");
   }
 
   const char *sourceToStr(sourceType type)
