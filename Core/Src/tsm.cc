@@ -145,6 +145,62 @@ extern "C"
 
       Engine::handler();
 
+      // TSM network-presence heartbeat: send "29 FE 40 01 <crc>" every 2 s
+      // once the bus is active.  Without this the IPC logs U1255 "Serial Data
+      // Error/Missing Message" because it expects to hear from address 0x40
+      // (TSM) at least once every ~3 s, and lights the SIL.
+      {
+        static uint32_t hbLastTick = 0;
+        static bool     hbStarted  = false;
+        const uint32_t  now_hb     = HAL_GetTick();
+        if (!hbStarted && frameCounter >= 5)
+        {
+          hbStarted  = true;
+          hbLastTick = now_hb;
+        }
+        if (hbStarted && (now_hb - hbLastTick) >= 2000u)
+        {
+          static const uint8_t hb[] = {0x29, 0xFE, 0x40, 0x01};
+          cliJ1850TxRaw(hb, sizeof(hb));
+          hbLastTick = HAL_GetTick();
+        }
+      }
+
+      // Periodic IPC DTC clear — DISABLED: confirmed unnecessary after bike testing.
+      //
+      // The IPC sets U1255 ("Serial Data Error / Missing Message") only when
+      // address 0x40 (TSM) stops sending its network-presence heartbeat
+      // (29 FE 40 xx) for more than ~3 s.  The heartbeat below fires every 2 s
+      // and fully prevents U1255 from ever being stored, so this fallback clear
+      // serves no purpose and needlessly writes to IPC flash every 10 s.
+      //
+      // Validation: harley_new.log shows SIL=ON exactly once for 63 ms at boot
+      // (ECM lamp self-test, not a fault), then SIL=off for the entire 140 s
+      // session — zero occurrences of the ~600 ms periodic SIL=ON bursts seen
+      // in j1850_live_capture.log (captured without the heartbeat).
+      //
+      // {
+      //   static uint32_t silClearLastTick = 0;
+      //   static bool     silClearArmed    = false;
+      //   static uint32_t busActiveSince   = 0;
+      //   const uint32_t  now_sc           = HAL_GetTick();
+      //   if (frameCounter >= 5 && busActiveSince == 0)
+      //     busActiveSince = now_sc;
+      //   if (!silClearArmed && busActiveSince != 0 &&
+      //       (now_sc - busActiveSince) >= 30000u)
+      //   {
+      //     silClearArmed    = true;
+      //     silClearLastTick = now_sc;
+      //   }
+      //   if (silClearArmed && (now_sc - silClearLastTick) >= 10000u)
+      //   {
+      //     const uint8_t clrIpc[4] = {0x6C, 0x61, 0xF1, 0x14};
+      //     PrintF("[%lu] Periodic SIL clear -> IPC\r\n", (unsigned long)now_sc);
+      //     cliJ1850TxRaw(clrIpc, sizeof(clrIpc));
+      //     silClearLastTick = HAL_GetTick();
+      //   }
+      // }
+
       // Auto-DTC poll: once the bus is active (>=5 frames), query ECM, BCM
       // and IPC in sequence with 200 ms gaps, then on the first cycle send a
       // one-shot clear to ECM (clears P1010 / security lamp), then repeat
