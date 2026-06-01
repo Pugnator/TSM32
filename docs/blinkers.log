@@ -1,0 +1,490 @@
+# SEGGER J-Link RTT Viewer V9.10 Terminal Log File
+# Compiled: 11:38:17 on Jan 14 2026
+# Logging started @ 31 May 2026 23:41:57
+00> Waiting00> [58549] Right switch activated.
+00> [58659] 110 since the click [58549], L = 1, R = 0.
+00> RT was pressed for 110.
+00> Right Side toggle
+00> Left side off
+00> [58769] 110 since the click [58659], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [58879] 220 since the click [58659], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [58989] 330 since the click [58659], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [59099] 440 since the click [58659], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [59209] 550 since the click [58659], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [59319] 660 since the click [58659], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [59429] 770 since the click [58659], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [59539] 880 since the click [58659], L = 1, R = 1.
+00> Waiting for a long press [7].
+00> [59649] 990 since the click [58659], L = 1, R = 1.
+00> Waiting for a long press [8].
+00> [59759] 1100 since the click [58659], L = 1, R = 1.
+00> Check for a long press.
+00> Short press.
+00> [59962] Right switch activated.
+00> [60072] 110 since the click [59962], L = 1, R = 0.
+00> RT was pressed for 110.
+00> Right Side toggle
+00> Right side off
+00> [61246] Left switch activated.
+00> [61356] 110 since the click [61246], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [61466] 110 since the click [61356], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [61576] 220 since the click [61356], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [61686] 330 since the click [61356], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [61796] 440 since the click [61356], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [61906] 550 since the click [61356], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [62016] 660 since the click [61356], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [62126] 770 since the click [61356], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [62236] 880 since the click [61356], L = 1, R = 1.
+00> Waiting for a long press [7].
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [63530] Left switch activated.
+00> [63640] 110 since the click [63530], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [63751] 110 since the click [63641], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [63861] 220 since the click [63641], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [63971] 330 since the click [63641], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [64081] 440 since the click [63641], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [64191] 550 since the click [63641], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [64301] 660 since the click [63641], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [64411] 770 since the click [63641], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [64521] 880 since the click [63641], L = 1, R = 1.
+00> Waiting for a long press [7].
+00> [64631] 990 since the click [63641], L = 1, R = 1.
+00> Waiting for a long press [8].
+00> [64741] 1100 since the click [63641], L = 1, R = 1.
+00> Check for a long press.
+00> Short press.
+00> [64747] Left switch activated.
+00> [64857] 110 since the click [64747], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+00> [65485] Left switch activated.
+00> [65595] 110 since the click [65485], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [65706] 110 since the click [65596], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [65816] 220 since the click [65596], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [65926] 330 since the click [65596], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [66036] 440 since the click [65596], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [66146] 550 since the click [65596], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [66256] 660 since the click [65596], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [66366] 770 since the click [65596], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [66476] 880 since the click [65596], L = 1, R = 1.
+00> Waiting for a long press [7].
+00> [66586] 990 since the click [65596], L = 1, R = 1.
+00> Waiting for a long press [8].
+00> [66696] 1100 since the click [65596], L = 1, R = 1.
+00> Check for a long press.
+00> Short press.
+00> Blink ON
+00> Blink OFF
+00> [67563] Left switch activated.
+00> [67673] 110 since the click [67563], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+00> [68389] Left switch activated.
+00> [68499] 110 since the click [68389], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [68609] 110 since the click [68499], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [68719] 220 since the click [68499], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [68829] 330 since the click [68499], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [68939] 440 since the click [68499], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [69049] 550 since the click [68499], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [69159] 660 since the click [68499], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [70208] Left switch activated.
+00> [70318] 110 since the click [70208], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [70428] 110 since the click [70318], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [70538] 220 since the click [70318], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [70648] 330 since the click [70318], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [70758] 440 since the click [70318], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [70868] 550 since the click [70318], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [70978] 660 since the click [70318], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [71088] 770 since the click [70318], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [71198] 880 since the click [70318], L = 1, R = 1.
+00> Waiting for a long press [7].
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [71396] Left switch activated.
+00> [71506] 110 since the click [71396], L = 1, R = 1.
+00> LT short press (released before timer) for 110ms.
+00> Left Side toggle
+00> Right side off
+00> Blink ON
+00> Blink OFF
+00> [72502] Left switch activated.
+00> [72612] 110 since the click [72502], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+00> [73405] Left switch activated.
+00> [73515] 110 since the click [73405], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [73625] 110 since the click [73515], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [73735] 220 since the click [73515], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [73845] 330 since the click [73515], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [73955] 440 since the click [73515], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [74065] 550 since the click [73515], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [74175] 660 since the click [73515], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [74285] 770 since the click [73515], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [74395] 880 since the click [73515], L = 1, R = 1.
+00> Waiting for a long press [7].
+00> [74505] 990 since the click [73515], L = 1, R = 1.
+00> Waiting for a long press [8].
+00> [74615] 1100 since the click [73515], L = 1, R = 1.
+00> Check for a long press.
+00> Short press.
+00> Blink ON
+00> Blink OFF
+00> [75419] Left switch activated.
+00> [75529] 110 since the click [75419], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+00> [76025] Left switch activated.
+00> [76135] 110 since the click [76025], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [76245] 110 since the click [76135], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [76355] 220 since the click [76135], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [76465] 330 since the click [76135], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [77378] Left switch activated.
+00> [77488] 110 since the click [77378], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [77598] 110 since the click [77488], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [77739] Left switch activated.
+00> [77849] 110 since the click [77739], L = 1, R = 1.
+00> LT short press (released before timer) for 110ms.
+00> Left Side toggle
+00> Right side off
+00> Blink ON
+00> [78430] Left switch activated.
+00> Blink OFF
+00> [78540] 110 since the click [78430], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+00> [79409] Left switch activated.
+00> [79519] 110 since the click [79409], L = 1, R = 1.
+00> LT short press (released before timer) for 110ms.
+00> Left Side toggle
+00> Right side off
+00> [79651] Left switch activated.
+00> [79761] 110 since the click [79651], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+00> [80705] Left switch activated.
+00> [80815] 110 since the click [80705], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [80925] 110 since the click [80815], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [81035] 220 since the click [80815], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [81145] 330 since the click [80815], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [81255] 440 since the click [80815], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [81365] 550 since the click [80815], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [81475] 660 since the click [80815], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [81585] 770 since the click [80815], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [81695] 880 since the click [80815], L = 1, R = 1.
+00> Waiting for a long press [7].
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [82720] Right switch activated.
+00> [82829] 109 since the click [82720], L = 1, R = 0.
+00> RT was pressed for 109.
+00> Right Side toggle
+00> Left side off
+00> [82940] 110 since the click [82830], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [83050] 220 since the click [82830], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [83160] 330 since the click [82830], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [83270] 440 since the click [82830], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [83380] 550 since the click [82830], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [83490] 660 since the click [82830], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [83600] 770 since the click [82830], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [83668] Left switch activated.
+00> [83778] 110 since the click [83668], L = 0, R = 1.
+00> Waiting for a long press [7].
+00> [83888] 220 since the click [83668], L = 1, R = 1.
+00> Waiting for a long press [8].
+00> [83998] 330 since the click [83668], L = 1, R = 1.
+00> Check for a long press.
+00> Short press.
+00> [84273] Left switch activated.
+00> [84383] 110 since the click [84273], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [84493] 110 since the click [84383], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [84603] 220 since the click [84383], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [84713] 330 since the click [84383], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [84823] 440 since the click [84383], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [84933] 550 since the click [84383], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [85043] 660 since the click [84383], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [85153] 770 since the click [84383], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [85263] 880 since the click [84383], L = 1, R = 1.
+00> Waiting for a long press [7].
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [85720] Left switch activated.
+00> [85830] 110 since the click [85720], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [85941] 110 since the click [85831], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [86051] 220 since the click [85831], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [86161] 330 since the click [85831], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [86271] 440 since the click [85831], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> [86381] 550 since the click [85831], L = 1, R = 1.
+00> Waiting for a long press [4].
+00> [86491] 660 since the click [85831], L = 1, R = 1.
+00> Waiting for a long press [5].
+00> Blink OFF
+00> [86601] 770 since the click [85831], L = 1, R = 1.
+00> Waiting for a long press [6].
+00> [86711] 880 since the click [85831], L = 1, R = 1.
+00> Waiting for a long press [7].
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [87343] Left switch activated.
+00> [87453] 110 since the click [87343], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [87564] 110 since the click [87454], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [88613] Left switch activated.
+00> [88723] 110 since the click [88613], L = 1, R = 1.
+00> LT short press (released before timer) for 110ms.
+00> Left Side toggle
+00> Right side off
+00> [88847] Left switch activated.
+00> [88957] 110 since the click [88847], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+00> [89629] Left switch activated.
+00> [89739] 110 since the click [89629], L = 1, R = 1.
+00> LT short press (released before timer) for 110ms.
+00> Left Side toggle
+00> Right side off
+00> Blink ON
+00> Blink OFF
+00> [90437] Left switch activated.
+00> [90547] 110 since the click [90437], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+00> [91199] Left switch activated.
+00> [91309] 110 since the click [91199], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> [91419] 110 since the click [91309], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [91529] 220 since the click [91309], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [91639] 330 since the click [91309], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> [91749] 440 since the click [91309], L = 1, R = 1.
+00> Waiting for a long press [3].
+00> Blink ON
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> Memory pool size: 4096
+00> Device ID 05d6ff393735424257138917
+00> TSM 31/05/2026, 22:46 v0.9 (g7be4bac.45) started
+00> Starter is enabled.
+00> Left side off
+00> Right side off
+00> IMU is not online
+00> Failed to setup an IMU.
+00> MEMS: MPU9250 I2C init FAILED - check bus / wiring
+00> ADC startup: V = 10.01 (raw=2425)
+00> [1442] Left switch activated.
+00> [1552] 110 since the click [1442], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Right side off
+00> Tracking started at 1552
+00> [1662] 110 since the click [1552], L = 1, R = 1.
+00> Waiting for a long press [0].
+00> [1772] 220 since the click [1552], L = 1, R = 1.
+00> Waiting for a long press [1].
+00> [1882] 330 since the click [1552], L = 1, R = 1.
+00> Waiting for a long press [2].
+00> LT reversal during long-press window
+00> Left Side toggle
+00> Left side off
+00> [2669] Left switch activated.
+00> [2779] 110 since the click [2669], L = 1, R = 1.
+00> LT short press (released before timer) for 110ms.
+00> Left Side toggle
+00> Right side off
+00> [2869] Left switch activated.
+00> [2979] 110 since the click [2869], L = 1, R = 1.
+00> LT short press (released before timer) for 110ms.
+00> Left Side toggle
+00> Left side off
+00> [3712] Left switch activated.
+00> [3821] 109 since the click [3712], L = 1, R = 1.
+00> LT short press (released before timer) for 109ms.
+00> Left Side toggle
+00> Right side off
+00> Blink ON
+00> Blink OFF
+00> Blink ON
+00> Blink OFF
+00> [6239] Left switch activated.
+00> [6349] 110 since the click [6239], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+00> [6382] Left switch activated.
+00> [6492] 110 since the click [6382], L = 1, R = 1.
+00> LT short press (released before timer) for 110ms.
+00> Left Side toggle
+00> Right side off
+00> Blink ON
+00> Blink OFF
+00> [7187] Left switch activated.
+00> [7297] 110 since the click [7187], L = 0, R = 1.
+00> LT was pressed for 110.
+00> Left Side toggle
+00> Left side off
+
+# Logging stopped @ 31 May 2026 23:42:53

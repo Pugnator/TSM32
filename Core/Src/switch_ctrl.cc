@@ -18,8 +18,9 @@ extern "C"
   static volatile bool rightButtonEvent = false;
 
   /** \brief We're waiting for a long press */
-  static volatile bool waitLongPress = false;
-
+  static volatile bool waitLongPress = false;  /* Which button started the waitLongPress window (true=left, false=right).
+   * Used to detect a same-side second press that should reverse the toggle. */
+  static volatile bool leftInitiatedLongPress = false;
   /** \brief Number of timer events passed */
   static volatile uint32_t timerHitCounter = 0;
   /** \brief How many timer events passed with a button pressed */
@@ -121,6 +122,22 @@ extern "C"
       leftButtonRawEvent = false;
       if (!leftButtonEvent)
       {
+        /* Second press of the same side during the long-press window.
+         * Only accept as a deliberate reversal if at least one timer tick
+         * (110 ms) has elapsed since entering the window — this rejects
+         * mechanical bounces from the initial press which fire within
+         * microseconds (longPressCounter would still be 0). */
+        if (waitLongPress && leftInitiatedLongPress)
+        {
+          if (longPressCounter >= 1)
+          {
+            DEBUG_LOG("LT reversal during long-press window\r\n");
+            leftSideToggle();
+            resetEvent();
+          }
+          /* else: too early — mechanical bounce, discard silently. */
+          return;
+        }
         if (wasIdle)
         {
           startBlinkerTimer();
@@ -135,6 +152,19 @@ extern "C"
       rightButtonRawEvent = false;
       if (!rightButtonEvent)
       {
+        /* Second press of the same side during the long-press window.
+         * Same bounce-rejection guard as the left side above. */
+        if (waitLongPress && !leftInitiatedLongPress)
+        {
+          if (longPressCounter >= 1)
+          {
+            DEBUG_LOG("RT reversal during long-press window\r\n");
+            rightSideToggle();
+            resetEvent();
+          }
+          /* else: too early — mechanical bounce, discard silently. */
+          return;
+        }
         if (wasIdle)
         {
           startBlinkerTimer();
@@ -196,11 +226,21 @@ extern "C"
       return;
     }
 
-    /* if both buttons are pressed */
+    /* if both buttons are pressed (held at tick) */
     if (LEFT_BUTTON == PRESSED &&
         RIGHT_BUTTON == PRESSED)
     {
       DEBUG_LOG("Both switches were ON for %ums.\r\n", pressDuration);
+      hazardToggle();
+      resetEvent();
+      return;
+    }
+    /* Both buttons were pressed and released before the tick: treat the
+     * same as holding them — toggle hazard.  This handles the common case
+     * where the user taps both buttons quickly (<110 ms). */
+    else if (leftButtonEvent && rightButtonEvent)
+    {
+      DEBUG_LOG("Both switches short press for %ums.\r\n", pressDuration);
       hazardToggle();
       resetEvent();
       return;
@@ -213,8 +253,20 @@ extern "C"
       DEBUG_LOG("LT was pressed for %u.\r\n", pressDuration);
       leftButtonEvent = false;
       leftSideToggle();
-      waitLongPress = true;
-      startBlinkerTimer();
+      /* Only enter the long-press window when the blinker was just turned ON.
+       * If it was turned OFF (leftEnabled now false) there is nothing to
+       * classify as long/short, and staying in waitLongPress would cause a
+       * spurious overtakeMode=true after the 1100 ms window expires. */
+      if (leftEnabled)
+      {
+        waitLongPress = true;
+        leftInitiatedLongPress = true;
+        startBlinkerTimer();
+      }
+      else
+      {
+        resetEvent();
+      }
       return;
     }
     /* if right button is still pressed */
@@ -225,8 +277,16 @@ extern "C"
       DEBUG_LOG("RT was pressed for %u.\r\n", pressDuration);
       rightButtonEvent = false;
       rightSideToggle();
-      waitLongPress = true;
-      startBlinkerTimer();
+      if (rightEnabled)
+      {
+        waitLongPress = true;
+        leftInitiatedLongPress = false;
+        startBlinkerTimer();
+      }
+      else
+      {
+        resetEvent();
+      }
       return;
     }
     /* left button was pressed and released before the timer fired */

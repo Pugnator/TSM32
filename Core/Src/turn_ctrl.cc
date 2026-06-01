@@ -19,6 +19,10 @@ extern "C"
   uint8_t volatile currentSidemarkBrightness = 0;
 
   volatile uint32_t blinkCounter = 0;
+  /* Set by leftSideOff()/rightSideOff() to force blinkerDoBlink() to restart
+   * from the beginning of the ON ramp on the next call, so turning the blinker
+   * off mid-cycle and then back on always starts a fresh cycle. */
+  static volatile bool blinkerResetPending = false;
 
   void leftSideToggle()
   {
@@ -65,6 +69,7 @@ extern "C"
     DEBUG_LOG("Left side off\r\n");
     leftEnabled = false;
     LEFT_PWM_OUT = currentSidemarkBrightness;
+    blinkerResetPending = true;
   }
 
   void rightSideOff()
@@ -72,6 +77,7 @@ extern "C"
     DEBUG_LOG("Right side off\r\n");
     rightEnabled = false;
     RIGHT_PWM_OUT = currentSidemarkBrightness;
+    blinkerResetPending = true;
   }
 
   void hazardToggle()
@@ -97,9 +103,10 @@ extern "C"
     static bool pauseStage = false;
     static bool initialized = false;
 
-    if (!initialized)
+    if (!initialized || blinkerResetPending)
     {
       initialized = true;
+      blinkerResetPending = false;
       startTick = HAL_GetTick();
       period = 0;
       turnOffStage = false;
