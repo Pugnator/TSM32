@@ -119,7 +119,9 @@ void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 71;
+  /* 64 MHz timer clock / (63+1) = 1 MHz -> exactly 1 us per capture tick,
+   * matching the microsecond RX window constants in j1850.h (Fixes #61). */
+  htim2.Init.Prescaler = 63;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 65535;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -171,9 +173,12 @@ void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 95;
+  /* 64 MHz / (63+1) = 1 us per tick, (247+1) ticks = 248 us one-shot:
+   * J1850 EOF detect, mid-band between EOF min (240 us) and IFS (280 us)
+   * (Fixes #61). */
+  htim3.Init.Prescaler = 63;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 185;
+  htim3.Init.Period = 247;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
