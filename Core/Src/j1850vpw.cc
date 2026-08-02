@@ -67,6 +67,34 @@ namespace J1850VPW
     HAL_TIM_Base_Start_IT(&J1850_EOF_TIMER);
   }
 
+  /* J1850 VPW is a CSMA bus: wait until the RX line has been passive for
+   * at least one IFS before starting our SOF, so we do not stomp a frame
+   * another node is transmitting (Fixes #62). Returns false if the bus
+   * never goes quiet (line stuck active / heavy traffic) within ~20 ms. */
+  static bool waitBusIdle()
+  {
+    const uint32_t ticksPerUs   = SystemCoreClock / 1000000;
+    const uint32_t idleTicks    = TX_IFS * ticksPerUs;
+    const uint32_t timeoutTicks = 20000u * ticksPerUs;
+    const uint32_t waitStart    = DWT->CYCCNT;
+    uint32_t idleStart          = DWT->CYCCNT;
+    for (;;)
+    {
+      if (HAL_GPIO_ReadPin(J1850RX_GPIO_Port, J1850RX_Pin) == GPIO_PIN_SET)
+      {
+        idleStart = DWT->CYCCNT; // bus active: restart the idle window
+      }
+      else if (DWT->CYCCNT - idleStart >= idleTicks)
+      {
+        return true;
+      }
+      if (DWT->CYCCNT - waitStart >= timeoutTicks)
+      {
+        return false;
+      }
+    }
+  }
+
   J1850error sendFrame(const uint8_t *data, uint8_t size)
   {
     if (!size || size > 11)
@@ -74,6 +102,10 @@ namespace J1850VPW
       return J1850error::IncorrectFrame;
     }
     uint8_t crc = crc1850(data, size);
+    if (!waitBusIdle())
+    {
+      return J1850error::LostArbitration;
+    }
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
     J1850delayUS(TX_SOF);
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
@@ -150,6 +182,12 @@ extern "C"
       frameCounter++;
       TRACE_LOG("Start Of Frame, %uus\r\n", pulse);
       messageStarted = true;
+      /* SOF begins a fresh frame: drop any stale partial-frame state left
+       * behind by an EOD/EOF/IFS-classified gap or a glitch pulse, so old
+       * bytes cannot corrupt this frame (Fixes #63). */
+      bitCounter = 0;
+      j1850RXctr = 0;
+      memset(payloadJ1850, 0, sizeof(payloadJ1850));
       fallEdgeTime = 0;
       __HAL_TIM_SET_COUNTER(&J1850_IC_INSTANCE, 0);
       return;
@@ -188,6 +226,19 @@ extern "C"
   If the pulse duration falls within the range for a "short" pulse, a 0 is added to the current byte.
   The byteCounter and bitCounter variables are used to keep track of the current position in the payloadJ1850 buffer.
   */
+  /* Terminate the in-progress frame at an EOD/EOF/IFS gap. The EOF timer
+   * was already stopped for this edge, so a byte-aligned frame must be
+   * delivered here or it would be silently lost when no further falling
+   * edge (e.g. no IFR) ever restarts the timer (Fixes #63). */
+  static inline void endFrameAtGap(void)
+  {
+    messageStarted = false;
+    if (j1850RXctr > 0 && bitCounter == 0)
+    {
+      messageCollected = true;
+    }
+  }
+
   static inline void onRisingEdge(TIM_HandleTypeDef *htim)
   {
     riseEdgeTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
@@ -208,17 +259,17 @@ extern "C"
     if (pulse > RX_IFS_MIN)
     {
       TRACE_LOG("\r\nIFS, %uus\r\n", pulse);
-      messageStarted = false;
+      endFrameAtGap();
     }
     else if (pulse > RX_EOF_MIN)
     {
       TRACE_LOG("\r\nEOF, %uus\r\n", pulse);
-      messageStarted = false;
+      endFrameAtGap();
     }
     else if (RX_EOD_MAX >= pulse && pulse > RX_EOD_MIN)
     {
       TRACE_LOG("\r\nEOD, %uus\r\n", pulse);
-      messageStarted = false;
+      endFrameAtGap();
     }
     else if (RX_LONG_MAX >= pulse && pulse > RX_LONG_MIN)
     {

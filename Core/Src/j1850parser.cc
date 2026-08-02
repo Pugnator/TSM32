@@ -128,7 +128,9 @@ namespace J1850VPW
   bool parseFrame()
   {
     static int32_t odolast = 0;
-    if (j1850RXctr == 0 || j1850RXctr > 11)
+    static bool odoSeen = false;
+    /* SAE J1850 frames are at most 12 bytes including CRC (Fixes #64). */
+    if (j1850RXctr == 0 || j1850RXctr > 12)
     {
       WARN_LOG("Empty/corrupted frame [=%u]\r\n", j1850RXctr);
       return false;
@@ -155,17 +157,27 @@ namespace J1850VPW
 
     auto destination = convertByteToSourceType(payloadJ1850[1]);
 
+    /* Every decode branch below must check j1850RXctr before indexing:
+     * the buffer is zero-filled, so a short (but CRC-valid) frame would
+     * otherwise silently decode zeros into rpms/kph, which feed the
+     * starter-lock FSM (Fixes #64). */
     if (destination == RPM)
     {
-      rpms = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
-      rpms /= 4;
+      if (j1850RXctr >= 7)
+      {
+        rpms = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
+        rpms /= 4;
+      }
     }
     else if (destination == SPEED)
     {
-      kph = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
-      kph /= 128;
+      if (j1850RXctr >= 7)
+      {
+        kph = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
+        kph /= 128;
+      }
     }
-    else if (destination == MIL)
+    else if (destination == MIL && j1850RXctr >= 5)
     {
       // State byte bit7: 1 = lamp ON, 0 = lamp OFF
       const bool newMil = (payloadJ1850[headerSize] & 0x80) != 0;
@@ -176,7 +188,7 @@ namespace J1850VPW
                (unsigned long)HAL_GetTick(), mil ? "ON" : "off");
       }
     }
-    else if (destination == SIL)
+    else if (destination == SIL && j1850RXctr >= 5)
     {
       const bool newSil = (payloadJ1850[headerSize] & 0x80) != 0;
       if (newSil != sil)
@@ -189,12 +201,12 @@ namespace J1850VPW
     else if (destination == BLINKER)
     {
       // 48 da 40 39 xx : turn signals, xx = 1 left, 2 right, 3 both, 0 off
-      if (payloadJ1850[headerSize] == 0x39)
+      if (payloadJ1850[headerSize] == 0x39 && j1850RXctr >= 6)
         turn_signals = payloadJ1850[headerSize + 1] & 0x03;
     }
     else if (destination == GEAR)
     {
-      if (payloadJ1850[2] == 0x40)
+      if (payloadJ1850[2] == 0x40 && j1850RXctr >= 5)
       {
         // 48 3b 40 xx : neutral=bit7, clutch=bit7 (per HarleyDroid 0xA0=neutral, 0x20=not neutral)
         in_neutral     = (payloadJ1850[headerSize] & 0x80) != 0;
@@ -245,20 +257,33 @@ namespace J1850VPW
         }
       }
     }
-    else if (destination == ODO)
+    else if (destination == ODO && j1850RXctr >= 7)
     {
       // a8 69 10 06/86 xx xx : odometer ticks (0.4 m each; bit7 of subfn = wraparound)
       uint16_t speedSensorTicks = (uint16_t)(payloadJ1850[headerSize + 1] << 8) | payloadJ1850[headerSize + 2];
-      int32_t delta = speedSensorTicks - odolast;
-      if (delta < 0)
-        delta += 65536;
-      trip += (uint32_t)delta;
-      odolast = speedSensorTicks;
+      if (!odoSeen)
+      {
+        /* First sample only seeds the reference: the counter is the ECM's
+         * free-running value, not distance travelled since boot (Fixes #65). */
+        odoSeen = true;
+        odolast = speedSensorTicks;
+      }
+      else
+      {
+        int32_t delta = speedSensorTicks - odolast;
+        if (delta < 0)
+          delta += 65536;
+        trip += (uint32_t)delta;
+        odolast = speedSensorTicks;
+      }
     }
 
     // KWP2000 positive response to ReadDTCByStatus (service 0x59).
     // Frame: 6C F1 <src> 59 [<dtc_hi> <dtc_lo>] ...
-    if (headerSize == 3 && j1850RXctr >= 4 && payloadJ1850[headerSize] == 0x59)
+    // Minimum 5 bytes (3-byte header + 0x59 + CRC): with only 4 bytes the
+    // 0x59 candidate would be the CRC itself and the dtcBytes subtraction
+    // below would underflow to 255, over-reading the buffer (Fixes #64).
+    if (headerSize == 3 && j1850RXctr >= 5 && payloadJ1850[headerSize] == 0x59)
     {
       const uint8_t src = payloadJ1850[2];
       // Each DTC is 2 bytes; they start at offset headerSize+1.
@@ -326,7 +351,7 @@ namespace J1850VPW
   {
     if (!j1850TraceEnabled)
       return;
-    if (j1850RXctr == 0 || j1850RXctr > 11)
+    if (j1850RXctr == 0 || j1850RXctr > 12)
       return; // suppress corrupted-frame noise
 
     const uint8_t n       = j1850RXctr;
