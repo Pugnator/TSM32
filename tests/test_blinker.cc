@@ -134,13 +134,14 @@ static void sim_release_right() { fakeRightPin = GPIO_PIN_SET; }
 
 // Inline the auto-cancel logic that lives in tsm.cc's main loop.
 // Call this after a sim_advance that should have accumulated enough blinks.
+// Mirrors the fixed off-path (side-off helpers, see #60).
 #define APPLY_OVERTAKE_CANCEL()                                                \
     do {                                                                       \
         if (overtakeMode && OVERTAKE_BLINK_COUNT < blinkCounter) {            \
             overtakeMode = false;                                              \
-            leftEnabled  = false;                                              \
-            rightEnabled = false;                                              \
             hazardEnabled = false;                                             \
+            leftSideOff();                                                     \
+            rightSideOff();                                                    \
             blinkCounter = 0;                                                  \
         }                                                                      \
     } while (0)
@@ -190,7 +191,7 @@ TEST(overtake_auto_cancel)
     sim_advance((LONG_PRESS_COUNT + 1) * BLINKER_TIMER_PERIOD_MS);
     ASSERT_TRUE(overtakeMode);
 
-    // Each blink cycle = ramp (480 ms) + hold (200 ms) + pause (400 ms) = 1080 ms.
+    // Each blink cycle = ramp (~250 ms) + hold (200 ms) + pause (250 ms) = ~700 ms.
     sim_advance((OVERTAKE_BLINK_COUNT + 2) * 1200);
     ASSERT_TRUE(blinkCounter > OVERTAKE_BLINK_COUNT);
 
@@ -309,12 +310,16 @@ TEST(blink_cycle_resets_on_retrigger)
     sim_advance((LONG_PRESS_COUNT + 1) * BLINKER_TIMER_PERIOD_MS);
     ASSERT_TRUE(rightEnabled);
 
-    // Advance well into the ramp-up (300 ms → ~30 PWM steps → period ≈ 62)
-    // Using a large value so pwmMid is safely above the few steps that run
-    // during the second turn-on's 110 ms toggle advance.
-    sim_advance(300);
-    uint32_t pwmMid = fakeRightPWM;
-    ASSERT_TRUE(pwmMid > 10);              // sanity: ramp is well underway
+    // Advance until the ramp reaches full-on, whatever the cycle alignment
+    // after the long-press window (a fixed offset here breaks whenever the
+    // blink cadence constants are retuned).
+    uint32_t pwmMid = 0;
+    for (int i = 0; i < 200 && pwmMid < 96; ++i)
+    {
+        sim_advance(PWM_DUTY_DELAY);
+        pwmMid = fakeRightPWM;
+    }
+    ASSERT_TRUE(pwmMid >= 96);             // sanity: reached full brightness
 
     // Turn off mid-cycle
     sim_press_right();
@@ -322,17 +327,46 @@ TEST(blink_cycle_resets_on_retrigger)
     sim_release_right();
     ASSERT_FALSE(rightEnabled);
 
-    // Turn back on — must start a fresh ramp from period=0
+    // Turn back on — must start a fresh ramp from period=0.  Within the
+    // 110 ms toggle advance at most ~11 ramp steps run, so PWM must still
+    // be well below full-on if the FSM restarted cleanly.
     sim_press_right();
     sim_advance(BLINKER_TIMER_PERIOD_MS);
     sim_release_right();
-    sim_advance((LONG_PRESS_COUNT + 1) * BLINKER_TIMER_PERIOD_MS);  // enter overtake
     ASSERT_TRUE(rightEnabled);
-
-    // One PWM step: period should be near 0 (2 after first step),
-    // well below the mid-cycle value captured above.
-    sim_advance(PWM_DUTY_DELAY + 5);
     ASSERT_TRUE(fakeRightPWM < pwmMid);
+}
+
+// 12. Quick tap (<110 ms, released before the first tick) also arms overtake —
+//     classification must not depend on timer phase (#67)
+TEST(quick_tap_arms_overtake)
+{
+    sim_reset();
+    sim_press_right();
+    sim_release_right();                    // released before the first tick
+    sim_advance(BLINKER_TIMER_PERIOD_MS);   // tick: short-press branch → toggle + window
+    ASSERT_TRUE(rightEnabled);
+    sim_advance((LONG_PRESS_COUNT + 1) * BLINKER_TIMER_PERIOD_MS); // window expires, button up
+    ASSERT_TRUE(overtakeMode);
+}
+
+// 13. Opposite-side press during the long-press window switches direction
+//     instead of being swallowed (#67)
+TEST(opposite_press_in_window_switches)
+{
+    sim_reset();
+    sim_press_right();
+    sim_advance(BLINKER_TIMER_PERIOD_MS);   // toggle ON, enter waitLongPress (right)
+    sim_release_right();
+    ASSERT_TRUE(rightEnabled);
+    sim_advance(BLINKER_TIMER_PERIOD_MS);   // one window tick
+    sim_press_left();                       // opposite side during the window
+    ASSERT_TRUE(leftEnabled);               // switched immediately
+    ASSERT_FALSE(rightEnabled);
+    sim_release_left();
+    sim_advance((LONG_PRESS_COUNT + 1) * BLINKER_TIMER_PERIOD_MS); // left window expires
+    ASSERT_TRUE(leftEnabled);
+    ASSERT_TRUE(overtakeMode);              // released early → overtake for the left side
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────────

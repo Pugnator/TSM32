@@ -285,10 +285,13 @@ extern "C"
       if (overtakeMode && OVERTAKE_BLINK_COUNT < blinkCounter)
       {
         DEBUG_LOG("Deactivating the blinker: blink counter\r\n");
+        /* Go through the side-off helpers so the sidemark brightness is
+         * restored and the blink FSM is reset, like every other off-path
+         * (Fixes #60). */
         overtakeMode = false;
-        leftEnabled = false;
-        rightEnabled = false;
         hazardEnabled = false;
+        leftSideOff();
+        rightSideOff();
         blinkCounter = 0;
       }
 #endif

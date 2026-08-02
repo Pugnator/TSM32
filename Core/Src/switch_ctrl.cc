@@ -122,20 +122,40 @@ extern "C"
       leftButtonRawEvent = false;
       if (!leftButtonEvent)
       {
-        /* Second press of the same side during the long-press window.
-         * Only accept as a deliberate reversal if at least one timer tick
-         * (110 ms) has elapsed since entering the window — this rejects
-         * mechanical bounces from the initial press which fire within
-         * microseconds (longPressCounter would still be 0). */
-        if (waitLongPress && leftInitiatedLongPress)
+        if (waitLongPress)
         {
-          if (longPressCounter >= 1)
+          if (leftInitiatedLongPress)
           {
-            DEBUG_LOG("LT reversal during long-press window\r\n");
-            leftSideToggle();
-            resetEvent();
+            /* Second press of the same side during the long-press window.
+             * Only accept as a deliberate reversal if at least one timer tick
+             * (110 ms) has elapsed since entering the window — this rejects
+             * mechanical bounces from the initial press which fire within
+             * microseconds (longPressCounter would still be 0). */
+            if (longPressCounter >= 1)
+            {
+              DEBUG_LOG("LT reversal during long-press window\r\n");
+              leftSideToggle();
+              resetEvent();
+            }
+            /* else: too early — mechanical bounce, discard silently. */
           }
-          /* else: too early — mechanical bounce, discard silently. */
+          else
+          {
+            /* Opposite-side press during the right side's window: the rider
+             * wants the other direction. Switch immediately and restart the
+             * window for the left side instead of swallowing the press
+             * (Fixes #67). Cross-button bounce is not a thing, so no
+             * longPressCounter guard here. */
+            DEBUG_LOG("LT press during RT window - switching direction\r\n");
+            resetEvent();
+            leftSideToggle();
+            if (leftEnabled)
+            {
+              waitLongPress = true;
+              leftInitiatedLongPress = true;
+              startBlinkerTimer();
+            }
+          }
           return;
         }
         if (wasIdle)
@@ -152,17 +172,33 @@ extern "C"
       rightButtonRawEvent = false;
       if (!rightButtonEvent)
       {
-        /* Second press of the same side during the long-press window.
-         * Same bounce-rejection guard as the left side above. */
-        if (waitLongPress && !leftInitiatedLongPress)
+        if (waitLongPress)
         {
-          if (longPressCounter >= 1)
+          if (!leftInitiatedLongPress)
           {
-            DEBUG_LOG("RT reversal during long-press window\r\n");
-            rightSideToggle();
-            resetEvent();
+            /* Second press of the same side during the long-press window.
+             * Same bounce-rejection guard as the left side above. */
+            if (longPressCounter >= 1)
+            {
+              DEBUG_LOG("RT reversal during long-press window\r\n");
+              rightSideToggle();
+              resetEvent();
+            }
+            /* else: too early — mechanical bounce, discard silently. */
           }
-          /* else: too early — mechanical bounce, discard silently. */
+          else
+          {
+            /* Opposite-side press during the left side's window (Fixes #67). */
+            DEBUG_LOG("RT press during LT window - switching direction\r\n");
+            resetEvent();
+            rightSideToggle();
+            if (rightEnabled)
+            {
+              waitLongPress = true;
+              leftInitiatedLongPress = false;
+              startBlinkerTimer();
+            }
+          }
           return;
         }
         if (wasIdle)
@@ -295,7 +331,20 @@ extern "C"
       DEBUG_LOG("LT short press (released before timer) for %ums.\r\n", pressDuration);
       leftButtonEvent = false;
       leftSideToggle();
-      resetEvent();
+      /* Enter the same long-press window as the held-press path above so a
+       * fast (<110 ms) tap classifies identically (released before the
+       * deadline -> overtake) instead of the outcome depending on timer
+       * phase (Fixes #67). */
+      if (leftEnabled)
+      {
+        waitLongPress = true;
+        leftInitiatedLongPress = true;
+        startBlinkerTimer();
+      }
+      else
+      {
+        resetEvent();
+      }
       return;
     }
     /* right button was pressed and released before the timer fired */
@@ -304,7 +353,16 @@ extern "C"
       DEBUG_LOG("RT short press (released before timer) for %ums.\r\n", pressDuration);
       rightButtonEvent = false;
       rightSideToggle();
-      resetEvent();
+      if (rightEnabled)
+      {
+        waitLongPress = true;
+        leftInitiatedLongPress = false;
+        startBlinkerTimer();
+      }
+      else
+      {
+        resetEvent();
+      }
       return;
     }
 
