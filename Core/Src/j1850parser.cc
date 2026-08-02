@@ -5,8 +5,7 @@ volatile uint32_t frameCounter = 0;
 namespace J1850VPW
 {
   // Bench-mode default: dump every successfully captured RX frame on the
-  // RTT log channel.  Disable at runtime with 'j1850 trace off' once the
-  // signal path is validated.
+  // RTT log channel.
   volatile bool j1850TraceEnabled = true;
 
   sourceType convertByteToSourceType(uint8_t inputByte)

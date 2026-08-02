@@ -105,7 +105,6 @@ CPP_SOURCES =  \
 	Core/Src/sys.cc \
 	Core/Src/printf.cc \
 	Core/Src/trace.cc\
-	Core/Src/cli.cc\
 	Core/Src/uniqueid.cc\
 	Core/Src/vmmu.cc\
 	Core/Src/ahrs/ahrs.cc\

@@ -1,7 +1,6 @@
 #include "tsm.h"
 #include "settings.h"
 #include "j1850.h"
-#include "cli.h"
 
 #if MEMS_ENABLED
 #include "ahrs.h"
@@ -23,36 +22,6 @@ float yprDeg[3];
 bool trackingEnabled = false;
 int16_t initialYaw = INT16_MIN;
 uint32_t initialTime = 0;
-
-// Raw, non-owning pointer used by the CLI accessors below to read live
-// AHRS state without having to be templated on MpuType.  Owned by the
-// unique_ptr in tsmRunApp(); cleared at scope exit.
-static Ahrs::AhrsBase<Imu::Bus> *gAhrs_ = nullptr;
-
-extern "C" float cliGetChipTemperatureC(void)
-{
-  return gAhrs_ ? gAhrs_->getTemperature() : 0.0f;
-}
-
-extern "C" void cliGetYprDeg(int16_t *yaw, int16_t *pitch, int16_t *roll)
-{
-  if (!gAhrs_)
-  {
-    if (yaw)   *yaw = 0;
-    if (pitch) *pitch = 0;
-    if (roll)  *roll = 0;
-    return;
-  }
-  auto v = gAhrs_->getYawPitchRollD();
-  if (yaw)   *yaw = v.x;
-  if (pitch) *pitch = v.y;
-  if (roll)  *roll = v.z;
-}
-
-extern "C" bool cliGetImuOk(void)
-{
-  return gAhrs_ && gAhrs_->ok();
-}
 #endif
 
 #ifdef __cplusplus
@@ -121,16 +90,13 @@ extern "C"
 #if MEMS_ENABLED
     std::unique_ptr<Ahrs::AhrsBase<Imu::Bus>> mpu(
         new Ahrs::AhrsBase<Imu::Bus>(IMU_BUS_HANDLE, true));
-    gAhrs_ = mpu.get();
     PrintF("MEMS: MPU9250 %s init %s\r\n",
            Imu::kBusName,
-           gAhrs_->ok() ? "OK" : "FAILED - check bus / wiring");
+           mpu->ok() ? "OK" : "FAILED - check bus / wiring");
 #endif
     stopAppExecuting = false;
     while (!stopAppExecuting)
     {
-      // cliPoll();  /* disabled during J1850 RX bench testing */
-
 #if AUTO_LIGHT_ENABLE
       adcHandler();
 #endif
@@ -161,7 +127,7 @@ extern "C"
         if (hbStarted && (now_hb - hbLastTick) >= 2000u)
         {
           static const uint8_t hb[] = {0x29, 0xFE, 0x40, 0x01};
-          cliJ1850TxRaw(hb, sizeof(hb));
+          j1850TxRaw(hb, sizeof(hb));
           hbLastTick = HAL_GetTick();
         }
       }
@@ -196,7 +162,7 @@ extern "C"
       //   {
       //     const uint8_t clrIpc[4] = {0x6C, 0x61, 0xF1, 0x14};
       //     PrintF("[%lu] Periodic SIL clear -> IPC\r\n", (unsigned long)now_sc);
-      //     cliJ1850TxRaw(clrIpc, sizeof(clrIpc));
+      //     j1850TxRaw(clrIpc, sizeof(clrIpc));
       //     silClearLastTick = HAL_GetTick();
       //   }
       // }
@@ -236,7 +202,7 @@ extern "C"
             const uint8_t target = dtcTargets[dtcState - 1];
             const uint8_t req[7] = {0x6C, target, 0xF1, 0x19, 0x52, 0xFF, 0x00};
             TRACE_LOG("Auto DTC query -> 0x%02X\r\n", (unsigned)target);
-            cliJ1850TxRaw(req, sizeof(req));
+            j1850TxRaw(req, sizeof(req));
             dtcLastTick = HAL_GetTick();
             dtcInterval = 200;
             dtcState    = (dtcState < 3) ? dtcState + 1 : 4;
@@ -250,7 +216,7 @@ extern "C"
             const uint8_t clrEcm[4] = {0x6C, 0x10, 0xF1, 0x14};
             PrintF("[%lu] Auto DTC clear -> ECM (password DTC present)\r\n",
                    (unsigned long)HAL_GetTick());
-            cliJ1850TxRaw(clrEcm, sizeof(clrEcm));
+            j1850TxRaw(clrEcm, sizeof(clrEcm));
             // Clear BCM DTCs if any were returned (BCM can hold U1064 etc.
             // which independently keep the SIL on).
             if (bcmDtcSeen)
@@ -258,7 +224,7 @@ extern "C"
               const uint8_t clrBcm[4] = {0x6C, 0x40, 0xF1, 0x14};
               PrintF("[%lu] Auto DTC clear -> BCM\r\n",
                      (unsigned long)HAL_GetTick());
-              cliJ1850TxRaw(clrBcm, sizeof(clrBcm));
+              j1850TxRaw(clrBcm, sizeof(clrBcm));
             }
             // Clear IPC DTCs if any were returned (IPC can hold U1064
             // "Loss of TSM/TSSM Serial Data" which drives SIL independently
@@ -268,7 +234,7 @@ extern "C"
               const uint8_t clrIpc[4] = {0x6C, 0x61, 0xF1, 0x14};
               PrintF("[%lu] Auto DTC clear -> IPC\r\n",
                      (unsigned long)HAL_GetTick());
-              cliJ1850TxRaw(clrIpc, sizeof(clrIpc));
+              j1850TxRaw(clrIpc, sizeof(clrIpc));
             }
             clearedOnce = true;
           }
@@ -383,9 +349,6 @@ extern "C"
 #endif
     }
     DEBUG_LOG("Stop!\r\n");
-#if MEMS_ENABLED
-    gAhrs_ = nullptr;
-#endif
   }
 
 #ifdef __cplusplus

@@ -314,11 +314,10 @@ extern "C"
     return ~crc_reg; // Return CRC
   }
 
-  // Bench-mode hook called from the RTT CLI.  Briefly masks the input-
-  // capture interrupt so the RX state machine cannot misinterpret our own
-  // bit-banged pulses, then drives the frame via sendFrame() (which appends
-  // the CRC).  Strong override of the weak default in cli.cc.
-  void cliJ1850TxRaw(const uint8_t *bytes, uint8_t len)
+  // Application TX entry point.  Briefly masks the input-capture interrupt
+  // so the RX state machine cannot misinterpret our own bit-banged pulses,
+  // then drives the frame via sendFrame() (which appends the CRC).
+  void j1850TxRaw(const uint8_t *bytes, uint8_t len)
   {
     if (!bytes || len == 0 || len > 10)
     {
