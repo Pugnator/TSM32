@@ -68,6 +68,8 @@ void handler()
     if (moving)
     {
       gState         = State::Moving;
+      gOffSince      = 0;   // clear stale Off timestamp so the stop debounce
+                            // in State::Moving starts fresh (Fixes #59)
       gStarterLocked = true;
       disableStarter();
       DEBUG_LOG("Engine: state Moving -> starter LOCKED (RPM=%u KPH=%u)\r\n",
