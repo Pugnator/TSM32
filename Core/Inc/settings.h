@@ -39,13 +39,15 @@
  * Disabled by default — produces heavy RTT output at idle. */
 #define J1850_BUS_TRACE 1
 
-/* Pick exactly one IMU transport. Override at the make command line via
- * `make IMU_BUS=I2C` to switch; the default is SPI. */
+/* IMU transport. The Makefile always passes -DIMU_USE_SPI/-DIMU_USE_I2C;
+ * these fallbacks only matter for header-only consumers (IDE indexers,
+ * host tools) and match the board default (SPI since the CubeMX project
+ * dropped the I2C peripheral). */
 #ifndef IMU_USE_SPI
-#define IMU_USE_SPI 0
+#define IMU_USE_SPI 1
 #endif
 #ifndef IMU_USE_I2C
-#define IMU_USE_I2C 1
+#define IMU_USE_I2C 0
 #endif
 #if MEMS_ENABLED && (IMU_USE_SPI + IMU_USE_I2C) != 1
 #error "Define exactly one of IMU_USE_SPI / IMU_USE_I2C"
