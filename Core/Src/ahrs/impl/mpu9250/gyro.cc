@@ -54,9 +54,11 @@ namespace Mpu9250
     int16_t gyroY = ((int16_t)data[2] << 8) | data[3];
     int16_t gyroZ = ((int16_t)data[4] << 8) | data[5];
 
-    result.x = (float)gyroX * gMult;
-    result.y = (float)gyroY * gMult;
-    result.z = (float)gyroZ * gMult;
+    // Sensor -> body axis remap (motorcycle deployment).
+    // See accel.cc for the body-frame convention.
+    result.x = -(float)gyroX * gMult;
+    result.y =  (float)gyroY * gMult;
+    result.z =  (float)gyroZ * gMult;
     return true;
   }
 

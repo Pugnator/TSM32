@@ -180,83 +180,6 @@ namespace Ahrs
   }
 
   template <typename MpuType>
-  bool AhrsBase<MpuType>::staticCalibration(Eeprom *mem)
-  {
-#if DISABLE_CALIBRATION
-    return true;
-#endif
-    DEBUG_LOG("Static calibration\r\n");
-    DEBUG_LOG("Starting in\r\n");
-    for (uint32_t count = 10; count > 0; count--)
-    {
-      DEBUG_LOG("%u\r\n", count);
-      HAL_Delay(1000);
-    }
-
-    isCalibration_ = true;
-    VectorFloat temp;
-    float x = 0;
-    float y = 0;
-    float z = 0;
-    /*
-    for (uint32_t i = 1 * 100; i >= 0; i--)
-    {
-      this->readMagAxis(temp);
-      x += temp.x;
-      y += temp.y;
-      z += temp.z;
-    }
-    DEBUG_LOG("Mag offsets: %.2f, %.2f, %.2f\r\n", x, y, z);
-    */
-    x = 0;
-    y = 0;
-    z = 0;
-    const uint32_t sampleNumber = 60;
-    for (uint32_t i = sampleNumber; i >= 0; i--)
-    {
-      while (this->interruptStatus() != Mpu9250::InterruptSource::DataReady)
-        ;
-      if (!this->readAccelAxis(temp))
-        return false;
-      x += temp.x;
-      y += temp.y;
-      z += temp.z;
-      HAL_Delay(1);
-    }
-    x /= (float)sampleNumber;
-    y /= (float)sampleNumber;
-    z /= (float)sampleNumber;
-    DEBUG_LOG("Acc avareges: %.2f, %.2f, %.2f\r\n", x, y, z);
-    // DEBUG_LOG("Acc offsets: %.2f, %.2f, %.2f\r\n", accOffsetX_, accOffsetY_, accOffsetZ_);
-
-    x = 0;
-    y = 0;
-    z = 0;
-    for (uint32_t i = 25000; i >= 0; i--)
-    {
-      this->readGyroAxis(temp);
-      x += temp.x;
-      y += temp.y;
-      z += temp.z;
-    }
-    isCalibration_ = false;
-    x /= 25000.0;
-    y /= 25000.0;
-    z /= 25000.0;
-    DEBUG_LOG("Gyro avareges: %.2f, %.2f, %.2f\r\n", x, y, z);
-    // DEBUG_LOG("Gyro offsets: %.2f, %.2f, %.2f\r\n", gyroOffsetX_, gyroOffsetY, gyroOffsetZ_);
-
-    DEBUG_LOG("Finished calibration\r\n");
-    return true;
-  }
-
-  template <typename MpuType>
-  bool AhrsBase<MpuType>::loadCalibration(Eeprom *mem)
-  {
-    return true;
-  }
-
-  template <typename MpuType>
   float AhrsBase<MpuType>::getHeadingAngle()
   {
 #if DISABLE_MAGNETOMETER
@@ -327,19 +250,64 @@ namespace Ahrs
       if (sampleTime - lastTimeUpdated_ < fixedUpdateRateMs)
         return quan_; // Old value
 #endif
-      while (this->interruptStatus() != Mpu9250::InterruptSource::DataReady)
-        ;
+      // Bounded poll for the IMU DATA_READY flag.  The previous unconditional
+      // busy-wait monopolised the SPI/I2C bus and would freeze the firmware if
+      // the IMU INT line ever stuck (mis-wire, ESD event, IMU power-down).
+      // At a 100 Hz fixed update rate the IMU always has fresh data by the
+      // time we get here, so a few-ms cap is generous; on time-out we return
+      // the previous quaternion and try again on the next tick.
+      {
+        const uint32_t pollDeadline = sampleTime + 3u;
+        while (this->interruptStatus() != Mpu9250::InterruptSource::DataReady)
+        {
+          if (HAL_GetTick() >= pollDeadline)
+          {
+            DEBUG_LOG("IMU DATA_READY timeout\r\n");
+            return quan_;
+          }
+        }
+      }
         // Frequency Update (Hz) = 1 / (Time Interval (ms) * 0.001)
 
 #if FIXED_AHRS_UPDATE_RATE
       sampleFreq_ = AHRS_UPDATE_RATE;
 #else
-      sampleFreq_ = 1.f / ((sampleTime - lastTimeUpdated_) * 0.001f);
+      // Clamp the elapsed time to >= 1 ms so two samples that land in the
+      // same SysTick millisecond cannot produce a divide-by-zero in the
+      // 1/dt that feeds the Madgwick integrator.
+      uint32_t deltaMs = sampleTime - lastTimeUpdated_;
+      if (deltaMs < 1u)
+        deltaMs = 1u;
+      sampleFreq_ = 1.f / (deltaMs * 0.001f);
 #endif
 
       lastTimeUpdated_ = sampleTime;
       this->readAccelAxis(acc_);
       this->readGyroAxis(gyro_);
+
+#if ENABLE_ZUPT
+      // Refine the online gyro bias whenever the bike is stationary, then
+      // subtract the current bias estimate from the live gyro reading so
+      // that downstream Madgwick integration sees a drift-corrected signal.
+      updateGyroBiasIfStill();
+      gyro_.x -= gyroBiasOnline_.x;
+      gyro_.y -= gyroBiasOnline_.y;
+      gyro_.z -= gyroBiasOnline_.z;
+#endif
+
+      // Refresh chip-die temperature at ~1 Hz (every 100th sample at the
+      // 100 Hz fixed update rate).  Used by the ZUPT model and exposed via
+      // getTemperature() for thermal-bias compensation.
+      {
+        static uint32_t tempDivider = 0;
+        if (++tempDivider >= 100u)
+        {
+          tempDivider = 0;
+          float t;
+          if (this->readChipTemperature(t))
+            this->chipTemperature_ = t;
+        }
+      }
 #if !DISABLE_MAGNETOMETER
 #if MAGNETOMETER_BLOCKING_MODE
       if (!this->readMagAxis(mag_, true))
@@ -357,7 +325,6 @@ namespace Ahrs
       madgwick6DoF(quan_, gyro_, acc_);
 #endif
     }
-// antiJam->sample(mag_);
 #if DEBUG
     counter++;
     if (counter == 10 * 100UL)
@@ -371,6 +338,69 @@ namespace Ahrs
     return quan_;
   }
 
+#if ENABLE_ZUPT
+  template <typename MpuType>
+  void AhrsBase<MpuType>::updateGyroBiasIfStill()
+  {
+    // Per-axis stillness check.  Gyro is in deg/s straight from the IMU; we
+    // test the raw reading minus the current bias estimate so that a slowly
+    // drifting bias on a truly-stationary bike does not lock us out of the
+    // stillness window forever.  The accel magnitude must also be within a
+    // narrow band around 1 g to reject jolts that happen to cancel across
+    // axes.
+    const float gxRaw = gyro_.x;
+    const float gyRaw = gyro_.y;
+    const float gzRaw = gyro_.z;
+
+    const float gResidualX = gxRaw - gyroBiasOnline_.x;
+    const float gResidualY = gyRaw - gyroBiasOnline_.y;
+    const float gResidualZ = gzRaw - gyroBiasOnline_.z;
+
+    const float aMag = acc_.getMagnitude();
+
+    const bool gyroStill = (fabsf(gResidualX) < ZUPT_GYRO_THRESH_DPS) &&
+                           (fabsf(gResidualY) < ZUPT_GYRO_THRESH_DPS) &&
+                           (fabsf(gResidualZ) < ZUPT_GYRO_THRESH_DPS);
+    const bool accelStill = fabsf(aMag - 1.0f) < ZUPT_ACCEL_THRESH_G;
+
+    if (gyroStill && accelStill)
+    {
+      if (zuptStableCount_ < ZUPT_HOLD_SAMPLES)
+      {
+        if (++zuptStableCount_ == ZUPT_HOLD_SAMPLES && !zuptActive_)
+        {
+          zuptActive_ = true;
+          DEBUG_LOG("ZUPT epoch start, bias=(%.3f, %.3f, %.3f) deg/s, T=%.1fC\r\n",
+                    gyroBiasOnline_.x, gyroBiasOnline_.y, gyroBiasOnline_.z,
+                    this->chipTemperature_);
+        }
+      }
+
+      if (zuptActive_)
+      {
+        // EMA toward the raw reading: bias = (1-a)*bias + a*reading.
+        const float a = ZUPT_BIAS_ALPHA;
+        gyroBiasOnline_.x += a * (gxRaw - gyroBiasOnline_.x);
+        gyroBiasOnline_.y += a * (gyRaw - gyroBiasOnline_.y);
+        gyroBiasOnline_.z += a * (gzRaw - gyroBiasOnline_.z);
+      }
+    }
+    else
+    {
+      if (zuptActive_)
+      {
+        DEBUG_LOG("ZUPT epoch end, bias=(%.3f, %.3f, %.3f) deg/s\r\n",
+                  gyroBiasOnline_.x, gyroBiasOnline_.y, gyroBiasOnline_.z);
+      }
+      zuptStableCount_ = 0;
+      zuptActive_ = false;
+    }
+  }
+#endif
+
+#if IMU_USE_SPI
   template class AhrsBase<Mpu9250::Mpu9250Spi>;
+#elif IMU_USE_I2C
   template class AhrsBase<Mpu9250::Mpu9250I2c>;
+#endif
 }

@@ -7,8 +7,10 @@ extern "C"
 {
 #endif
 
-#define TIM9_PERIOD 110
-#define LONG_PRESS_COUNT (LONG_PRESS_TIME / TIM9_PERIOD)
+/* Period of BLINKER_TIMER (TIM4) in milliseconds, configured in CubeMX (tim.c).
+ * Keep this value in sync with the timer's prescaler/period. */
+#define BLINKER_TIMER_PERIOD_MS 110
+#define LONG_PRESS_COUNT (LONG_PRESS_TIME / BLINKER_TIMER_PERIOD_MS)
 
   /** \brief Left button processing event triggered */
   static volatile bool leftButtonEvent = false;
@@ -16,13 +18,22 @@ extern "C"
   static volatile bool rightButtonEvent = false;
 
   /** \brief We're waiting for a long press */
-  static volatile bool waitLongPress = false;
-
+  static volatile bool waitLongPress = false;  /* Which button started the waitLongPress window (true=left, false=right).
+   * Used to detect a same-side second press that should reverse the toggle. */
+  static volatile bool leftInitiatedLongPress = false;
   /** \brief Number of timer events passed */
   static volatile uint32_t timerHitCounter = 0;
   /** \brief How many timer events passed with a button pressed */
   static volatile uint32_t longPressCounter = 0;
   static volatile uint32_t startTime = 0;
+
+  /* Raw edge flags set by EXTI ISR; consumed in the main loop by
+   * processButtonEvents() inside blinkerHandler() (Fixes #42). */
+  static volatile bool leftButtonRawEvent = false;
+  static volatile bool rightButtonRawEvent = false;
+  /* Set by TIM4 ISR each tick; consumed by blinkerTimerFSM() in the main
+   * loop inside blinkerHandler() (Fixes #40). */
+  static volatile bool blinkerTick = false;
 
   static void stopBlinkerTimer()
   {
@@ -49,18 +60,15 @@ extern "C"
       return;
     }
 #endif
-
-    if (GPIO_Pin == LT_BUTTON_Pin && !leftButtonEvent)
+    /* ISR sets raw flags only; debounce / timer start logic runs in
+     * processButtonEvents() in the main loop (Fixes #42). */
+    if (GPIO_Pin == LT_BUTTON_Pin && LEFT_BUTTON == PRESSED)
     {
-      startBlinkerTimer();
-      leftButtonEvent = true;
-      DEBUG_LOG("[%u] Left switch activated.\r\n", startTime);
+      leftButtonRawEvent = true;
     }
-    else if (GPIO_Pin == RT_BUTTON_Pin && !rightButtonEvent)
+    else if (GPIO_Pin == RT_BUTTON_Pin && RIGHT_BUTTON == PRESSED)
     {
-      startBlinkerTimer();
-      rightButtonEvent = true;
-      DEBUG_LOG("[%u] Right switch activated.\r\n", startTime);
+      rightButtonRawEvent = true;
     }
   }
 
@@ -76,9 +84,9 @@ extern "C"
 
   /*
     TIM1  - PWM, bulbs
-    TIM5  - J1850 capture
-    TIM6  - J1850 - EOF timer
-    TIM9  - Blinker delay timer
+    TIM2  - J1850 input capture (PA1 / TIM2_CH2)
+    TIM3  - J1850 EOF idle-detect timer (~248 us one-shot)
+    TIM4  - Blinker delay timer
   */
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
@@ -95,114 +103,283 @@ extern "C"
 #if BLINKER_ENABLED
     if (BLINKER_TIMER_INSTANCE == htim->Instance)
     {
-      timerHitCounter = timerHitCounter + 1;
-      uint32_t currentTime = HAL_GetTick();
-      if (startTime > currentTime)
-      {
-        DEBUG_LOG("Shouldn't happen. The event is in the past. %u (trigger) > %u (now)\r\n", startTime, currentTime);
-        resetEvent();
-        return;
-      }
-      uint32_t pressDuration = currentTime - startTime;
-      DEBUG_LOG("[%u] %u since the click [%u], L = %u, R = %u.\r\n", currentTime, pressDuration, startTime,
-                LEFT_BUTTON,
-                RIGHT_BUTTON);
-
-      if (MAX_PRESS_WAIT_TIME <= pressDuration)
-      {
-        DEBUG_LOG("Button wait timeout, resetting the event.\r\n");
-
-        resetEvent();
-        return;
-      }
-
-      if (waitLongPress)
-      {
-        // We're waiting for a long press, but the button is depressed - stop
-        if (timerHitCounter > 2 &&
-            (LEFT_BUTTON == GPIO_PIN_SET &&
-             RIGHT_BUTTON == GPIO_PIN_SET))
-        {
-          DEBUG_LOG("No button is pressed while waiting for a long press. Stop.\r\n");
-          overtakeMode = true;
-          resetEvent();
-          return;
-        }
-
-        if (longPressCounter != LONG_PRESS_COUNT)
-        {		  
-          DEBUG_LOG("Waiting for a long press [%u].\r\n", longPressCounter);
-		  longPressCounter = longPressCounter + 1;
-          return;
-        }		
-
-        DEBUG_LOG("Check for a long press.\r\n");
-
-        if (LEFT_BUTTON == PRESSED ||
-            RIGHT_BUTTON == PRESSED)
-        {
-          DEBUG_LOG("Long press detected after %ums.\r\n", pressDuration);
-          overtakeMode = false;
-        }
-        else
-        {
-          DEBUG_LOG("Short press.\r\n");
-          overtakeMode = true;
-        }
-
-        resetEvent();
-        return;
-      }
-
-      // too quick press - skip
-      if (DEBOUNCE_MIN_TIME >= pressDuration)
-      {
-        DEBUG_LOG("Bounce detected: T=[%ums].\r\n", pressDuration, DEBOUNCE_MIN_TIME);
-        return;
-      }
-      /* if both buttons are pressed */
-      if (LEFT_BUTTON == PRESSED &&
-          RIGHT_BUTTON == PRESSED)
-      {
-        DEBUG_LOG("Both switches were ON for %ums.\r\n", pressDuration);
-        leftButtonEvent = false;
-        rightButtonEvent = false;
-        hazardToggle();
-        waitLongPress = true;
-        startBlinkerTimer();
-        return;
-      }
-      /* if left button is still pressed */
-      else if (!hazardEnabled &&
-               LEFT_BUTTON == PRESSED)
-      {
-        stopBlinkerTimer();
-        DEBUG_LOG("LT was pressed for %u.\r\n", pressDuration);
-        leftButtonEvent = false;
-        leftSideToggle();
-        // Check if it's a long press
-        waitLongPress = true;
-        startBlinkerTimer();
-        return;
-      }
-      /* if right button is still pressed */
-      else if (!hazardEnabled &&
-               RIGHT_BUTTON == PRESSED)
-      {
-        stopBlinkerTimer();
-        DEBUG_LOG("RT was pressed for %u.\r\n", pressDuration);
-        rightButtonEvent = false;
-        rightSideToggle();
-        // Check if it's a long press
-        waitLongPress = true;
-        startBlinkerTimer();
-        return;
-      }
-
-      // no condition was met.
-      resetEvent();
+      /* Just set the tick flag; full FSM runs in blinkerTimerFSM()
+       * via blinkerHandler() in the main loop (Fixes #40). */
+      blinkerTick = true;
+      return;
     }
 #endif
+  }
+
+  /* Processes raw button flags set by the EXTI ISR.  Starts the blinker
+   * debounce timer on first press.  Must be called from the main loop. */
+  static void processButtonEvents()
+  {
+    const bool wasIdle = !leftButtonEvent && !rightButtonEvent;
+
+    if (leftButtonRawEvent)
+    {
+      leftButtonRawEvent = false;
+      if (!leftButtonEvent)
+      {
+        if (waitLongPress)
+        {
+          if (leftInitiatedLongPress)
+          {
+            /* Second press of the same side during the long-press window.
+             * Only accept as a deliberate reversal if at least one timer tick
+             * (110 ms) has elapsed since entering the window — this rejects
+             * mechanical bounces from the initial press which fire within
+             * microseconds (longPressCounter would still be 0). */
+            if (longPressCounter >= 1)
+            {
+              DEBUG_LOG("LT reversal during long-press window\r\n");
+              leftSideToggle();
+              resetEvent();
+            }
+            /* else: too early — mechanical bounce, discard silently. */
+          }
+          else
+          {
+            /* Opposite-side press during the right side's window: the rider
+             * wants the other direction. Switch immediately and restart the
+             * window for the left side instead of swallowing the press
+             * (Fixes #67). Cross-button bounce is not a thing, so no
+             * longPressCounter guard here. */
+            DEBUG_LOG("LT press during RT window - switching direction\r\n");
+            resetEvent();
+            leftSideToggle();
+            if (leftEnabled)
+            {
+              waitLongPress = true;
+              leftInitiatedLongPress = true;
+              startBlinkerTimer();
+            }
+          }
+          return;
+        }
+        if (wasIdle)
+        {
+          startBlinkerTimer();
+        }
+        leftButtonEvent = true;
+        DEBUG_LOG("[%u] Left switch activated.\r\n", startTime);
+      }
+    }
+
+    if (rightButtonRawEvent)
+    {
+      rightButtonRawEvent = false;
+      if (!rightButtonEvent)
+      {
+        if (waitLongPress)
+        {
+          if (!leftInitiatedLongPress)
+          {
+            /* Second press of the same side during the long-press window.
+             * Same bounce-rejection guard as the left side above. */
+            if (longPressCounter >= 1)
+            {
+              DEBUG_LOG("RT reversal during long-press window\r\n");
+              rightSideToggle();
+              resetEvent();
+            }
+            /* else: too early — mechanical bounce, discard silently. */
+          }
+          else
+          {
+            /* Opposite-side press during the left side's window (Fixes #67). */
+            DEBUG_LOG("RT press during LT window - switching direction\r\n");
+            resetEvent();
+            rightSideToggle();
+            if (rightEnabled)
+            {
+              waitLongPress = true;
+              leftInitiatedLongPress = false;
+              startBlinkerTimer();
+            }
+          }
+          return;
+        }
+        if (wasIdle)
+        {
+          startBlinkerTimer();
+        }
+        rightButtonEvent = true;
+        DEBUG_LOG("[%u] Right switch activated.\r\n", startTime);
+      }
+    }
+  }
+
+  /* Button state-machine tick.  Formerly the body of the TIM4 ISR branch.
+   * Called from blinkerHandler() after observing blinkerTick (Fixes #40). */
+  static void blinkerTimerFSM()
+  {
+    timerHitCounter = timerHitCounter + 1;
+    uint32_t currentTime = HAL_GetTick();
+    /* Unsigned subtraction handles HAL_GetTick() 32-bit wraparound
+     * (~49.7 days) correctly without an explicit guard. */
+    uint32_t pressDuration = currentTime - startTime;
+    DEBUG_LOG("[%u] %u since the click [%u], L = %u, R = %u.\r\n", currentTime, pressDuration, startTime,
+              LEFT_BUTTON,
+              RIGHT_BUTTON);
+
+    if (MAX_PRESS_WAIT_TIME <= pressDuration)
+    {
+      DEBUG_LOG("Button wait timeout, resetting the event.\r\n");
+      resetEvent();
+      return;
+    }
+
+    if (waitLongPress)
+    {
+      /* The side toggle has already been applied. We now wait the full
+       * LONG_PRESS_COUNT timer ticks before deciding:
+       *   - button still pressed at the deadline -> regular turn signal
+       *   - button released before the deadline  -> overtake (lane-change) */
+      if (longPressCounter < LONG_PRESS_COUNT)
+      {
+        DEBUG_LOG("Waiting for a long press [%u].\r\n", longPressCounter);
+        longPressCounter = longPressCounter + 1;
+        return;
+      }
+
+      DEBUG_LOG("Check for a long press.\r\n");
+
+      if (LEFT_BUTTON == PRESSED ||
+          RIGHT_BUTTON == PRESSED)
+      {
+        DEBUG_LOG("Long press detected after %ums.\r\n", pressDuration);
+        overtakeMode = false;
+      }
+      else
+      {
+        DEBUG_LOG("Short press.\r\n");
+        overtakeMode = true;
+      }
+
+      resetEvent();
+      return;
+    }
+
+    /* if both buttons are pressed (held at tick) */
+    if (LEFT_BUTTON == PRESSED &&
+        RIGHT_BUTTON == PRESSED)
+    {
+      DEBUG_LOG("Both switches were ON for %ums.\r\n", pressDuration);
+      hazardToggle();
+      resetEvent();
+      return;
+    }
+    /* Both buttons were pressed and released before the tick: treat the
+     * same as holding them — toggle hazard.  This handles the common case
+     * where the user taps both buttons quickly (<110 ms). */
+    else if (leftButtonEvent && rightButtonEvent)
+    {
+      DEBUG_LOG("Both switches short press for %ums.\r\n", pressDuration);
+      hazardToggle();
+      resetEvent();
+      return;
+    }
+    /* if left button is still pressed */
+    else if (!hazardEnabled &&
+             LEFT_BUTTON == PRESSED)
+    {
+      stopBlinkerTimer();
+      DEBUG_LOG("LT was pressed for %u.\r\n", pressDuration);
+      leftButtonEvent = false;
+      leftSideToggle();
+      /* Only enter the long-press window when the blinker was just turned ON.
+       * If it was turned OFF (leftEnabled now false) there is nothing to
+       * classify as long/short, and staying in waitLongPress would cause a
+       * spurious overtakeMode=true after the 1100 ms window expires. */
+      if (leftEnabled)
+      {
+        waitLongPress = true;
+        leftInitiatedLongPress = true;
+        startBlinkerTimer();
+      }
+      else
+      {
+        resetEvent();
+      }
+      return;
+    }
+    /* if right button is still pressed */
+    else if (!hazardEnabled &&
+             RIGHT_BUTTON == PRESSED)
+    {
+      stopBlinkerTimer();
+      DEBUG_LOG("RT was pressed for %u.\r\n", pressDuration);
+      rightButtonEvent = false;
+      rightSideToggle();
+      if (rightEnabled)
+      {
+        waitLongPress = true;
+        leftInitiatedLongPress = false;
+        startBlinkerTimer();
+      }
+      else
+      {
+        resetEvent();
+      }
+      return;
+    }
+    /* left button was pressed and released before the timer fired */
+    else if (!hazardEnabled && leftButtonEvent)
+    {
+      DEBUG_LOG("LT short press (released before timer) for %ums.\r\n", pressDuration);
+      leftButtonEvent = false;
+      leftSideToggle();
+      /* Enter the same long-press window as the held-press path above so a
+       * fast (<110 ms) tap classifies identically (released before the
+       * deadline -> overtake) instead of the outcome depending on timer
+       * phase (Fixes #67). */
+      if (leftEnabled)
+      {
+        waitLongPress = true;
+        leftInitiatedLongPress = true;
+        startBlinkerTimer();
+      }
+      else
+      {
+        resetEvent();
+      }
+      return;
+    }
+    /* right button was pressed and released before the timer fired */
+    else if (!hazardEnabled && rightButtonEvent)
+    {
+      DEBUG_LOG("RT short press (released before timer) for %ums.\r\n", pressDuration);
+      rightButtonEvent = false;
+      rightSideToggle();
+      if (rightEnabled)
+      {
+        waitLongPress = true;
+        leftInitiatedLongPress = false;
+        startBlinkerTimer();
+      }
+      else
+      {
+        resetEvent();
+      }
+      return;
+    }
+
+    // no condition was met.
+    resetEvent();
+  }
+
+  /* Main-loop entry point for button + blinker-tick processing.
+   * Replaces the heavy work that previously ran inside ISR callbacks. */
+  void blinkerHandler()
+  {
+    processButtonEvents();
+    if (blinkerTick)
+    {
+      blinkerTick = false;
+      blinkerTimerFSM();
+    }
   }
 
 #ifdef __cplusplus

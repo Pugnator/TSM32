@@ -1,5 +1,6 @@
 #include "tsm.h"
 #include "settings.h"
+#include "engine_state.h"
 #include <cmath>
 #include <cstring>
 #include <algorithm>
@@ -21,20 +22,22 @@ extern "C"
 {
 #endif
 
-  bool adcDMAcompleted = false;
+  volatile bool adcDMAcompleted = false;
   uint32_t adcDMAbuffer[ADC_DMA_BUF_SIZE];
   static volatile uint32_t voltageThresholdStartTime = 0;
   static volatile bool wasOverVoltage = false;
 
   void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   {
-    if (ADC1 != hadc->Instance || hazardEnabled)
+    if (ADC1 != hadc->Instance)
     {
       return;
     }
-
+    /* Always flag completion so adcHandler() can restart DMA.
+     * Hazard-mode gating is done in adcHandler() to avoid permanent
+     * DMA stop after hazard ends (was bug: hazardEnabled here stopped
+     * DMA forever once hazard was used). */
     adcDMAcompleted = true;
-    HAL_ADC_Stop_DMA(&hadc1);
   }
 
   void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
@@ -63,8 +66,8 @@ public:
     }
     for (uint32_t i = 0; i < size; ++i)
     {
-      values[i] = ADC_12_2V_VALUE;
-      sum += ADC_12_2V_VALUE;
+      values[i] = ADC_11_1V_VALUE;
+      sum += ADC_11_1V_VALUE;
     }
   }
 
@@ -88,13 +91,13 @@ void adcHandler()
   }
 
   prevSample = HAL_GetTick();
-  static uint32_t smoothedAverage = ADC_12_2V_VALUE;
+  static uint32_t smoothedAverage = ADC_11_1V_VALUE;
 
   static MovingAverage filter(ADC_DMA_BUF_SIZE);
   uint32_t prevSmoothedAverage = smoothedAverage;
 
   uint32_t currentSampleAverage = 0;
-  for (int i = 1; i < ADC_DMA_BUF_SIZE; i++)
+  for (int i = 0; i < ADC_DMA_BUF_SIZE; i++)
   {
     currentSampleAverage += adcDMAbuffer[i];
   }
@@ -116,14 +119,38 @@ void adcHandler()
 
   // complensation of the resistor's tolerance
   // smoothedAverage *= 0.97f;
+
+  /* Always restart DMA before any early return so the ISR keeps firing
+   * and adcHandler() never processes stale data (was bug: early returns
+   * inside the voltage FSM bypassed this block entirely). */
+  adcDMAcompleted = false;
+  HAL_ADC_Stop_DMA(&hadc1);
+  HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
+
+  /* Freeze FRL/starter state machine during hazard but keep DMA cycling
+   * so monitoring resumes immediately after hazard ends. */
+  if (hazardEnabled)
+  {
+    return;
+  }
+
 #ifdef DEBUG
-  float voltage = smoothedAverage * 3.3 / 4095 * voltageDividerFactor;
-  DEBUG_LOG("V = %0.2f ADC: %u\r\n", voltage, smoothedAverage);
+  [[maybe_unused]] float voltage = smoothedAverage * 3.3f / 4095.0f * voltageDividerFactor * ADC_VCAL;
+  static bool voltageReported = false;
+  if (!voltageReported)
+  {
+    // Use the unfiltered DMA burst mean so the seed value of smoothedAverage
+    // does not corrupt the startup reading.
+    float rawV = currentSampleAverage * 3.3f / 4095.0f * voltageDividerFactor * ADC_VCAL;
+    PrintF("ADC startup: V = %.2f (raw=%u)\r\n", rawV, (unsigned)currentSampleAverage);
+    voltageReported = true;
+  }
+  TRACE_LOG("V = %0.2f ADC: %u\r\n", voltage, smoothedAverage);
 #endif
 
-  if (smoothedAverage > ADC_12_8V_VALUE)
+  if (smoothedAverage > ADC_13_4V_VALUE)
   {
-    // if voltage is above 12.8V we want to turn on sidemarks
+    // if voltage is above charging threshold we want to turn on sidemarks
     if (!wasOverVoltage)
     {
       wasOverVoltage = true;
@@ -131,8 +158,11 @@ void adcHandler()
       return;
     }
 
-    // check if voltage is ABOVE 12.8V for more than 15 seconds
-    if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
+    // check if voltage is above threshold for more than 15 seconds.
+    // Only act when J1850 engine state is unknown (no live bus) so the
+    // J1850 FSM in engine_state.cc remains the authoritative source.
+    if (Engine::getState() == Engine::State::Unknown &&
+        HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
     {
       disableStarter();
 #if AUTO_LIGHT_ENABLE
@@ -143,18 +173,21 @@ void adcHandler()
     }
   }
   // we don't want to turn off sidemarks if blinkers are enabled
-  else if (!leftEnabled && !rightEnabled && smoothedAverage <= ADC_12_2V_VALUE)
+  else if (!leftEnabled && !rightEnabled && smoothedAverage <= ADC_11_1V_VALUE)
   {
     // if previously upper threshold was exceeded we want to reset the timer
     if (wasOverVoltage)
     {
       wasOverVoltage = false;
-      // start measuring time when voltage is below 12V
+      // start measuring time when voltage is below threshold
       voltageThresholdStartTime = HAL_GetTick();
       return;
     }
-    // check if voltage is BELOW 12V for more than 15 seconds
-    if (HAL_GetTick() - voltageThresholdStartTime > VOLTAGE_DETECTION_THRESHOLD)
+    // check if voltage is below threshold for more than the low-voltage
+    // debounce window (long enough to ignore idle+stoplight droop, cranking).
+    // Voltage FSM only acts when J1850 engine state is unknown.
+    if (Engine::getState() == Engine::State::Unknown &&
+        HAL_GetTick() - voltageThresholdStartTime > LOW_VOLTAGE_DETECTION_THRESHOLD)
     {
       enableStarter();
       currentSidemarkBrightness = 0;
@@ -162,6 +195,4 @@ void adcHandler()
   }
   LEFT_PWM_OUT = leftEnabled ? LEFT_PWM_OUT : currentSidemarkBrightness;
   RIGHT_PWM_OUT = rightEnabled ? RIGHT_PWM_OUT : currentSidemarkBrightness;
-  adcDMAcompleted = false;
-  HAL_ADC_Start_DMA(&hadc1, adcDMAbuffer, ADC_DMA_BUF_SIZE);
 }

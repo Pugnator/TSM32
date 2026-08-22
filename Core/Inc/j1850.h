@@ -14,6 +14,17 @@ extern "C"
   extern bool sil;
   extern uint8_t dtc;
   extern uint32_t trip;
+  extern int8_t gear_num;
+  extern bool in_neutral;
+  extern bool clutch_engaged;
+  extern uint8_t turn_signals;
+  extern uint8_t engine_temp_f;
+  extern uint32_t fuel_ticks;
+  extern uint8_t fuel_gauge_level;
+  extern bool passwordDtcSeen;
+  extern bool ecmSeen;          /* true once the first ECM (0x10) frame is parsed */
+  extern bool bcmDtcSeen;       /* true if BCM (0x40) returned any non-P0000 DTC    */
+  extern bool ipcDtcSeen;       /* true if IPC (0x61) returned any non-P0000 DTC    */
 
   extern uint8_t payloadJ1850[J1850_PAYLOAD_SIZE];
   extern volatile uint8_t j1850RXctr;
@@ -21,6 +32,12 @@ extern "C"
   extern volatile bool messageCollected;
 
   uint8_t crc1850(const uint8_t *msg_buf, uint8_t nbytes);
+
+  /* Application J1850 transmit path.  Masks the input-capture interrupt for
+     the duration of the bit-banged frame, calls J1850VPW::sendFrame() with
+     the supplied bytes (CRC is appended internally), then re-arms the IC.
+     Used by the heartbeat and auto-DTC logic in tsm.cc. */
+  void j1850TxRaw(const uint8_t *bytes, uint8_t len);
 #ifdef __cplusplus
 }
 #endif
@@ -68,7 +85,8 @@ namespace J1850VPW
     NET = 0xFE,
     SECURITY = 0x93,
     VSC = 0x63,
-    ENGSTAT = 0xFF
+    ENGSTAT = 0xFF,
+    SCANNER = 0xF1
   } sourceType;
 
   const char *sourceToStr(sourceType type);
@@ -77,6 +95,10 @@ namespace J1850VPW
   J1850error sendFrame(const uint8_t *data, uint8_t size);
   J1850error sendByte(const uint8_t byte);
   void messageReset();
+
+  // When true, the main loop prints every successfully-decoded RX frame on
+  // the RTT log channel.
+  extern volatile bool j1850TraceEnabled;
 
 // define J1850 VPW timing requirements in accordance with SAE J1850 standard
 // all width times in us
