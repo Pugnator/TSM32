@@ -8,13 +8,21 @@ extern "C"
 
   // SAE J590b and associated standards specify 60 - 120 flashes per minute for turn signals, with 90 per minute as a target
 
-  bool leftEnabled = false;
-  bool rightEnabled = false;
-  bool hazardEnabled = false;
-  bool overtakeMode = false;
+  /* These flags are written from ISR context (switch_ctrl.cc) and read
+   * from both the ISR and the main loop (tsm.cc). Mark them volatile
+   * so the compiler does not cache them across function boundaries
+   * under -O3 / -flto. */
+  volatile bool leftEnabled = false;
+  volatile bool rightEnabled = false;
+  volatile bool hazardEnabled = false;
+  volatile bool overtakeMode = false;
   uint8_t volatile currentSidemarkBrightness = 0;
 
-  uint32_t blinkCounter = 0;
+  volatile uint32_t blinkCounter = 0;
+  /* Set by leftSideOff()/rightSideOff() to force blinkerDoBlink() to restart
+   * from the beginning of the ON ramp on the next call, so turning the blinker
+   * off mid-cycle and then back on always starts a fresh cycle. */
+  static volatile bool blinkerResetPending = false;
 
   void leftSideToggle()
   {
@@ -61,6 +69,7 @@ extern "C"
     DEBUG_LOG("Left side off\r\n");
     leftEnabled = false;
     LEFT_PWM_OUT = currentSidemarkBrightness;
+    blinkerResetPending = true;
   }
 
   void rightSideOff()
@@ -68,6 +77,7 @@ extern "C"
     DEBUG_LOG("Right side off\r\n");
     rightEnabled = false;
     RIGHT_PWM_OUT = currentSidemarkBrightness;
+    blinkerResetPending = true;
   }
 
   void hazardToggle()
@@ -93,9 +103,10 @@ extern "C"
     static bool pauseStage = false;
     static bool initialized = false;
 
-    if (!initialized)
+    if (!initialized || blinkerResetPending)
     {
       initialized = true;
+      blinkerResetPending = false;
       startTick = HAL_GetTick();
       period = 0;
       turnOffStage = false;

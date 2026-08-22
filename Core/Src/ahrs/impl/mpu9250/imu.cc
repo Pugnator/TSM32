@@ -202,6 +202,19 @@ namespace Mpu9250
     return chipTemperature_;
   }
 
+  bool Mpu9250base::readChipTemperature(float &out)
+  {
+    // MPU-9250 datasheet, 4.18 "Temperature Sensor":
+    //   T_degC = (TEMP_OUT - RoomTemp_Offset) / Temp_Sensitivity + 21
+    // RoomTemp_Offset is 0 LSB at 21 C; Temp_Sensitivity is 333.87 LSB/C.
+    uint8_t data[2];
+    if (!mpuRead(MPU9250_TEMP_OUT_H, data, 2))
+      return false;
+    int16_t raw = ((int16_t)data[0] << 8) | data[1];
+    out = (static_cast<float>(raw) / 333.87f) + 21.0f;
+    return true;
+  }
+
   bool Mpu9250base::setMagnetometerAsSlave()
   {
     DEBUG_LOG("Magnetometer as a slave I2C device.\r\n");

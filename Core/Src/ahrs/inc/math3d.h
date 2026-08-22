@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstdlib>
+#include <cstring>
 #include <bit>
 #include <limits>
 #include <cmath>
@@ -20,6 +21,15 @@
 
 static inline float _fastAsin(float x)
 {
+  // The polynomial approximation is only valid on [-1, +1]; outside that
+  // range it diverges rapidly.  Floating-point rounding in upstream gravity-
+  // vector normalisation routinely produces inputs like 1.0000001f, so clamp
+  // explicitly before evaluating the polynomial.
+  if (x >= 1.0f)
+    return static_cast<float>(M_PI_2);
+  if (x <= -1.0f)
+    return -static_cast<float>(M_PI_2);
+
   const float c1 = 1.5707288f;  // Polynomial coefficient 1
   const float c2 = -0.2121144f; // Polynomial coefficient 2
   const float c3 = 0.0742610f;  // Polynomial coefficient 3
@@ -58,38 +68,39 @@ static inline float _fastAtan2(float y, float x)
 
 static inline float _fastInvSqrt(float x)
 {
-  float halfx = 0.5f * x;
-  float y = x;
-  long i = *(long *)&y;             // Type punning to reinterpret the bits of 'y' as a long integer
-  i = 0x5f3759df - (i >> 1);        // Magic number calculation for initial approximation
-  y = *(float *)&i;                 // Type punning to reinterpret the bits of 'i' as a float
-  y = y * (1.5f - (halfx * y * y)); // Refining the approximation
+  // Quake III fast inverse square root.  The bit-level reinterpretation must
+  // go through memcpy() to stay defined under strict aliasing -- the previous
+  // long* cast was UB and could be reordered or constant-folded incorrectly
+  // by -O3 / -flto even with -fno-strict-aliasing on this translation unit.
+  const float halfx = 0.5f * x;
+  std::uint32_t i;
+  std::memcpy(&i, &x, sizeof(i));
+  i = 0x5f3759dfu - (i >> 1);
+  float y;
+  std::memcpy(&y, &i, sizeof(y));
+  y = y * (1.5f - (halfx * y * y)); // one Newton iteration
   return y;
 }
 
-// Log base 2 approximation and Newton's Method
+// Log base 2 approximation followed by one Newton-Raphson refinement.
 static inline float _fastSqrt(float z)
 {
-  union
-  {
-    float f;
-    uint32_t i;
-  } val = {z}; /* Convert type, preserving bit pattern */
-  /*
-   * To justify the following code, prove that
-   *
-   * ((((val.i / 2^m) - b) / 2) + b) * 2^m = ((val.i - 2^m) / 2) + ((b + 1) / 2) * 2^m)
-   *
-   * where
-   *
-   * b = exponent bias
-   * m = number of mantissa bits
-   */
-  val.i -= 1 << 23; /* Subtract 2^m. */
-  val.i >>= 1;      /* Divide by 2. */
-  val.i += 1 << 29; /* Add ((b + 1) / 2) * 2^m. */
+  if (z <= 0.0f)
+    return 0.0f;
 
-  return val.f; /* Interpret again as float */
+  std::uint32_t i;
+  std::memcpy(&i, &z, sizeof(i));
+  i -= 1u << 23; // Subtract 2^m.
+  i >>= 1;       // Divide by 2.
+  i += 1u << 29; // Add ((b + 1) / 2) * 2^m.
+
+  float y;
+  std::memcpy(&y, &i, sizeof(y));
+
+  // One Newton-Raphson iteration brings the ~5% bit-hack approximation
+  // down to better than 0.1% relative error.  y_{n+1} = 0.5 * (y + z/y).
+  y = 0.5f * (y + z / y);
+  return y;
 }
 
 struct Quaternion
@@ -164,7 +175,7 @@ struct Quaternion
   Quaternion getNormalized()
   {
     Quaternion r(w, x, y, z);
-    if (r.normalize())
+    if (!r.normalize())
       return Quaternion();
 
     return r;
@@ -203,9 +214,9 @@ struct VectorInt16
     if (!m)
       return false;
 
-    x *= m;
-    y *= m;
-    z *= m;
+    x /= m;
+    y /= m;
+    z /= m;
     return true;
   }
 
@@ -288,6 +299,8 @@ struct VectorFloat
   void normalize()
   {
     float m = getMagnitude();
+    if (m == 0.0f)
+      return;
     x /= m;
     y /= m;
     z /= m;

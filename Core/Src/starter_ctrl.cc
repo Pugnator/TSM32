@@ -17,18 +17,16 @@ extern "C"
       return;
     }
 
-    static uint32_t crankingStartTime = HAL_GetTick();
-    if (HAL_GetTick() - crankingStartTime < STARTER_DISABLE_THRESHOLD)
-      return;
-
+    /* No hidden grace period here: callers (engine-state FSM, voltage FSM)
+     * already debounce their detection and expect this call to take effect
+     * immediately (Fixes #58). */
     starterDisabled = true;
     starterEnabledLogged = false;
     if (!starterDisabledLogged)
     {
-      DEBUG_LOG("Starter is enabled.\r\n");
+      DEBUG_LOG("Starter disabled.\r\n");
       starterDisabledLogged = true;
     }
-    DEBUG_LOG("Starter disabled.\r\n");
     HAL_GPIO_WritePin(STARTER_RELAY_GPIO_Port, STARTER_RELAY_Pin, GPIO_PIN_RESET);
 #endif
   }
@@ -46,6 +44,9 @@ extern "C"
     }
 #endif
 
+    /* Keep the lock flag in sync with the relay so a later disableStarter()
+     * call is not swallowed by the early-return above (Fixes #58). */
+    starterDisabled = false;
     starterDisabledLogged = false;
     if (!starterEnabledLogged)
     {

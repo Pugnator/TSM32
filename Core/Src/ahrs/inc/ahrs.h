@@ -1,8 +1,27 @@
 #pragma once
+#include "settings.h"
+
+#if !defined(MEMS_ENABLED) || MEMS_ENABLED
+/* Pull in only the chosen MPU9250 transport. The unselected .cc file is
+ * dropped from the Makefile build set, so its symbols and HAL deps are
+ * not linked at all. The bus header (spi.h / i2c.h) is included here so
+ * the peripheral handle (hspi1 / hi2c1) is visible to IMU_BUS_HANDLE
+ * users; imu_spi.h / imu_i2c.h provide weak HAL stubs for the case
+ * where the peripheral header is absent. */
+#if IMU_USE_SPI
+#if __has_include("spi.h")
+#include "spi.h"
+#endif
 #include "imu_spi.h"
+#elif IMU_USE_I2C
+#if __has_include("i2c.h")
+#include "i2c.h"
+#endif
 #include "imu_i2c.h"
+#endif
+#endif
+
 #include "imu_base.h"
-#include "antijam.h"
 
 #include "math3d.h"
 #include <utility>
@@ -11,7 +30,22 @@
 #define DEG2RAD(x) (x * (M_PI / 180.f))
 #define RAD2DEG(x) (x * (180.f / M_PI))
 
-class Eeprom;
+#if MEMS_ENABLED
+namespace Imu
+{
+#if IMU_USE_SPI
+  using Bus = Mpu9250::Mpu9250Spi;
+  using BusHandleType = SPI_HandleTypeDef;
+  static constexpr const char *kBusName = "SPI";
+#define IMU_BUS_HANDLE (&hspi1)
+#elif IMU_USE_I2C
+  using Bus = Mpu9250::Mpu9250I2c;
+  using BusHandleType = I2C_HandleTypeDef;
+  static constexpr const char *kBusName = "I2C";
+#define IMU_BUS_HANDLE (&hi2c1)
+#endif
+}
+#endif
 
 namespace Ahrs
 {
@@ -23,7 +57,6 @@ namespace Ahrs
     template <typename... Args>
     AhrsBase(Args &&...args) : MpuType(std::forward<Args>(args)...)
     {
-      antiJam.reset(new MagneticJammingDetector);
       magMaxX_ = 0;
       magMaxY_ = 0;
       magMaxZ_ = 0;
@@ -45,14 +78,14 @@ namespace Ahrs
       gyroMinY_ = 0;
       gyroMinZ_ = 0;
       lastTimeUpdated_ = 0;
+      sampleFreq_ = static_cast<float>(AHRS_UPDATE_RATE);
+      gyroBiasOnline_ = VectorFloat();
+      zuptStableCount_ = 0;
+      zuptActive_ = false;
     }
-
-    bool staticCalibration(Eeprom *mem = nullptr);
-    bool loadCalibration(Eeprom *mem);
 
     void madgwick6DoF(Quaternion &q, VectorFloat &g, VectorFloat &a);
     void madgwick9DoF(Quaternion &q, VectorFloat &g, VectorFloat &a, VectorFloat &m);
-    void mahony9DoF(Quaternion &q, VectorFloat &g, VectorFloat &a, VectorFloat &m);
 
     float getHeadingAngle();
     VectorInt16 getYawPitchRollD();
@@ -72,9 +105,10 @@ namespace Ahrs
     const Quaternion &sampleQuant();
 
   private:
-    std::unique_ptr<MagneticJammingDetector> antiJam;
-
     VectorFloat getYawPitchRoll();
+#if ENABLE_ZUPT
+    void updateGyroBiasIfStill();
+#endif
 
     float accOffsetX_;
     float accOffsetY_;
@@ -117,5 +151,12 @@ namespace Ahrs
     VectorFloat mag_;
     uint32_t lastTimeUpdated_;
     float sampleFreq_;
+
+    // ZUPT (zero-velocity update) state: a slow EMA of the gyro reading
+    // captured while the bike is stationary, subtracted from every live
+    // gyro sample before it reaches the Madgwick filter.
+    VectorFloat gyroBiasOnline_;
+    uint32_t zuptStableCount_;
+    bool zuptActive_;
   };
 }

@@ -35,11 +35,11 @@ extern "C"
 
     extern volatile uint8_t currentSidemarkBrightness;
 
-    extern bool leftEnabled;
-    extern bool rightEnabled;
-    extern bool hazardEnabled;
-    extern bool overtakeMode;
-    extern uint32_t blinkCounter;
+    extern volatile bool leftEnabled;
+    extern volatile bool rightEnabled;
+    extern volatile bool hazardEnabled;
+    extern volatile bool overtakeMode;
+    extern volatile uint32_t blinkCounter;
     extern volatile bool settingsMode;
 
     void leftSideOff();
@@ -49,6 +49,7 @@ extern "C"
 
     void blinkerDoBlink();
     void hazardToggle();
+    void blinkerHandler();
 
     void enableStarter();
     void disableStarter();
@@ -56,7 +57,7 @@ extern "C"
     void adcHandler();
 
     extern uint32_t adcDMAbuffer[ADC_DMA_BUF_SIZE];
-    extern bool adcDMAcompleted;
+    extern volatile bool adcDMAcompleted;
 
 #ifdef __cplusplus
 }

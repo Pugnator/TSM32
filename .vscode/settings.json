@@ -67,4 +67,7 @@
     "terminal.background" : "#383737"
 },
 "cmake.sourceDirectory": "C:/Users/Pugnator/Dropbox/Dev/Electronics/Devices/TSM/firmware/Drivers/AES/test_package",
+"chat.tools.terminal.autoApprove": {
+  "gh": true
+},
 }

@@ -6,7 +6,7 @@ namespace Mpu9250
   {
     if (HAL_I2C_Mem_Write(bus_, MPU9250_I2C_ADDR, address, 1, byte, len, 1000) != HAL_OK)
     {
-      DEBUG_LOG("I2C bus write error: address: %#.2X\r\n");
+      DEBUG_LOG("I2C bus write error: address: %#.2X\r\n", (unsigned)address);
       return false;
     }
     return true;

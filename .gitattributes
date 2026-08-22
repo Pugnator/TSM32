@@ -1,3 +1,4 @@
+* text=false
 Drivers/** linguist-vendored=true
 Core/Src/cpp/printf.cc linguist-vendored=true
 Core/Src/cpp/system_stm32f1xx.c linguist-vendored=true
