@@ -91,11 +91,13 @@ extern "C"
   void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
 #if J1850_ENABLED
-    // J1850 service timer, 200us
+    // J1850 EOF idle-detect one-shot (248 us)
     if (J1850_EOF_TIMER_INSTANCE == htim->Instance)
     {
-      messageCollected = true;
       HAL_TIM_Base_Stop_IT(&J1850_EOF_TIMER);
+      /* Snapshot only byte-aligned frames; glitches are discarded instead
+       * of being delivered as empty frames that stall RX (Fixes #75). */
+      J1850VPW::onEofTimeout();
       return;
     }
 #endif

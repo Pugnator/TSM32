@@ -12,14 +12,25 @@ static volatile uint32_t fallEdgeTime = 0;
 static volatile bool capturePolarityRising = true;
 volatile bool messageStarted = false;
 volatile bool messageCollected = false;
-volatile uint8_t j1850RXctr = 0;
+
+/* Live assembly buffer, ISR-only.  A completed frame is snapshotted into
+ * payloadJ1850/j1850RXctr for the main loop, so reception continues while
+ * the previous frame is being parsed (Fixes #74). */
+static uint8_t rxAssembly[J1850_PAYLOAD_SIZE] = {0};
+static volatile uint8_t rxByteCtr = 0;
 static volatile uint8_t bitCounter = 0;
+
+/* Completed-frame snapshot consumed by parseFrame()/printFrame(). */
 uint8_t payloadJ1850[J1850_PAYLOAD_SIZE] = {0};
+volatile uint8_t j1850RXctr = 0;
+volatile uint32_t j1850DroppedFrames = 0;
 
 uint16_t rpms = 0;
 uint16_t kph = 0;
-bool mil = 0;
-bool sil = 0;
+bool mil = 0;     // 0x88 frames with header priority 3 (fault/lamp channel)
+bool milAux = 0;  // 0x88 frames with other priorities (periodic status)
+bool sil = 0;     // 0x89 frames with header priority 6 (lamp-drive channel)
+bool silAux = 0;  // 0x89 frames with header priority 7 (second channel, #80)
 uint8_t dtc = 0;
 uint32_t trip = 0;
 int8_t gear_num = 0;       // 0=unknown, 1-6
@@ -30,6 +41,7 @@ uint8_t engine_temp_f = 0; // degrees Fahrenheit
 uint32_t fuel_ticks = 0;   // 0.000040 L per tick
 uint8_t fuel_gauge_level = 0; // 0-15
 bool passwordDtcSeen = false;
+volatile bool securityPollPending = false; /* 0x93/0x2A poll awaiting our 0x92 reply */
 bool ecmSeen         = false;
 bool bcmDtcSeen      = false;
 bool ipcDtcSeen      = false; // set when P1009/P1010 seen in DTC response
@@ -47,17 +59,49 @@ namespace J1850VPW
 
   void messageReset()
   {
-    /* The receive ISR uses messageCollected as the "frame is being
-     * processed, ignore further edges" gate. It must be released LAST,
-     * after every other piece of state has been reset, otherwise an
-     * incoming bus edge can re-enter the ISR against half-cleared state
-     * (Fixes #47). */
+    /* Full RX reset (used around our own TX): clears both the live
+     * assembly state and the completed-frame snapshot.  messageCollected
+     * is released LAST so the main loop can never observe a half-cleared
+     * snapshot (Fixes #47). */
+    memset(rxAssembly, 0, sizeof(rxAssembly));
     memset(payloadJ1850, 0, sizeof(payloadJ1850));
     bitCounter = 0;
+    rxByteCtr = 0;
     j1850RXctr = 0;
     messageStarted = false;
     __DMB();
     messageCollected = false;
+  }
+
+  /* Snapshot a byte-aligned completed frame for the main loop and rearm
+   * the live assembly immediately, so the next frame on the bus is
+   * received even while the previous one is still being parsed
+   * (Fixes #74, #75).  ISR context only. */
+  static void deliverCompletedFrame()
+  {
+    messageStarted = false;
+    const uint8_t len = rxByteCtr;
+    rxByteCtr = 0;
+    if (len == 0 || bitCounter != 0 || len > 12)
+    {
+      bitCounter = 0; // glitch, partial byte or oversized: discard silently
+      return;
+    }
+    if (messageCollected)
+    {
+      j1850DroppedFrames++; // main loop still busy with the previous frame
+      return;
+    }
+    memcpy(payloadJ1850, rxAssembly, len);
+    j1850RXctr = len;
+    __DMB();
+    messageCollected = true;
+  }
+
+  /* Called from the TIM3 EOF one-shot ISR (switch_ctrl.cc). */
+  void onEofTimeout()
+  {
+    deliverCompletedFrame();
   }
 
   static void startEOFtimer()
@@ -67,6 +111,11 @@ namespace J1850VPW
     HAL_TIM_Base_Start_IT(&J1850_EOF_TIMER);
   }
 
+  /* Arbitration monitoring can be disabled for one blind retry when the
+   * monitor itself is suspected of tripping on our own transceiver tail
+   * (safety net so a miscalibrated monitor can never kill the TX path). */
+  static bool arbMonitorEnabled_ = true;
+
   /* J1850 VPW is a CSMA bus: wait until the RX line has been passive for
    * at least one IFS before starting our SOF, so we do not stomp a frame
    * another node is transmitting (Fixes #62). Returns false if the bus
@@ -74,7 +123,10 @@ namespace J1850VPW
   static bool waitBusIdle()
   {
     const uint32_t ticksPerUs   = SystemCoreClock / 1000000;
-    const uint32_t idleTicks    = TX_IFS * ticksPerUs;
+    /* 280 us, not TX_IFS (300 us): the receive-side minimum IFS is 281 us
+     * (RX_IFS_MIN), so demanding more can starve TX under sustained
+     * near-spec traffic (Fixes #77). */
+    const uint32_t idleTicks    = 280u * ticksPerUs;
     const uint32_t timeoutTicks = 20000u * ticksPerUs;
     const uint32_t waitStart    = DWT->CYCCNT;
     uint32_t idleStart          = DWT->CYCCNT;
@@ -111,9 +163,15 @@ namespace J1850VPW
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
     for (uint8_t i = 0; i < size; i++)
     {
-      sendByte(data[i]);
+      if (sendByte(data[i]) != J1850error::OK)
+      {
+        return J1850error::LostArbitration; // TX pin is already passive
+      }
     }
-    sendByte(crc);
+    if (sendByte(crc) != J1850error::OK)
+    {
+      return J1850error::LostArbitration;
+    }
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
     J1850delayUS(TX_EOF + TX_EOD);
     return J1850error::OK;
@@ -121,25 +179,57 @@ namespace J1850VPW
 
   J1850error sendByte(const uint8_t byte)
   {
-    // If TX line is Active - arbitration is lost
-    // if (HAL_GPIO_ReadPin(J1850RX_GPIO_Port, J1850RX_Pin) == GPIO_PIN_SET)
-    {
-    }
-
     uint8_t nbits = 8;
     uint8_t temp_ = byte;
-    uint32_t delay;
+    const uint32_t ticksPerUs = SystemCoreClock / 1000000;
     while (nbits--) // send 8 bits
     {
       if (nbits & 1) // start allways with passive symbol
       {
-        delay = (temp_ & 0x80) ? TX_LONG : TX_SHORT; // send correct pulse lenght
+        const uint32_t delayTicks =
+            ((temp_ & 0x80) ? TX_LONG : TX_SHORT) * ticksPerUs;
+        /* VPW is CSMA/CR: while we drive passive, an active bus level means
+         * another node is transmitting over us - yield so its frame
+         * survives (Fixes #76).  VPW transitions are slow BY SPEC (~16 us
+         * slew) and the receive comparator adds lag, so our own active
+         * symbol's tail reads active well into the passive symbol: blank
+         * the first 32 us and only declare a loss if the active level then
+         * PERSISTS for 8 us (a real contender drives >=34 us symbols; the
+         * field test with a 16 us blank and no persistence check tripped
+         * on 100% of transmissions). */
+        const uint32_t blankTicks   = 32u * ticksPerUs;
+        const uint32_t persistTicks = 8u * ticksPerUs;
+        const uint32_t start = DWT->CYCCNT;
+        uint32_t activeSince = 0;
+        bool     activeSeen  = false;
         HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
-        J1850delayUS(delay);
+        while (DWT->CYCCNT - start < delayTicks)
+        {
+          if (!arbMonitorEnabled_ || (DWT->CYCCNT - start) <= blankTicks)
+          {
+            continue;
+          }
+          if (HAL_GPIO_ReadPin(J1850RX_GPIO_Port, J1850RX_Pin) == GPIO_PIN_SET)
+          {
+            if (!activeSeen)
+            {
+              activeSeen  = true;
+              activeSince = DWT->CYCCNT;
+            }
+            else if (DWT->CYCCNT - activeSince >= persistTicks)
+            {
+              return J1850error::LostArbitration;
+            }
+          }
+          else
+          {
+            activeSeen = false;
+          }
+        }
       }
       else // send active symbol
       {
-        delay = (temp_ & 0x80) ? TX_SHORT : TX_LONG; // send correct pulse lenght
+        const uint32_t delay = (temp_ & 0x80) ? TX_SHORT : TX_LONG;
         HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
         J1850delayUS(delay);
       }
@@ -167,14 +257,10 @@ extern "C"
   {
     fallEdgeTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
 
-    // Check if it's an unrealisting time;
-    if (riseEdgeTime > fallEdgeTime)
-    {
-      J1850VPW::messageReset();
-      return;
-    }
-
-    const uint32_t pulse = fallEdgeTime - riseEdgeTime;
+    /* 16-bit modulo subtraction handles the counter wrap for any pulse
+     * shorter than the 65.5 ms timer period, which every legal J1850
+     * symbol is - no need to abort the frame on rise > fall (Fixes #78). */
+    const uint32_t pulse = (fallEdgeTime - riseEdgeTime) & 0xFFFFu;
 
     // Start of Frame
     if (pulse <= RX_SOF_MAX && pulse > RX_SOF_MIN)
@@ -186,8 +272,8 @@ extern "C"
        * behind by an EOD/EOF/IFS-classified gap or a glitch pulse, so old
        * bytes cannot corrupt this frame (Fixes #63). */
       bitCounter = 0;
-      j1850RXctr = 0;
-      memset(payloadJ1850, 0, sizeof(payloadJ1850));
+      rxByteCtr = 0;
+      memset(rxAssembly, 0, sizeof(rxAssembly));
       fallEdgeTime = 0;
       __HAL_TIM_SET_COUNTER(&J1850_IC_INSTANCE, 0);
       return;
@@ -202,12 +288,12 @@ extern "C"
     if (pulse <= RX_LONG_MAX && pulse > RX_LONG_MIN)
     {
       TRACE_LOG("Active 0, %uus\r\n", pulse);
-      payloadJ1850[j1850RXctr] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
+      rxAssembly[rxByteCtr] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
     }
     else if (pulse <= RX_SHORT_MAX && pulse > RX_SHORT_MIN)
     {
       TRACE_LOG("Active 1, %uus\r\n", pulse);
-      payloadJ1850[j1850RXctr] |= 1UL << (BIT_PER_BYTE - bitCounter++);
+      rxAssembly[rxByteCtr] |= 1UL << (BIT_PER_BYTE - bitCounter++);
     }
     else
     {
@@ -226,19 +312,6 @@ extern "C"
   If the pulse duration falls within the range for a "short" pulse, a 0 is added to the current byte.
   The byteCounter and bitCounter variables are used to keep track of the current position in the payloadJ1850 buffer.
   */
-  /* Terminate the in-progress frame at an EOD/EOF/IFS gap. The EOF timer
-   * was already stopped for this edge, so a byte-aligned frame must be
-   * delivered here or it would be silently lost when no further falling
-   * edge (e.g. no IFR) ever restarts the timer (Fixes #63). */
-  static inline void endFrameAtGap(void)
-  {
-    messageStarted = false;
-    if (j1850RXctr > 0 && bitCounter == 0)
-    {
-      messageCollected = true;
-    }
-  }
-
   static inline void onRisingEdge(TIM_HandleTypeDef *htim)
   {
     riseEdgeTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
@@ -248,38 +321,32 @@ extern "C"
       return;
     }
 
-    /* Symmetric wrap-around guard: mirrors the check in onFallingEdge. */
-    if (fallEdgeTime > riseEdgeTime)
-    {
-      J1850VPW::messageReset();
-      return;
-    }
-
-    const uint32_t pulse = riseEdgeTime - fallEdgeTime;
+    /* Wrap-safe passive-gap width, same as in onFallingEdge (Fixes #78). */
+    const uint32_t pulse = (riseEdgeTime - fallEdgeTime) & 0xFFFFu;
     if (pulse > RX_IFS_MIN)
     {
       TRACE_LOG("\r\nIFS, %uus\r\n", pulse);
-      endFrameAtGap();
+      J1850VPW::deliverCompletedFrame();
     }
     else if (pulse > RX_EOF_MIN)
     {
       TRACE_LOG("\r\nEOF, %uus\r\n", pulse);
-      endFrameAtGap();
+      J1850VPW::deliverCompletedFrame();
     }
     else if (RX_EOD_MAX >= pulse && pulse > RX_EOD_MIN)
     {
       TRACE_LOG("\r\nEOD, %uus\r\n", pulse);
-      endFrameAtGap();
+      J1850VPW::deliverCompletedFrame();
     }
     else if (RX_LONG_MAX >= pulse && pulse > RX_LONG_MIN)
     {
       TRACE_LOG("Passive 1, %uus\r\n", pulse);
-      payloadJ1850[j1850RXctr] |= 1UL << (BIT_PER_BYTE - bitCounter++);
+      rxAssembly[rxByteCtr] |= 1UL << (BIT_PER_BYTE - bitCounter++);
     }
     else if (RX_SHORT_MAX >= pulse && pulse > RX_SHORT_MIN)
     {
       TRACE_LOG("Passive 0, %uus\r\n", pulse);
-      payloadJ1850[j1850RXctr] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
+      rxAssembly[rxByteCtr] &= ~(1UL << (BIT_PER_BYTE - bitCounter++));
     }
     else
     {
@@ -294,13 +361,9 @@ extern "C"
       return;
     }
 #if J1850_ENABLED
-    // Wait for message to be processed
-
-    if (messageCollected)
-    {
-      return;
-    }
-
+    /* No messageCollected gate here: completed frames are snapshotted by
+     * deliverCompletedFrame() and reception continues immediately, so
+     * back-to-back bus frames are no longer dropped (Fixes #74). */
     if (capturePolarityRising)
     {
       __HAL_TIM_SET_COUNTER(&J1850_EOF_TIMER, 0);
@@ -319,13 +382,15 @@ extern "C"
     }
     if (bitCounter == 8)
     {
-      TRACE_LOG("J1850: the bit counter == 8 [0x%.2X]\r\n", payloadJ1850[j1850RXctr]);
+      TRACE_LOG("J1850: the bit counter == 8 [0x%.2X]\r\n", rxAssembly[rxByteCtr]);
       bitCounter = 0;
-      j1850RXctr++;
-      if (j1850RXctr >= J1850_PAYLOAD_SIZE)
+      rxByteCtr++;
+      if (rxByteCtr >= J1850_PAYLOAD_SIZE)
       {
         TRACE_LOG("J1850: frame is too large: %u\r\n", J1850_PAYLOAD_SIZE);
-        J1850VPW::messageReset();
+        /* Reset only the live assembly - a pending snapshot stays valid. */
+        rxByteCtr = 0;
+        messageStarted = false;
       }
     }
 #endif
@@ -368,21 +433,53 @@ extern "C"
   // Application TX entry point.  Briefly masks the input-capture interrupt
   // so the RX state machine cannot misinterpret our own bit-banged pulses,
   // then drives the frame via sendFrame() (which appends the CRC).
-  void j1850TxRaw(const uint8_t *bytes, uint8_t len)
+  // Returns true only if the frame actually went out on the bus; failures
+  // are logged with PrintF so they are visible in production RTT
+  // (Fixes #69).
+  bool j1850TxRaw(const uint8_t *bytes, uint8_t len)
   {
     if (!bytes || len == 0 || len > 10)
     {
       PrintF("j1850 tx: invalid length (%u, max 10)\r\n", (unsigned)len);
-      return;
+      return false;
+    }
+    /* Carrier-sense while the input capture is still armed, so a frame
+     * that is mid-flight during the wait is received, not destroyed
+     * (Fixes #77).  sendFrame() re-checks idle just before the SOF. */
+    if (!J1850VPW::waitBusIdle())
+    {
+      PrintF("[%lu] j1850 tx: bus busy, %u-byte frame not sent\r\n",
+             (unsigned long)HAL_GetTick(), (unsigned)len);
+      return false;
     }
     HAL_TIM_IC_Stop_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
     J1850VPW::messageReset();
-    [[maybe_unused]] J1850VPW::J1850error rc = J1850VPW::sendFrame(bytes, len);
+    J1850VPW::J1850error rc = J1850VPW::sendFrame(bytes, len);
+    if (rc == J1850VPW::J1850error::LostArbitration)
+    {
+      /* Either a genuine collision or the arbitration monitor tripping on
+       * our own transceiver tail.  Wait out the (possible) foreign frame,
+       * then retry ONCE with the monitor disabled so a miscalibrated
+       * monitor can never kill the TX path entirely (field failure mode:
+       * 100% LOST_ARB, no heartbeat on the bus, SIL lit). */
+      PrintF("[%lu] j1850 tx: LOST_ARB, retrying blind\r\n",
+             (unsigned long)HAL_GetTick());
+      if (J1850VPW::waitBusIdle())
+      {
+        J1850VPW::arbMonitorEnabled_ = false;
+        rc = J1850VPW::sendFrame(bytes, len);
+        J1850VPW::arbMonitorEnabled_ = true;
+      }
+    }
     HAL_TIM_IC_Start_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
-    TRACE_LOG("j1850 tx: %u bytes -> %s\r\n",
-           (unsigned)len,
-           rc == J1850VPW::J1850error::OK ? "OK" :
-           rc == J1850VPW::J1850error::IncorrectFrame ? "BAD_FRAME" : "LOST_ARB");
+    if (rc != J1850VPW::J1850error::OK)
+    {
+      PrintF("[%lu] j1850 tx: %u bytes -> %s\r\n",
+             (unsigned long)HAL_GetTick(), (unsigned)len,
+             rc == J1850VPW::J1850error::IncorrectFrame ? "BAD_FRAME"
+                                                        : "LOST_ARB");
+    }
+    return rc == J1850VPW::J1850error::OK;
   }
 
 #ifdef __cplusplus
