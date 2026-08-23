@@ -10,8 +10,10 @@ extern "C"
 
   extern uint16_t rpms;
   extern uint16_t kph;
-  extern bool mil;
-  extern bool sil;
+  extern bool mil;    /* 0x88 frames, header priority 3 (fault/lamp channel) */
+  extern bool milAux; /* 0x88 frames, other priorities (periodic status)     */
+  extern bool sil;    /* 0x89 frames, header priority 6 (lamp-drive channel) */
+  extern bool silAux; /* 0x89 frames, header priority 7 (second channel)     */
   extern uint8_t dtc;
   extern uint32_t trip;
   extern int8_t gear_num;
@@ -22,6 +24,10 @@ extern "C"
   extern uint32_t fuel_ticks;
   extern uint8_t fuel_gauge_level;
   extern bool passwordDtcSeen;
+  /* Set by the parser when the IPC polls security function 0x93 with type
+     0x2A; tsm.cc answers on the mirror address 0x92 (48 92 40 2A 82 22,
+     format confirmed by a donor capture from a bike with a live TSM). */
+  extern volatile bool securityPollPending;
   extern bool ecmSeen;          /* true once the first ECM (0x10) frame is parsed */
   extern bool bcmDtcSeen;       /* true if BCM (0x40) returned any non-P0000 DTC    */
   extern bool ipcDtcSeen;       /* true if IPC (0x61) returned any non-P0000 DTC    */
@@ -30,14 +36,19 @@ extern "C"
   extern volatile uint8_t j1850RXctr;
   extern volatile uint32_t frameCounter;
   extern volatile bool messageCollected;
+  /* Frames that completed while the previous snapshot was still being
+     parsed by the main loop.  Monotonic; reported from tsm.cc. */
+  extern volatile uint32_t j1850DroppedFrames;
 
   uint8_t crc1850(const uint8_t *msg_buf, uint8_t nbytes);
 
   /* Application J1850 transmit path.  Masks the input-capture interrupt for
      the duration of the bit-banged frame, calls J1850VPW::sendFrame() with
      the supplied bytes (CRC is appended internally), then re-arms the IC.
-     Used by the heartbeat and auto-DTC logic in tsm.cc. */
-  void j1850TxRaw(const uint8_t *bytes, uint8_t len);
+     Returns true only if the frame actually went out (carrier-sense and
+     arbitration failures return false and are logged).  Used by the
+     heartbeat and auto-DTC logic in tsm.cc. */
+  bool j1850TxRaw(const uint8_t *bytes, uint8_t len);
 #ifdef __cplusplus
 }
 #endif
@@ -95,6 +106,9 @@ namespace J1850VPW
   J1850error sendFrame(const uint8_t *data, uint8_t size);
   J1850error sendByte(const uint8_t byte);
   void messageReset();
+  /* Called from the TIM3 EOF one-shot ISR: snapshots a byte-aligned
+     completed frame (or discards a partial one) and rearms reception. */
+  void onEofTimeout();
 
   // When true, the main loop prints every successfully-decoded RX frame on
   // the RTT log channel.
