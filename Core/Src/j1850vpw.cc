@@ -162,6 +162,13 @@ namespace J1850VPW
     {
       return J1850error::LostArbitration;
     }
+    /* One iteration of the main loop can legitimately bit-bang several
+     * frames back-to-back (security reply + heartbeat pair + DTC query),
+     * ~8 ms each, which alone approaches the 65 ms WWDG ceiling.  This
+     * function cannot hang - fixed byte count, DWT-bounded symbol delays -
+     * so refreshing here is safe and caps the un-refreshed span to a
+     * single frame instead of a whole burst. */
+    watchdog_refresh();
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
     J1850delayUS(TX_SOF);
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
