@@ -22,7 +22,7 @@ namespace Mpu9250
     for (int ii = 0; ii < 200; ii++)
     { // get average current values of gyro and acclerometer
       // Read the six raw data registers into data array
-      writeRegMpu(MPU9250_ACCEL_XOUT_H, rawData, 6);
+      readRegMpu(MPU9250_ACCEL_XOUT_H, rawData, 6); // was writeRegMpu: accel baseline was garbage
 
       aAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]); // Turn the MSB and LSB into a signed 16-bit value
       aAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]);

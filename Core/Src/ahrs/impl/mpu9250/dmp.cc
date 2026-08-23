@@ -106,7 +106,7 @@ namespace Mpu9250
     }
 
     mpuWrite(MPU9250_INT_ENABLE, enable ? 0x02 : 0);
-    useDmp_ = true;
+    useDmp_ = enable; // was hardcoded true: enableDMP(false) left the flag set
     return true;
   }
 
