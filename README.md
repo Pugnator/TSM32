@@ -1,49 +1,44 @@
 # STM32 TSM for Harleys
 
-This project provides a custom replacement for the stock TSM on Harley motorcycles.  
-The firmware is designed to work with the 2004 Sportster model, but may also be compatible with other Harleys from the same generation.  
-Refer to  [Sportsterpedia](http://sportsterpedia.com/doku.php) for more information.  
+A replacement Turn Signal Module (TSM) for Harley-Davidson motorcycles.
+Developed against the 2004 Sportster; likely compatible with other Harleys of
+the same generation. See [Sportsterpedia](http://sportsterpedia.com/doku.php)
+for background.
 
 ![PCB](tsm.jpg)
-=======
 
+## Contents
 
-## Description
+- Custom PCB (gerbers and schematic in the corresponding folders)
+- Firmware for the STM32F103, built with GCC
+- 3D-printable enclosure (STL files; reference print in PETG, 0.3 mm layers)
 
-It's a custom PCB, firmware for *STM32F103* and 3D enclosure model to build your own TSM. Firmware is to be build with GCC.
-The project consists of a custom PCB, firmware for the STM32F103 microcontroller, and a 3D enclosure model. The firmware is built using GCC.
+## What the firmware does
 
-## Features
-
-* Customizable settings for halogen and LED bulbs
-* Modern accelerometer for improved sensing of turns and movement
-* Automatic blinker control
-* Hazard lights enable in case of emergency braking
+- Turn-signal control: left/right, automatic cancel, and turn detection via an
+  MPU-9250 IMU (DMP orientation)
+- Hazard lights, including automatic activation on hard braking
+- Halogen and LED bulb support with per-bulb PWM settings
+- J1850 VPW bus receive and transmit (see [docs/J1850_bus.md](docs/J1850_bus.md))
+- Decodes bus signals: RPM, speed, gear/neutral/clutch, engine temperature,
+  odometer, fuel, MIL and security-lamp state, and KWP2000 DTCs
+- TSM/TSSM emulation so the instrument cluster, ECM and BCM see a live module at
+  address 0x40: presence broadcasts, the 0x92 security handshake, and automatic
+  DTC clearing (keeps the check-engine and security lamps off)
+- J1850-based starter lock (starter disabled while the bike is moving)
+- Reset-cause and bus tracing over SEGGER RTT
 
 ## Status
 
-Please note that this project is a work in progress. The J1850 transfer is not yet tested, and the TSM password store is not yet implemented.
+Work in progress. J1850 receive/transmit and TSM emulation are implemented and
+tested on a bike. A user-configurable TSM security PIN store is not implemented.
 
-## Building the Firmware
+## Building
 
-You will need arm-none-eabi and GNU make installed on your system to complete the build. Basic git usage is also required to clone the repo.
-To build the firmware, navigate to the root folder of the project and issue the following command:
+Requires `arm-none-eabi` and GNU make. From the project root:
 
-make
+    make
 
+## Configuration
 
-## PCB Board
-
-The PCB, gerber files, and schematic are located in the corresponding folders.
-
-
-## Enclosure
-
-STL files for 3D printing the enclosure are also available. The model was printed using PETG with 0.3mm layers.
-
-
-## How to Use
-
-Instructions for using the TSM once it's been built will be added later.
-If you have any questions or feedback, please feel free to contact me.
-
+Build- and pin-level options are in [Core/Inc/settings.h](Core/Inc/settings.h).
