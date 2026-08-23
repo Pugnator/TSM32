@@ -151,8 +151,9 @@ namespace J1850VPW
       return false;
     }
 
-    // Mark ECM as present the first time we see a valid 3-byte-header frame from 0x10.
-    if (headerSize == 3 && payloadJ1850[2] == 0x10)
+    // Mark ECM as present the first time we see a valid 3-byte-header frame
+    // from 0x10 (headerSize is always 3 here - the 1-byte case returned above).
+    if (payloadJ1850[2] == 0x10)
       ecmSeen = true;
 
     auto destination = convertByteToSourceType(payloadJ1850[1]);
@@ -307,7 +308,7 @@ namespace J1850VPW
     // Minimum 5 bytes (3-byte header + 0x59 + CRC): with only 4 bytes the
     // 0x59 candidate would be the CRC itself and the dtcBytes subtraction
     // below would underflow to 255, over-reading the buffer (Fixes #64).
-    if (headerSize == 3 && j1850RXctr >= 5 && payloadJ1850[headerSize] == 0x59)
+    if (j1850RXctr >= 5 && payloadJ1850[headerSize] == 0x59)
     {
       const uint8_t src = payloadJ1850[2];
       /* Raw dump first: this is the primary diagnostic record for the

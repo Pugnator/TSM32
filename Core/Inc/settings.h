@@ -15,7 +15,7 @@
 #define OVERTAKE_BLINK_COUNT 5   // Number of blinks before automatic turn off
 #define AZIMUTH_AVERAGE_COUNT 2  // Parameter for a Kalman filter
 #define DLR_BRIGHTNESS_VALUE 10
-#define VOLTAGE_DETECTION_THRESHOLD 15 * 1000
+#define VOLTAGE_DETECTION_THRESHOLD (15 * 1000)
 /* Low-voltage debounce: avoid disabling DRL on short transients
  * (idle + stop lights, cranking). Only react to a sustained drop. */
 #define LOW_VOLTAGE_DETECTION_THRESHOLD (5 * 60 * 1000)
@@ -76,7 +76,7 @@
 #define ADC_14_3V_VALUE 3463
 
 #define TURN_ANGLE_THRESHOLD 60
-#define TURN_MAX_TIME_MS 5 * 60 * 1000
+#define TURN_MAX_TIME_MS (5 * 60 * 1000)
 
 void startupSettingsHandler();
 
