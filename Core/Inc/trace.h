@@ -39,7 +39,20 @@
 #endif
 
 #define Print printf_
+
+// BANNER: the startup welcome line. Always emitted, even in a release build,
+// which otherwise produces no RTT output.
+#define BANNER printf_
+
+#if DEBUG
 #define PrintF printf_
+#else
+// Release build: every diagnostic PrintF compiles to a do-nothing call so the
+// RTT channel carries only the BANNER welcome line. Arguments are still
+// evaluated (side effects preserved) but nothing is printed, and the empty
+// inline is optimised away.
+static inline void PrintF(const char *fmt, ...) { (void)fmt; }
+#endif
 
 #ifdef __cplusplus
 extern "C"
