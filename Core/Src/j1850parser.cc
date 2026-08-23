@@ -179,23 +179,34 @@ namespace J1850VPW
     }
     else if (destination == MIL && j1850RXctr >= 5)
     {
-      // State byte bit7: 1 = lamp ON, 0 = lamp OFF
+      /* Like the SIL, the ECM broadcasts two 0x88 streams that differ only
+       * in header priority: pri=3 carries the fault/lamp state, pri=6 is a
+       * periodic status that reads "off" - merging them made the flag
+       * toggle ~1 Hz while the physical lamp was steady (field log
+       * 2026-08-22).  State byte bit7: 1 = lamp ON. */
       const bool newMil = (payloadJ1850[headerSize] & 0x80) != 0;
-      if (newMil != mil)
+      bool *slot = (h.ctx.priority == 3) ? &mil : &milAux;
+      if (newMil != *slot)
       {
-        mil = newMil;
-        TRACE_LOG("[%lu] MIL state -> %s\r\n",
-               (unsigned long)HAL_GetTick(), mil ? "ON" : "off");
+        *slot = newMil;
+        PrintF("[%lu] MIL pri=%u -> %s\r\n",
+               (unsigned long)HAL_GetTick(), (unsigned)h.ctx.priority,
+               newMil ? "ON" : "off");
       }
     }
     else if (destination == SIL && j1850RXctr >= 5)
     {
+      /* The IPC broadcasts two distinct 0x89 streams that differ only in
+       * header priority (observed pri=6 and pri=7 with opposite states
+       * during the 1 Hz flash pattern) - track them separately (#80). */
       const bool newSil = (payloadJ1850[headerSize] & 0x80) != 0;
-      if (newSil != sil)
+      bool *slot = (h.ctx.priority == 7) ? &silAux : &sil;
+      if (newSil != *slot)
       {
-        sil = newSil;
-        TRACE_LOG("[%lu] SIL state -> %s\r\n",
-               (unsigned long)HAL_GetTick(), sil ? "ON (fault/armed)" : "off");
+        *slot = newSil;
+        PrintF("[%lu] SIL pri=%u -> %s\r\n",
+               (unsigned long)HAL_GetTick(), (unsigned)h.ctx.priority,
+               newSil ? "ON (fault/armed)" : "off");
       }
     }
     else if (destination == BLINKER)
@@ -257,6 +268,19 @@ namespace J1850VPW
         }
       }
     }
+    else if (destination == SECURITY && j1850RXctr >= 5)
+    {
+      /* Security poll to function 0x93 (our bike: 69 93 61 2A from the
+       * IPC).  A donor capture from a bike with a live TSM shows the TSM
+       * answering on the mirror address 0x92: 48 92 40 2A 82 22 F2 /
+       * 48 92 40 AA FF FF 5B, payload type matching the 0x93 side.  Flag
+       * the poll so tsm.cc can send the response (#81). */
+      PrintF("[%lu] security poll 0x93 from 0x%02X type=0x%02X\r\n",
+             (unsigned long)HAL_GetTick(), (unsigned)payloadJ1850[2],
+             (unsigned)payloadJ1850[headerSize]);
+      if (payloadJ1850[headerSize] == 0x2A)
+        securityPollPending = true;
+    }
     else if (destination == ODO && j1850RXctr >= 7)
     {
       // a8 69 10 06/86 xx xx : odometer ticks (0.4 m each; bit7 of subfn = wraparound)
@@ -286,31 +310,31 @@ namespace J1850VPW
     if (headerSize == 3 && j1850RXctr >= 5 && payloadJ1850[headerSize] == 0x59)
     {
       const uint8_t src = payloadJ1850[2];
+      /* Raw dump first: this is the primary diagnostic record for the
+       * SIL/MIL investigation (#81) - never rely on the decode alone. */
+      {
+        static const char hex[] = "0123456789ABCDEF";
+        char raw[3 * 12 + 1];
+        uint8_t p = 0;
+        for (uint8_t i = 0; i < j1850RXctr && i < 12; ++i)
+        {
+          raw[p++] = hex[payloadJ1850[i] >> 4];
+          raw[p++] = hex[payloadJ1850[i] & 0x0F];
+          raw[p++] = ' ';
+        }
+        raw[p ? p - 1 : 0] = '\0';
+        PrintF("[%lu] DTC 0x59 from 0x%02X raw: %s\r\n",
+               (unsigned long)HAL_GetTick(), (unsigned)src, raw);
+      }
       // Each DTC is 2 bytes; they start at offset headerSize+1.
       const uint8_t dtcBytes = j1850RXctr - 1 - headerSize - 1; // exclude header + service byte + CRC
       if (dtcBytes < 2)
       {
-        TRACE_LOG("DTC response from 0x%02X: no codes stored\r\n", (unsigned)src);
+        PrintF("  no codes stored\r\n");
       }
       else
       {
         const uint8_t count = dtcBytes / 2;
-        // Pre-scan: if every slot is P0000 padding, suppress entirely.
-        uint8_t realCount = 0;
-        for (uint8_t i = 0; i < count; ++i)
-        {
-          const uint8_t hi = payloadJ1850[headerSize + 1 + i * 2];
-          const uint8_t lo = payloadJ1850[headerSize + 2 + i * 2];
-          if (hi != 0x00 || lo != 0x00)
-            ++realCount;
-        }
-        if (realCount == 0)
-          return true; // all P0000 padding — suppress entirely
-        // Per HarleyDroid: src=0x10 (ECM) = historic DTCs, src=0x40 (BCM) = current DTCs
-        [[maybe_unused]] const char *dtcType =
-            (src == 0x10) ? "historic" : (src == 0x40) ? "current" : "stored";
-        TRACE_LOG("DTC response from 0x%02X [%s] (%u code%s):\r\n",
-               (unsigned)src, dtcType, (unsigned)realCount, realCount == 1 ? "" : "s");
         static const char typeChar[] = {'P', 'C', 'B', 'U'};
         static const char hex[] = "0123456789ABCDEF";
         for (uint8_t i = 0; i < count; ++i)
@@ -337,9 +361,16 @@ namespace J1850VPW
             ipcDtcSeen = true;
           const char *desc = dtcLookup(code);
           if (desc)
-            TRACE_LOG("  %s: %s\r\n", code, desc);
+            PrintF("  %s: %s\r\n", code, desc);
           else
-            TRACE_LOG("  %s\r\n", code);
+            PrintF("  %s\r\n", code);
+        }
+        /* An odd trailing byte is the KWP statusOfDTC for the (single) code
+         * in this frame - the current-vs-historic discriminator (#81). */
+        if (dtcBytes & 1)
+        {
+          PrintF("  status byte: 0x%02X\r\n",
+                 (unsigned)payloadJ1850[headerSize + 1 + count * 2]);
         }
       }
     }
