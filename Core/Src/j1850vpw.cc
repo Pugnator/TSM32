@@ -3,6 +3,7 @@
 #include <string.h>
 #include <assert.h>
 #include "dwtdelay.h"
+#include "watchdog.h"
 
 #if J1850_ENABLED
 #define BIT_PER_BYTE 7
@@ -132,6 +133,9 @@ namespace J1850VPW
     uint32_t idleStart          = DWT->CYCCNT;
     for (;;)
     {
+      /* This wait can legitimately run up to 20 ms; keep the 65 ms WWDG
+       * deadman satisfied while we are demonstrably alive. */
+      watchdog_refresh();
       if (HAL_GPIO_ReadPin(J1850RX_GPIO_Port, J1850RX_Pin) == GPIO_PIN_SET)
       {
         idleStart = DWT->CYCCNT; // bus active: restart the idle window
