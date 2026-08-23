@@ -12,6 +12,7 @@
 #include "vmmu.h"
 #include "assert.h"
 #include "dwtdelay.h"
+#include "watchdog.h"
 
 bool stopAppExecuting = true;
 
@@ -58,6 +59,7 @@ extern "C"
     PrintF("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
            id[0], id[1], id[2],
            VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
+    watchdog_report_reset_cause();
 
     startupSettingsHandler();
 
@@ -95,8 +97,14 @@ extern "C"
            mpu->ok() ? "OK" : "FAILED - check bus / wiring");
 #endif
     stopAppExecuting = false;
+    /* Arm both watchdogs only now: all slow one-time init (settings scan,
+     * MEMS/DMP upload) is done, and the loop below refreshes every
+     * iteration.  Long blocking waits inside the J1850 TX path kick them
+     * inline via watchdog_refresh(). */
+    watchdog_start();
     while (!stopAppExecuting)
     {
+      watchdog_refresh();
 #if AUTO_LIGHT_ENABLE
       adcHandler();
 #endif
