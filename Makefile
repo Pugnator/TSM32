@@ -229,6 +229,14 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 CFLAGS += $(IMU_BUS_DEFS)
 CXXFLAGS += $(IMU_BUS_DEFS)
 
+# Watchdog escape hatch: `make WATCHDOG_ENABLED=0` compiles the IWDG/WWDG
+# arming out entirely (refresh/status stay callable) for board bring-up or
+# bisecting a reset. Default (unset) leaves both watchdogs enabled.
+ifdef WATCHDOG_ENABLED
+CFLAGS += -DWATCHDOG_ENABLED=$(WATCHDOG_ENABLED)
+CXXFLAGS += -DWATCHDOG_ENABLED=$(WATCHDOG_ENABLED)
+endif
+
 CFLAGS += -DVERSION_BUILD_DATE=\""$(BUILD_DATE)\"" \
           -DVERSION_TAG=\""$(BUILD_TAG)\"" \
           -DVERSION_BUILD=\""$(BUILD_INFO)\""
