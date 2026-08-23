@@ -39,7 +39,7 @@ BUILD_MACHINE := $(shell echo %username%)@$(shell hostname)
 # building variables
 ######################################
 # debug build?
-DEBUG = 1
+DEBUG = 0
 # optimization
 
 ifeq ($(DEBUG), 1)
