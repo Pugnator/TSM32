@@ -3,7 +3,6 @@
 #include <string.h>
 #include <assert.h>
 #include "dwtdelay.h"
-#include "watchdog.h"
 
 #if J1850_ENABLED
 #define BIT_PER_BYTE 7
@@ -133,9 +132,6 @@ namespace J1850VPW
     uint32_t idleStart          = DWT->CYCCNT;
     for (;;)
     {
-      /* This wait can legitimately run up to 20 ms; keep the 65 ms WWDG
-       * deadman satisfied while we are demonstrably alive. */
-      watchdog_refresh();
       if (HAL_GPIO_ReadPin(J1850RX_GPIO_Port, J1850RX_Pin) == GPIO_PIN_SET)
       {
         idleStart = DWT->CYCCNT; // bus active: restart the idle window
@@ -162,13 +158,6 @@ namespace J1850VPW
     {
       return J1850error::LostArbitration;
     }
-    /* One iteration of the main loop can legitimately bit-bang several
-     * frames back-to-back (security reply + heartbeat pair + DTC query),
-     * ~8 ms each, which alone approaches the 65 ms WWDG ceiling.  This
-     * function cannot hang - fixed byte count, DWT-bounded symbol delays -
-     * so refreshing here is safe and caps the un-refreshed span to a
-     * single frame instead of a whole burst. */
-    watchdog_refresh();
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_SET);
     J1850delayUS(TX_SOF);
     HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);

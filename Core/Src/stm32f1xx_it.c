@@ -288,13 +288,5 @@ void EXTI15_10_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-#include "watchdog.h"
 
-/**
-  * @brief WWDG early-wakeup interrupt: last gasp before the watchdog reset.
-  */
-void WWDG_IRQHandler(void)
-{
-  watchdog_wwdg_irq();
-}
 /* USER CODE END 1 */
