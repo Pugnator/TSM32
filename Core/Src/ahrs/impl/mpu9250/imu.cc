@@ -189,7 +189,7 @@ namespace Mpu9250
       return InterruptSource::DmpInterrupt;
     }
 
-    if (data & 0x08)
+    if (data & 0x10) // INT_STATUS bit4 = FIFO_OVERFLOW_INT (bit3/0x08 is FSYNC)
     {
       return InterruptSource::FifoOverflow;
     }
