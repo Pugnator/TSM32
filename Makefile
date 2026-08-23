@@ -64,7 +64,6 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
-Core/Src/watchdog.c \
 Core/Src/gpio.c \
 Core/Src/adc.c \
 Core/Src/tim.c \
@@ -228,14 +227,6 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # "-DIMU_USE_SPI" - the variable already carries its own -D flags).
 CFLAGS += $(IMU_BUS_DEFS)
 CXXFLAGS += $(IMU_BUS_DEFS)
-
-# Watchdog escape hatch: `make WATCHDOG_ENABLED=0` compiles the IWDG/WWDG
-# arming out entirely (refresh/status stay callable) for board bring-up or
-# bisecting a reset. Default (unset) leaves both watchdogs enabled.
-ifdef WATCHDOG_ENABLED
-CFLAGS += -DWATCHDOG_ENABLED=$(WATCHDOG_ENABLED)
-CXXFLAGS += -DWATCHDOG_ENABLED=$(WATCHDOG_ENABLED)
-endif
 
 CFLAGS += -DVERSION_BUILD_DATE=\""$(BUILD_DATE)\"" \
           -DVERSION_TAG=\""$(BUILD_TAG)\"" \
