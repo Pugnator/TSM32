@@ -106,44 +106,87 @@ extern "C"
       {
         J1850VPW::printFrame();
         J1850VPW::parseFrame();
-        J1850VPW::messageReset();
+        /* Release only the snapshot - the ISR keeps receiving into its own
+         * assembly buffer the whole time (Fixes #74). */
+        messageCollected = false;
+      }
+
+      /* Frames that completed while the previous snapshot was unprocessed. */
+      {
+        static uint32_t lastDropReport = 0;
+        if (j1850DroppedFrames != lastDropReport)
+        {
+          lastDropReport = j1850DroppedFrames;
+          PrintF("[%lu] J1850 RX overrun: %lu frame(s) dropped total\r\n",
+                 (unsigned long)HAL_GetTick(), (unsigned long)lastDropReport);
+        }
       }
 
       Engine::handler();
 
-      // TSM network-presence heartbeat: send "29 FE 40 01 <crc>" every 2 s
-      // once the bus is active.  Without this the IPC logs U1255 "Serial Data
-      // Error/Missing Message" because it expects to hear from address 0x40
-      // (TSM) at least once every ~3 s, and lights the SIL.
+      // Security-poll responder: the IPC polls function 0x93 with type 0x2A
+      // (69 93 61 2A on this bike) and a genuine TSM answers on the mirror
+      // address 0x92 - donor capture: 48 92 40 2A 82 22 F2 (idle variant
+      // 48 92 40 AA FF FF 5B).  Answer each poll, rate-limited (#81).
+      if (securityPollPending)
       {
-        static uint32_t hbLastTick = 0;
-        static bool     hbStarted  = false;
-        const uint32_t  now_hb     = HAL_GetTick();
-        if (!hbStarted && frameCounter >= 5)
+        static uint32_t secLastTick = 0;
+        const uint32_t  now_sec     = HAL_GetTick();
+        securityPollPending = false;
+        if (secLastTick == 0 || (now_sec - secLastTick) >= 200u)
         {
-          hbStarted  = true;
-          hbLastTick = now_hb;
-        }
-        if (hbStarted && (now_hb - hbLastTick) >= 2000u)
-        {
-          static const uint8_t hb[] = {0x29, 0xFE, 0x40, 0x01};
-          j1850TxRaw(hb, sizeof(hb));
-          hbLastTick = HAL_GetTick();
+          static const uint8_t secResp[] = {0x48, 0x92, 0x40, 0x2A, 0x82, 0x22};
+          PrintF("[%lu] security reply -> 48 92 40 2A 82 22\r\n",
+                 (unsigned long)now_sec);
+          j1850TxRaw(secResp, sizeof(secResp));
+          secLastTick = HAL_GetTick();
         }
       }
 
-      // Periodic IPC DTC clear — DISABLED: confirmed unnecessary after bike testing.
-      //
-      // The IPC sets U1255 ("Serial Data Error / Missing Message") only when
-      // address 0x40 (TSM) stops sending its network-presence heartbeat
-      // (29 FE 40 xx) for more than ~3 s.  The heartbeat below fires every 2 s
-      // and fully prevents U1255 from ever being stored, so this fallback clear
-      // serves no purpose and needlessly writes to IPC flash every 10 s.
-      //
-      // Validation: harley_new.log shows SIL=ON exactly once for 63 ms at boot
-      // (ECM lamp self-test, not a fault), then SIL=off for the entire 140 s
-      // session — zero occurrences of the ~600 ms periodic SIL=ON bursts seen
-      // in j1850_live_capture.log (captured without the heartbeat).
+      // TSM presence broadcast: emulate what a genuine TSM/TSSM puts on the
+      // bus so the IPC's U1064 "Loss of TSM/TSSM Serial Data" watchdog stays
+      // satisfied and the security lamp stays off.  Two frames, both sourced
+      // from 0x40, once the bus is active then every 2 s:
+      //   68 FF 40 03  - module-status broadcast to function 0xFF.  Every
+      //                  other module sends its own (ECM 68 FF 10 03, IPC
+      //                  68 FF 61 03, HUD 68 FF 62 03); the TSM's is
+      //                  68 FF 40 03 D8, confirmed CRC-valid against a real
+      //                  bus capture.  This is the frame the IPC most likely
+      //                  keys presence on (#79/#81).
+      //   29 FE 40 01  - network-control presence, kept as belt-and-braces.
+      // First broadcast goes out immediately on bus wake-up (the presence
+      // deadline is only ~3 s) and a failed TX is retried quickly instead of
+      // waiting a full period.
+      {
+        static uint32_t hbLastTick  = 0;
+        static uint32_t hbInterval  = 0;
+        static bool     hbStarted   = false;
+        const uint32_t  now_hb      = HAL_GetTick();
+        if (!hbStarted && frameCounter >= 1)
+        {
+          hbStarted  = true;
+          hbLastTick = now_hb;
+          hbInterval = 0; // fire on this iteration
+        }
+        if (hbStarted && (now_hb - hbLastTick) >= hbInterval)
+        {
+          static const uint8_t status[] = {0x68, 0xFF, 0x40, 0x03};
+          static const uint8_t netctl[] = {0x29, 0xFE, 0x40, 0x01};
+          const bool s1 = j1850TxRaw(status, sizeof(status));
+          const bool s2 = j1850TxRaw(netctl, sizeof(netctl));
+          hbLastTick = HAL_GetTick();
+          hbInterval = (s1 && s2) ? 2000u : 250u;
+        }
+      }
+
+      // Periodic IPC DTC clear — DISABLED, but the original justification was
+      // WRONG (#81): harley_new.log, the session used to "prove" the heartbeat
+      // alone keeps the SIL off, was captured on build g18a4725 and contains
+      // "Periodic SIL clear -> IPC" every 10 s from t=40 s — both mechanisms
+      // were active.  The SIL regression appeared once this block was removed.
+      // Its role is now covered by the event-driven IPC clear in the auto-DTC
+      // state machine below (react state), which fires only when the IPC
+      // reports codes or the SIL is actually lit.
       //
       // {
       //   static uint32_t silClearLastTick = 0;
@@ -167,13 +210,19 @@ extern "C"
       //   }
       // }
 
-      // Auto-DTC poll: once the bus is active (>=5 frames), query ECM, BCM
-      // and IPC in sequence with 200 ms gaps, then on the first cycle send a
-      // one-shot clear to ECM (clears P1010 / security lamp), then repeat
-      // the read-only query every 10 s.
+      // Auto-DTC poll: once the bus is active (>=5 frames), query ECM(0x10)
+      // and both IPC address candidates (0x60, 0x61 - see #72, the log will
+      // show which one answers) with 200 ms gaps, then react to what THIS
+      // cycle's responses reported, then cool down 10 s and repeat.
+      //
+      // The clear is no longer a one-shot: the response flags are reset at
+      // the start of every cycle, so a password DTC that the ECM re-sets is
+      // cleared again on the next pass, rate-limited by the 10 s cooldown
+      // (Fixes #71).  0x40 is no longer queried - that is our own address
+      // (Fixes #73).
       //
       // States: 0=wait for bus  1-3=querying modules
-      //         4=one-time clear DTC (first cycle only)  5=cooldown
+      //         4=react (clear what was reported)  5=cooldown
       {
         /* Wrap-safe deadlines: store the start tick and an interval, then
          * compare via unsigned subtraction. Raw HAL_GetTick() >= deadline
@@ -182,12 +231,21 @@ extern "C"
         static uint8_t  dtcState     = 0;
         static uint32_t dtcLastTick  = 0;
         static uint32_t dtcInterval  = 0;
-        static bool     clearedOnce  = false;
 
-        // Modules to query: ECM(0x10), BCM/TSM(0x40), IPC(0x60)
-        static const uint8_t dtcTargets[] = {0x10, 0x40, 0x60};
+        // Modules to query: ECM(0x10), IPC candidates (0x60, 0x61)
+        static const uint8_t dtcTargets[] = {0x10, 0x60, 0x61};
 
         const uint32_t now = HAL_GetTick();
+
+        /* SIL observation for the discriminator below (#81): how long has
+         * the pri-6 lamp channel been continuously ON? */
+        static uint32_t silOnSince   = 0;
+        static uint32_t lastSilCycle = 0;
+        if (!sil)
+          silOnSince = 0;
+        else if (silOnSince == 0)
+          silOnSince = now;
+        const bool silHeld = silOnSince != 0 && (now - silOnSince) >= 1000u;
 
         if (dtcState == 0 && frameCounter >= 5)
         {
@@ -199,44 +257,49 @@ extern "C"
         {
           if ((now - dtcLastTick) >= dtcInterval)
           {
+            if (dtcState == 1)
+            {
+              /* Fresh cycle: forget the previous cycle's responses so the
+               * react state reflects the present, not history (#71). */
+              passwordDtcSeen = false;
+              bcmDtcSeen      = false;
+              ipcDtcSeen      = false;
+            }
             const uint8_t target = dtcTargets[dtcState - 1];
             const uint8_t req[7] = {0x6C, target, 0xF1, 0x19, 0x52, 0xFF, 0x00};
-            TRACE_LOG("Auto DTC query -> 0x%02X\r\n", (unsigned)target);
-            j1850TxRaw(req, sizeof(req));
+            if (j1850TxRaw(req, sizeof(req)))
+            {
+              dtcState    = (dtcState < 3) ? dtcState + 1 : 4;
+              dtcInterval = 200;
+            }
+            else
+            {
+              dtcInterval = 250; // TX failed: retry the same target (#70)
+            }
             dtcLastTick = HAL_GetTick();
-            dtcInterval = 200;
-            dtcState    = (dtcState < 3) ? dtcState + 1 : 4;
           }
         }
         else if (dtcState == 4 && (now - dtcLastTick) >= dtcInterval)
         {
-          if (!clearedOnce && passwordDtcSeen)
+          if (passwordDtcSeen)
           {
             // Clear ECM DTCs (P1009/P1010 password fault drives MIL).
             const uint8_t clrEcm[4] = {0x6C, 0x10, 0xF1, 0x14};
-            PrintF("[%lu] Auto DTC clear -> ECM (password DTC present)\r\n",
+            PrintF("[%lu] DTC clear -> ECM (password DTC present)\r\n",
                    (unsigned long)HAL_GetTick());
             j1850TxRaw(clrEcm, sizeof(clrEcm));
-            // Clear BCM DTCs if any were returned (BCM can hold U1064 etc.
-            // which independently keep the SIL on).
-            if (bcmDtcSeen)
-            {
-              const uint8_t clrBcm[4] = {0x6C, 0x40, 0xF1, 0x14};
-              PrintF("[%lu] Auto DTC clear -> BCM\r\n",
-                     (unsigned long)HAL_GetTick());
-              j1850TxRaw(clrBcm, sizeof(clrBcm));
-            }
-            // Clear IPC DTCs if any were returned (IPC can hold U1064
-            // "Loss of TSM/TSSM Serial Data" which drives SIL independently
-            // of ECM).
-            if (ipcDtcSeen)
-            {
-              const uint8_t clrIpc[4] = {0x6C, 0x61, 0xF1, 0x14};
-              PrintF("[%lu] Auto DTC clear -> IPC\r\n",
-                     (unsigned long)HAL_GetTick());
-              j1850TxRaw(clrIpc, sizeof(clrIpc));
-            }
-            clearedOnce = true;
+          }
+          /* IPC clear: either it reported stored codes, or the SIL is lit
+           * with nothing reported - clearing in the latter case is the #81
+           * discriminator: lamp goes off => it was IPC-stored (U1064/U1255),
+           * lamp stays => it is ECM/security-status driven. */
+          if (ipcDtcSeen || silHeld)
+          {
+            const uint8_t clrIpc[4] = {0x6C, 0x61, 0xF1, 0x14};
+            PrintF("[%lu] DTC clear -> IPC (%s)\r\n",
+                   (unsigned long)HAL_GetTick(),
+                   ipcDtcSeen ? "codes stored" : "SIL lit, no codes reported");
+            j1850TxRaw(clrIpc, sizeof(clrIpc));
           }
           dtcState    = 5;
           dtcLastTick = HAL_GetTick();
@@ -254,6 +317,17 @@ extern "C"
             dtcState    = 1;
             dtcLastTick = now;
             dtcInterval = 200;
+          }
+          /* SIL just lit and held >=1 s: jump-start a cycle now so the log
+           * captures what the modules hold at that exact moment (#81). */
+          else if (silHeld && (now - lastSilCycle) >= 15000u)
+          {
+            lastSilCycle = now;
+            PrintF("[%lu] SIL held >1s -> immediate DTC cycle\r\n",
+                   (unsigned long)now);
+            dtcState    = 1;
+            dtcLastTick = now;
+            dtcInterval = 0;
           }
           else if ((now - dtcLastTick) >= dtcInterval)
           {
