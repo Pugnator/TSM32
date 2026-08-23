@@ -30,11 +30,15 @@ namespace Mpu9250
     if (!mpuRead(MPU9250_GYRO_CONFIG, temp_))
       return false;
 
-    *temp_ = *temp_ & ~0xE0; // Clear self-test bits [7:5]
-    *temp_ &= ~0x02;         // Clear Fchoice bits [1:0]
-    *temp_ &= ~0x18;         // Clear AFS bits [4:3]
-    *temp_ |= 0x00 << 3;     // Set full scale range for the gyro (250DPS)
-    // c =| 0x00; // Set Fchoice for the gyro to 11 by writing its inverse to bits 1:0 of GYRO_CONFIG
+    *temp_ &= ~0xE0; // Clear self-test bits [7:5]
+    /* Clear BOTH Fchoice_b bits [1:0] so Fchoice=11 and the gyro DLPF is
+     * enabled.  The old mask ~0x02 left bit 0 untouched: harmless from a
+     * cold boot (GYRO_CONFIG reads 0x00) but on a warm re-init it could
+     * leave Fchoice_b=01, bypassing the DLPF and feeding 8.8 kHz-bandwidth
+     * gyro noise into the fusion filter. */
+    *temp_ &= ~0x03;     // Clear Fchoice_b bits [1:0] -> DLPF enabled
+    *temp_ &= ~0x18;     // Clear GYRO_FS_SEL bits [4:3]
+    *temp_ |= 0x00 << 3; // GYRO_FS_SEL = 00: full-scale range 250 DPS
 
     if (!mpuWrite(MPU9250_GYRO_CONFIG, *temp_))
       return false;
