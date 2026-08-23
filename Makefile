@@ -64,6 +64,7 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
+Core/Src/watchdog.c \
 Core/Src/gpio.c \
 Core/Src/adc.c \
 Core/Src/tim.c \

@@ -12,6 +12,7 @@
 #include "vmmu.h"
 #include "assert.h"
 #include "dwtdelay.h"
+#include "watchdog.h"
 
 bool stopAppExecuting = true;
 
@@ -59,7 +60,15 @@ extern "C"
            id[0], id[1], id[2],
            VERSION_BUILD_DATE, VERSION_TAG, VERSION_BUILD);
 
+    /* Report why the previous boot ended (IWDG hang / fault / power-on) then
+     * arm the IWDG BEFORE the slow init below, so a hang in init is caught as
+     * well as one in the main loop. Every init phase and the loop refresh
+     * within the ~2 s timeout. */
+    watchdog_report_reset_cause();
+    watchdog_init();
+
     startupSettingsHandler();
+    watchdog_refresh();
 
 /*Battery watchdog*/
 #if AUTO_LIGHT_ENABLE
@@ -94,9 +103,11 @@ extern "C"
            Imu::kBusName,
            mpu->ok() ? "OK" : "FAILED - check bus / wiring");
 #endif
+    watchdog_refresh(); // IMU/DMP upload is the slowest init phase
     stopAppExecuting = false;
     while (!stopAppExecuting)
     {
+      watchdog_refresh();
 #if AUTO_LIGHT_ENABLE
       adcHandler();
 #endif
