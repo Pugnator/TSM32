@@ -13,13 +13,13 @@ At reviewed revision `e170868`: **hold the 1.0 release until CR-001 through CR-0
 
 All seven findings are addressed on branch `fix/v1.0-review-findings`:
 
-- CR-001: DTC monitoring is read-only; production code no longer sends service `0x14`.
-- CR-002: engine state requires independently fresh, CRC-validated RPM and speed signals.
-- CR-003: the software lock remains set when the configured policy requires an ignition-cycle unlock.
-- CR-004: the bounded retry retains arbitration monitoring.
-- CR-005: the host test shim is repaired and an ordinary `make -C tests test` target was added.
-- CR-006: raw accelerometer and gyro data share a proper 180-degree Z-axis rotation.
-- CR-007: zero/non-finite fusion gradients are not normalized.
+- CR-001 ([#87](https://github.com/petrolhead-electronics/TSM32/issues/87)): DTC monitoring is read-only; production code no longer sends service `0x14`.
+- CR-002 ([#88](https://github.com/petrolhead-electronics/TSM32/issues/88)): engine state requires independently fresh, CRC-validated RPM and speed signals.
+- CR-003 ([#89](https://github.com/petrolhead-electronics/TSM32/issues/89)): the software lock remains set when the configured policy requires an ignition-cycle unlock.
+- CR-004 ([#90](https://github.com/petrolhead-electronics/TSM32/issues/90)): the bounded retry retains arbitration monitoring.
+- CR-005 ([#91](https://github.com/petrolhead-electronics/TSM32/issues/91)): the host test shim is repaired and an ordinary `make -C tests test` target was added.
+- CR-006 ([#92](https://github.com/petrolhead-electronics/TSM32/issues/92)): raw accelerometer and gyro data share a proper 180-degree Z-axis rotation.
+- CR-007 ([#93](https://github.com/petrolhead-electronics/TSM32/issues/93)): zero/non-finite fusion gradients are not normalized.
 
 The original findings below are retained as the review record.
 
