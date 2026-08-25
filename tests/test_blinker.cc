@@ -1,15 +1,8 @@
 // ---------------------------------------------------------------------------
 // Blinker unit tests
 //
-// Build (from repo root, Windows):
-//   g++ -std=c++17 -O0 -DDEBUG -I tests -I Core/Inc ^
-//       tests/test_blinker.cc Core/Src/switch_ctrl.cc Core/Src/turn_ctrl.cc ^
-//       -o tests/test_blinker.exe && tests\test_blinker.exe
-//
-// Build (Linux/macOS):
-//   g++ -std=c++17 -O0 -DDEBUG -I tests -I Core/Inc \\
-//       tests/test_blinker.cc Core/Src/switch_ctrl.cc Core/Src/turn_ctrl.cc \\
-//       -o tests/test_blinker && ./tests/test_blinker
+// Build and run all host tests from the repository root:
+//   make -C tests test
 // ---------------------------------------------------------------------------
 
 // test_env.h must come first — it provides all stubs and extern declarations.

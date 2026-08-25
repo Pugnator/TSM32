@@ -9,7 +9,6 @@ namespace Engine
 static State     gState          = State::Unknown;
 static bool      gStarterLocked  = false;
 static uint32_t  gOffSince       = 0;   // tick when RPM+KPH first hit zero
-static uint32_t  gLastFrameTick  = 0;   // tick of last live J1850 frame
 
 // ── public API ──────────────────────────────────────────────────────────────
 
@@ -22,24 +21,21 @@ void handler()
 {
   const uint32_t now = HAL_GetTick();
 
-  // Track whether the bus is producing frames.
-  static uint32_t prevFrameCounter = 0;
-  if (frameCounter != prevFrameCounter)
-  {
-    prevFrameCounter = frameCounter;
-    gLastFrameTick   = now;
-  }
-
-  // If no frame has been seen yet, or the bus has been silent too long,
-  // stay Unknown so the caller falls back to the voltage FSM.
-  if (gLastFrameTick == 0 ||
-      (now - gLastFrameTick) > J1850_BUS_TIMEOUT_MS)
+  // Both inputs are required and expire independently.  Raw frameCounter
+  // activity is deliberately ignored: unrelated traffic and malformed SOFs
+  // say nothing about whether RPM/KPH are still current.
+  const bool telemetryFresh =
+      rpmSignalSeen && speedSignalSeen &&
+      (now - rpmLastUpdateTick) <= J1850_SIGNAL_TIMEOUT_MS &&
+      (now - speedLastUpdateTick) <= J1850_SIGNAL_TIMEOUT_MS;
+  if (!telemetryFresh)
   {
     if (gState != State::Unknown)
     {
-      DEBUG_LOG("Engine: J1850 bus silent -> state Unknown (voltage FSM takes over)\r\n");
+      DEBUG_LOG("Engine: RPM/KPH telemetry stale -> state Unknown (voltage FSM takes over)\r\n");
       gState = State::Unknown;
     }
+    gOffSince = 0;
     return;
   }
 
@@ -50,10 +46,19 @@ void handler()
   switch (gState)
   {
   case State::Unknown:
-    // First live frame — transition to Off as baseline.
-    DEBUG_LOG("Engine: J1850 bus active -> state Off\r\n");
-    gState   = State::Off;
-    gOffSince = now;
+    if (engineOn)
+    {
+      gState = State::Running;
+      gOffSince = 0;
+      DEBUG_LOG("Engine: fresh telemetry -> state Running (RPM=%u)\r\n",
+                (unsigned)rpms);
+    }
+    else
+    {
+      gState = State::Off;
+      gOffSince = stopped ? now : 0;
+      DEBUG_LOG("Engine: fresh telemetry -> state Off\r\n");
+    }
     break;
 
   case State::Off:
@@ -93,11 +98,18 @@ void handler()
 
       if ((now - gOffSince) >= ENGINE_OFF_DEBOUNCE_MS)
       {
-        gState         = State::Off;
+        gState = State::Off;
+#if STARTER_UNLOCK_DISABLE
+        /* The configured policy requires an ignition cycle to unlock.  Keep
+         * software state aligned with the latched relay state. */
+        gStarterLocked = true;
+        DEBUG_LOG("Engine: state Off -> starter remains LOCKED until ignition cycle\r\n");
+#else
         gStarterLocked = false;
         enableStarter();
-        gOffSince = 0;
         DEBUG_LOG("Engine: state Off -> starter UNLOCKED\r\n");
+#endif
+        gOffSince = 0;
       }
     }
     else

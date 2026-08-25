@@ -190,50 +190,16 @@ extern "C"
         }
       }
 
-      // Periodic IPC DTC clear — DISABLED, but the original justification was
-      // WRONG (#81): harley_new.log, the session used to "prove" the heartbeat
-      // alone keeps the SIL off, was captured on build g18a4725 and contains
-      // "Periodic SIL clear -> IPC" every 10 s from t=40 s — both mechanisms
-      // were active.  The SIL regression appeared once this block was removed.
-      // Its role is now covered by the event-driven IPC clear in the auto-DTC
-      // state machine below (react state), which fires only when the IPC
-      // reports codes or the SIL is actually lit.
-      //
-      // {
-      //   static uint32_t silClearLastTick = 0;
-      //   static bool     silClearArmed    = false;
-      //   static uint32_t busActiveSince   = 0;
-      //   const uint32_t  now_sc           = HAL_GetTick();
-      //   if (frameCounter >= 5 && busActiveSince == 0)
-      //     busActiveSince = now_sc;
-      //   if (!silClearArmed && busActiveSince != 0 &&
-      //       (now_sc - busActiveSince) >= 30000u)
-      //   {
-      //     silClearArmed    = true;
-      //     silClearLastTick = now_sc;
-      //   }
-      //   if (silClearArmed && (now_sc - silClearLastTick) >= 10000u)
-      //   {
-      //     const uint8_t clrIpc[4] = {0x6C, 0x61, 0xF1, 0x14};
-      //     PrintF("[%lu] Periodic SIL clear -> IPC\r\n", (unsigned long)now_sc);
-      //     j1850TxRaw(clrIpc, sizeof(clrIpc));
-      //     silClearLastTick = HAL_GetTick();
-      //   }
-      // }
-
-      // Auto-DTC poll: once the bus is active (>=5 frames), query ECM(0x10)
+      // DTC monitor: once the bus is active (>=5 frames), query ECM(0x10)
       // and both IPC address candidates (0x60, 0x61 - see #72, the log will
-      // show which one answers) with 200 ms gaps, then react to what THIS
-      // cycle's responses reported, then cool down 10 s and repeat.
-      //
-      // The clear is no longer a one-shot: the response flags are reset at
-      // the start of every cycle, so a password DTC that the ECM re-sets is
-      // cleared again on the next pass, rate-limited by the 10 s cooldown
-      // (Fixes #71).  0x40 is no longer queried - that is our own address
-      // (Fixes #73).
+      // show which one answers) with 200 ms gaps, log what THIS cycle's
+      // responses reported, then cool down 10 s and repeat.  Production code
+      // intentionally never transmits service 0x14: automatic clearing can
+      // erase unrelated diagnostic history.  0x40 is not queried because it
+      // is our own address.
       //
       // States: 0=wait for bus  1-3=querying modules
-      //         4=react (clear what was reported)  5=cooldown
+      //         4=report what was observed  5=cooldown
       {
         /* Wrap-safe deadlines: store the start tick and an interval, then
          * compare via unsigned subtraction. Raw HAL_GetTick() >= deadline
@@ -294,23 +260,14 @@ extern "C"
         {
           if (passwordDtcSeen)
           {
-            // Clear ECM DTCs (P1009/P1010 password fault drives MIL).
-            const uint8_t clrEcm[4] = {0x6C, 0x10, 0xF1, 0x14};
-            PrintF("[%lu] DTC clear -> ECM (password DTC present)\r\n",
+            PrintF("[%lu] ECM password DTC present; automatic clear disabled\r\n",
                    (unsigned long)HAL_GetTick());
-            j1850TxRaw(clrEcm, sizeof(clrEcm));
           }
-          /* IPC clear: either it reported stored codes, or the SIL is lit
-           * with nothing reported - clearing in the latter case is the #81
-           * discriminator: lamp goes off => it was IPC-stored (U1064/U1255),
-           * lamp stays => it is ECM/security-status driven. */
           if (ipcDtcSeen || silHeld)
           {
-            const uint8_t clrIpc[4] = {0x6C, 0x61, 0xF1, 0x14};
-            PrintF("[%lu] DTC clear -> IPC (%s)\r\n",
+            PrintF("[%lu] IPC diagnostic attention (%s); automatic clear disabled\r\n",
                    (unsigned long)HAL_GetTick(),
                    ipcDtcSeen ? "codes stored" : "SIL lit, no codes reported");
-            j1850TxRaw(clrIpc, sizeof(clrIpc));
           }
           dtcState    = 5;
           dtcLastTick = HAL_GetTick();

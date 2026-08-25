@@ -1,5 +1,6 @@
 #include "mpu9250_base.h"
 #include "types.h"
+#include "axis_remap.h"
 #include <algorithm>
 
 namespace Mpu9250
@@ -54,15 +55,8 @@ namespace Mpu9250
     // a 2-byte over-read into uninitialised stack memory.  See issue #32
     // for the proper readChipTemperature() implementation.
 
-    // Sensor -> body axis remap (motorcycle deployment).
-    // Sensor axes: X=back, Y=right, Z=up.
-    // Body axes:   X=forward, Y=right, Z=up.  (180 deg rotation about Z.)
-    //   x_body = -x_sensor
-    //   y_body =  y_sensor
-    //   z_body =  z_sensor
-    result.x = -(float)accX * aMult;
-    result.y =  (float)accY * aMult;
-    result.z =  (float)accZ * aMult;
+    result = Ahrs::sensorToBodyZ180((float)accX, (float)accY,
+                                    (float)accZ, aMult);
     return true;
   }
 }

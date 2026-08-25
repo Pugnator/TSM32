@@ -168,6 +168,8 @@ namespace J1850VPW
       {
         rpms = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
         rpms /= 4;
+        rpmLastUpdateTick = HAL_GetTick();
+        rpmSignalSeen = true;
       }
     }
     else if (destination == SPEED)
@@ -176,6 +178,8 @@ namespace J1850VPW
       {
         kph = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
         kph /= 128;
+        speedLastUpdateTick = HAL_GetTick();
+        speedSignalSeen = true;
       }
     }
     else if (destination == MIL && j1850RXctr >= 5)
@@ -353,9 +357,9 @@ namespace J1850VPW
           code[5] = '\0';
           // P1009 (hi=0x10,lo=0x09) = Incorrect Password
           // P1010 (hi=0x10,lo=0x10) = Missing Password
-          if (hi == 0x10 && (lo == 0x09 || lo == 0x10))
+          if (src == 0x10 && hi == 0x10 && (lo == 0x09 || lo == 0x10))
             passwordDtcSeen = true;
-          // Track per-module DTC presence for targeted clears.
+          // Track per-module DTC presence for monitoring/reporting.
           if (src == 0x40)
             bcmDtcSeen = true;
           else if (src == 0x61)

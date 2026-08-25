@@ -53,4 +53,15 @@ extern "C"
     // switch_ctrl.cc / turn_ctrl.cc, so definitions are never needed).
     uint16_t rpms = 0;
     uint16_t kph  = 0;
+    volatile uint32_t rpmLastUpdateTick = 0;
+    volatile uint32_t speedLastUpdateTick = 0;
+    volatile bool rpmSignalSeen = false;
+    volatile bool speedSignalSeen = false;
+}
+
+// EOF processing belongs to the J1850 receiver, which is intentionally not
+// linked into the blinker/engine host tests.
+namespace J1850VPW
+{
+    void onEofTimeout() {}
 }

@@ -27,6 +27,10 @@ volatile uint32_t j1850DroppedFrames = 0;
 
 uint16_t rpms = 0;
 uint16_t kph = 0;
+volatile uint32_t rpmLastUpdateTick = 0;
+volatile uint32_t speedLastUpdateTick = 0;
+volatile bool rpmSignalSeen = false;
+volatile bool speedSignalSeen = false;
 bool mil = 0;     // 0x88 frames with header priority 3 (fault/lamp channel)
 bool milAux = 0;  // 0x88 frames with other priorities (periodic status)
 bool sil = 0;     // 0x89 frames with header priority 6 (lamp-drive channel)
@@ -110,11 +114,6 @@ namespace J1850VPW
     __HAL_TIM_SET_COUNTER(&J1850_EOF_TIMER, 0);
     HAL_TIM_Base_Start_IT(&J1850_EOF_TIMER);
   }
-
-  /* Arbitration monitoring can be disabled for one blind retry when the
-   * monitor itself is suspected of tripping on our own transceiver tail
-   * (safety net so a miscalibrated monitor can never kill the TX path). */
-  static bool arbMonitorEnabled_ = true;
 
   /* J1850 VPW is a CSMA bus: wait until the RX line has been passive for
    * at least one IFS before starting our SOF, so we do not stomp a frame
@@ -205,7 +204,7 @@ namespace J1850VPW
         HAL_GPIO_WritePin(J1850TX_GPIO_Port, J1850TX_Pin, GPIO_PIN_RESET);
         while (DWT->CYCCNT - start < delayTicks)
         {
-          if (!arbMonitorEnabled_ || (DWT->CYCCNT - start) <= blankTicks)
+          if ((DWT->CYCCNT - start) <= blankTicks)
           {
             continue;
           }
@@ -457,19 +456,13 @@ extern "C"
     J1850VPW::J1850error rc = J1850VPW::sendFrame(bytes, len);
     if (rc == J1850VPW::J1850error::LostArbitration)
     {
-      /* Either a genuine collision or the arbitration monitor tripping on
-       * our own transceiver tail.  Wait out the (possible) foreign frame,
-       * then retry ONCE with the monitor disabled so a miscalibrated
-       * monitor can never kill the TX path entirely (field failure mode:
-       * 100% LOST_ARB, no heartbeat on the bus, SIL lit). */
-      PrintF("[%lu] j1850 tx: LOST_ARB, retrying blind\r\n",
+      /* Wait out the competing frame and retry once.  Arbitration remains
+       * enabled on every attempt: another node may begin after carrier sense,
+       * and a blind retry would corrupt both frames. */
+      PrintF("[%lu] j1850 tx: LOST_ARB, retrying with arbitration\r\n",
              (unsigned long)HAL_GetTick());
       if (J1850VPW::waitBusIdle())
-      {
-        J1850VPW::arbMonitorEnabled_ = false;
         rc = J1850VPW::sendFrame(bytes, len);
-        J1850VPW::arbMonitorEnabled_ = true;
-      }
     }
     HAL_TIM_IC_Start_IT(&J1850_IC_INSTANCE, TIM_CHANNEL_2);
     if (rc != J1850VPW::J1850error::OK)
