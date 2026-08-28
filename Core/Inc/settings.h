@@ -61,7 +61,7 @@
 #define ENGINE_RUNNING_RPM_MIN    1000u  /* RPM threshold to consider engine on     */
 #define ENGINE_RUNNING_KPH_MIN    10u    /* KPH threshold to confirm bike is moving */
 #define ENGINE_OFF_DEBOUNCE_MS    5000u  /* ms of RPM=0+KPH=0 before Off confirmed  */
-#define J1850_BUS_TIMEOUT_MS      10000u /* ms of bus silence → fall back to voltage FSM */
+#define J1850_SIGNAL_TIMEOUT_MS   10000u /* ms without valid RPM or KPH → voltage fallback */
 #define AUTO_LIGHT_ENABLE 1
 
 #define IMU_STARTUP_TIME (30 * 1000)

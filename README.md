@@ -23,8 +23,9 @@ for background.
 - Decodes bus signals: RPM, speed, gear/neutral/clutch, engine temperature,
   odometer, fuel, MIL and security-lamp state, and KWP2000 DTCs
 - TSM/TSSM emulation so the instrument cluster, ECM and BCM see a live module at
-  address 0x40: presence broadcasts, the 0x92 security handshake, and automatic
-  DTC clearing (keeps the check-engine and security lamps off)
+  address 0x40: presence broadcasts and the 0x92 security handshake
+- Read-only DTC monitoring and logging; production firmware never clears stored
+  diagnostic history automatically
 - J1850-based starter lock (starter disabled while the bike is moving)
 - Reset-cause and bus tracing over SEGGER RTT
 

@@ -4,6 +4,7 @@ Based on the code taken from https://github.com/kriswiner/MPU9250/tree/master
 
 #include <cmath>
 #include "inc/math3d.h"
+#include "inc/fusion_math.h"
 #include "inc/ahrs.h"
 
 namespace
@@ -84,17 +85,16 @@ namespace Ahrs
       s2 = 4.0f * q0q0 * q2 + _2q0 * ax + _4q2 * q3q3 - _2q3 * ay - _4q2 + _8q2 * q1q1 + _8q2 * q2q2 + _4q2 * az;
       s3 = 4.0f * q1q1 * q3 - _2q1 * ax + 4.0f * q2q2 * q3 - _2q2 * ay;
 
-      recipNorm = FAST_INV_SQRT(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
-      s0 *= recipNorm;
-      s1 *= recipNorm;
-      s2 *= recipNorm;
-      s3 *= recipNorm;
-
-      // Apply feedback step
-      qDot1 -= beta * s0;
-      qDot2 -= beta * s1;
-      qDot3 -= beta * s2;
-      qDot4 -= beta * s3;
+      // An exactly aligned gravity estimate has a zero corrective gradient.
+      // Skipping feedback is correct in that case; normalising zero produces
+      // infinities/NaNs with the precise math configuration.
+      if (detail::normalizeGradient(s0, s1, s2, s3))
+      {
+        qDot1 -= beta * s0;
+        qDot2 -= beta * s1;
+        qDot3 -= beta * s2;
+        qDot4 -= beta * s3;
+      }
     }
 
     // Integrate rate of change of quaternion to yield quaternion
@@ -212,17 +212,13 @@ namespace Ahrs
       s1 = _2q3 * (2.0f * q1q3 - _2q0q2 - ax) + _2q0 * (2.0f * q0q1 + _2q2q3 - ay) - 4.0f * q1 * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) + _2bz * q3 * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q2 + _2bz * q0) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q3 - _4bz * q1) * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
       s2 = -_2q0 * (2.0f * q1q3 - _2q0q2 - ax) + _2q3 * (2.0f * q0q1 + _2q2q3 - ay) - 4.0f * q2 * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) + (-_4bx * q2 - _2bz * q0) * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q1 + _2bz * q3) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q0 - _4bz * q2) * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
       s3 = _2q1 * (2.0f * q1q3 - _2q0q2 - ax) + _2q2 * (2.0f * q0q1 + _2q2q3 - ay) + (-_4bx * q3 + _2bz * q1) * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (-_2bx * q0 + _2bz * q2) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + _2bx * q1 * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
-      recipNorm = FAST_INV_SQRT(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
-      s0 *= recipNorm;
-      s1 *= recipNorm;
-      s2 *= recipNorm;
-      s3 *= recipNorm;
-
-      // Apply feedback step
-      qDot1 -= beta * s0;
-      qDot2 -= beta * s1;
-      qDot3 -= beta * s2;
-      qDot4 -= beta * s3;
+      if (detail::normalizeGradient(s0, s1, s2, s3))
+      {
+        qDot1 -= beta * s0;
+        qDot2 -= beta * s1;
+        qDot3 -= beta * s2;
+        qDot4 -= beta * s3;
+      }
     }
 
     // Integrate rate of change of quaternion to yield quaternion

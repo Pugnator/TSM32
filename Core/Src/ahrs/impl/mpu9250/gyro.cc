@@ -1,5 +1,6 @@
 #include "mpu9250_base.h"
 #include "types.h"
+#include "axis_remap.h"
 #include <algorithm>
 
 namespace Mpu9250
@@ -58,11 +59,8 @@ namespace Mpu9250
     int16_t gyroY = ((int16_t)data[2] << 8) | data[3];
     int16_t gyroZ = ((int16_t)data[4] << 8) | data[5];
 
-    // Sensor -> body axis remap (motorcycle deployment).
-    // See accel.cc for the body-frame convention.
-    result.x = -(float)gyroX * gMult;
-    result.y =  (float)gyroY * gMult;
-    result.z =  (float)gyroZ * gMult;
+    result = Ahrs::sensorToBodyZ180((float)gyroX, (float)gyroY,
+                                    (float)gyroZ, gMult);
     return true;
   }
 

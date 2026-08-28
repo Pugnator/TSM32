@@ -20,8 +20,9 @@ namespace Engine
   // Returns the current engine/motion state.
   State getState();
 
-  // True once the Moving state has been entered this ignition cycle.
-  // Latched until Off is confirmed — prevents re-crank while rolling.
+  // True once the Moving state has been entered.  With
+  // STARTER_UNLOCK_DISABLE enabled it remains latched until ignition reset;
+  // otherwise it clears after Off is confirmed.
   bool isStarterLocked();
 
   // Call once per main-loop iteration when J1850 is enabled.

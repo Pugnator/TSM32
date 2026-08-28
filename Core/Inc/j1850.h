@@ -10,6 +10,13 @@ extern "C"
 
   extern uint16_t rpms;
   extern uint16_t kph;
+  /* Updated only after a complete, CRC-valid telemetry frame is decoded.
+     Engine-state code must use these signal-specific timestamps instead of
+     raw bus activity, which may be unrelated traffic or a malformed SOF. */
+  extern volatile uint32_t rpmLastUpdateTick;
+  extern volatile uint32_t speedLastUpdateTick;
+  extern volatile bool rpmSignalSeen;
+  extern volatile bool speedSignalSeen;
   extern bool mil;    /* 0x88 frames, header priority 3 (fault/lamp channel) */
   extern bool milAux; /* 0x88 frames, other priorities (periodic status)     */
   extern bool sil;    /* 0x89 frames, header priority 6 (lamp-drive channel) */
@@ -46,8 +53,7 @@ extern "C"
      the duration of the bit-banged frame, calls J1850VPW::sendFrame() with
      the supplied bytes (CRC is appended internally), then re-arms the IC.
      Returns true only if the frame actually went out (carrier-sense and
-     arbitration failures return false and are logged).  Used by the
-     heartbeat and auto-DTC logic in tsm.cc. */
+     arbitration failures return false and are logged). */
   bool j1850TxRaw(const uint8_t *bytes, uint8_t len);
 #ifdef __cplusplus
 }
