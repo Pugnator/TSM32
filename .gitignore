@@ -37,6 +37,7 @@
 
 # Directories
 build/
+.vscode/*.log
 firmware/.settings
 firmware/external/openocd/
 firmware/libs/

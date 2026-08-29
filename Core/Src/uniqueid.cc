@@ -9,7 +9,6 @@ uint32_t idAddr[] =
         0x1FFFF7E8, /*STM32F1 unique ID starting address*/
         0x1FFF7A10, /*STM32F2 unique ID starting address*/
         0x1FFFF7AC, /*STM32F3 unique ID starting address*/
-        0x1FFF7A10, /*STM32F4 unique ID starting address*/
         0x1FF0F420, /*STM32F7 unique ID starting address*/
         0x1FF80050, /*STM32L0 unique ID starting address*/
         0x1FF80050, /*STM32L1 unique ID starting address*/
