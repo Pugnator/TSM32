@@ -31,6 +31,12 @@ extern "C"
    * processButtonEvents() inside blinkerHandler() (Fixes #42). */
   static volatile bool leftButtonRawEvent = false;
   static volatile bool rightButtonRawEvent = false;
+  /* Hazard-chord one-shot latch: set when the chord toggles hazard, released
+   * only after both buttons have read released for DEBOUNCE_MIN_TIME (see
+   * processButtonEvents()). Cleared by resetEvent() so the button-timeout
+   * drain also clears it. */
+  static bool chordLatched = false;
+  static uint32_t chordReleasedSince = 0;
   /* Set by TIM4 ISR each tick; consumed by blinkerTimerFSM() in the main
    * loop inside blinkerHandler() (Fixes #40). */
   static volatile bool blinkerTick = false;
@@ -40,6 +46,9 @@ extern "C"
     HAL_TIM_Base_Stop_IT(&BLINKER_TIMER);
     __HAL_TIM_SET_COUNTER(&BLINKER_TIMER, 0);
     __HAL_TIM_CLEAR_FLAG(&BLINKER_TIMER, TIM_SR_UIF);
+    /* A hardware update already latched by the ISR belongs to the timer
+     * generation being stopped. Do not let it advance a replacement event. */
+    blinkerTick = false;
     timerHitCounter = 0;
   }
 
@@ -72,6 +81,15 @@ extern "C"
     }
   }
 
+  /* Drop any pending EXTI raw press events. Called by the security module
+   * every iteration while it owns the buttons, so presses made during PIN
+   * entry can never replay into the blinker logic after unlock. */
+  void discardButtonEvents()
+  {
+    leftButtonRawEvent = false;
+    rightButtonRawEvent = false;
+  }
+
   void resetEvent()
   {
     stopBlinkerTimer();
@@ -80,6 +98,11 @@ extern "C"
     leftButtonEvent = false;
     rightButtonEvent = false;
     longPressCounter = 0;
+    /* The chord one-shot latch is press-cycle state too. The chord handler
+     * re-arms it right after calling resetEvent(), so clearing here only
+     * matters for the button-timeout drain path. */
+    chordLatched = false;
+    chordReleasedSince = 0;
   }
 
   /*
@@ -118,6 +141,47 @@ extern "C"
   static void processButtonEvents()
   {
     const bool wasIdle = !leftButtonEvent && !rightButtonEvent;
+
+    /* Emergency chord has priority over long/short classification and
+     * direction switching. The second physical press is enough to resolve
+     * the gesture immediately, even during waitLongPress.
+     *
+     * The chord is a one-shot per press-and-release cycle: the buttons are
+     * EXTI falling-edge with no hardware debounce, so contact bounce on the
+     * second press (and on non-simultaneous release, where one contact
+     * re-closes while the other still reads PRESSED) would otherwise re-fire
+     * the toggle and leave the final hazard state bounce-parity dependent.
+     * After the toggle, every raw event is swallowed until BOTH buttons have
+     * read released continuously for DEBOUNCE_MIN_TIME. */
+    if (chordLatched)
+    {
+      leftButtonRawEvent = false;
+      rightButtonRawEvent = false;
+      if (LEFT_BUTTON == PRESSED || RIGHT_BUTTON == PRESSED)
+      {
+        chordReleasedSince = 0;
+      }
+      else if (chordReleasedSince == 0)
+      {
+        chordReleasedSince = HAL_GetTick();
+      }
+      else if (HAL_GetTick() - chordReleasedSince >= DEBOUNCE_MIN_TIME)
+      {
+        chordLatched = false;
+      }
+      return;
+    }
+    if ((leftButtonRawEvent || rightButtonRawEvent) &&
+        LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED)
+    {
+      leftButtonRawEvent = false;
+      rightButtonRawEvent = false;
+      resetEvent();
+      hazardToggle();
+      chordLatched = true;
+      chordReleasedSince = 0;
+      return;
+    }
 
     if (leftButtonRawEvent)
     {
@@ -235,6 +299,15 @@ extern "C"
 
     if (waitLongPress)
     {
+      /* IMU turn detection may arm the post-turn tail while the original
+       * press is still being classified. The completed turn is now the
+       * authoritative mode; do not overwrite it with overtakeMode later. */
+      if (postTurnTailActive)
+      {
+        resetEvent();
+        return;
+      }
+
       /* The side toggle has already been applied. We now wait the full
        * LONG_PRESS_COUNT timer ticks before deciding:
        *   - button still pressed at the deadline -> regular turn signal
@@ -257,7 +330,7 @@ extern "C"
       else
       {
         DEBUG_LOG("Short press.\r\n");
-        overtakeMode = true;
+        startOvertakeMode();
       }
 
       resetEvent();

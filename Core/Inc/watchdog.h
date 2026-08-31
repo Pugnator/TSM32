@@ -27,6 +27,22 @@ extern "C"
 {
 #endif
 
+  typedef enum
+  {
+    WATCHDOG_RESET_CAUSE_UNKNOWN = 0,
+    WATCHDOG_RESET_CAUSE_POWER_ON,
+    WATCHDOG_RESET_CAUSE_IWDG,
+    WATCHDOG_RESET_CAUSE_SOFTWARE,
+    WATCHDOG_RESET_CAUSE_PIN,
+  } watchdog_reset_cause_t;
+
+  /* Only a real power cycle proves that the ignition-cycle starter latch may
+   * be released. Recovery and unknown resets start fail-locked. */
+  static inline bool watchdog_reset_allows_starter(watchdog_reset_cause_t cause)
+  {
+    return cause == WATCHDOG_RESET_CAUSE_POWER_ON;
+  }
+
   /**
    * Configure and start the IWDG (~2 s nominal, 1.3..2.7 s across the LSI
    * spread). Irreversible. Call once, early — before the slow init steps — so
@@ -39,10 +55,10 @@ extern "C"
    *  each slow init phase). Legal at any time — the IWDG has no window. */
   void watchdog_refresh(void);
 
-  /** Decode and log the cause of the previous reset (RCC_CSR), then clear the
-   *  flags. IWDG/software-fault resets are the interesting ones. Logs via
-   *  PrintF, so it is silent in a release build. */
-  void watchdog_report_reset_cause(void);
+  /** Classify and log the previous reset cause, then clear the RCC flags.
+   *  Only an unambiguous power-on reset permits the starter relay; recovery
+   *  and unknown resets remain fail-locked. */
+  watchdog_reset_cause_t watchdog_report_reset_cause(void);
 
 #ifdef __cplusplus
 }

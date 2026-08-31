@@ -15,6 +15,18 @@ static uint32_t  gOffSince       = 0;   // tick when RPM+KPH first hit zero
 State getState()        { return gState; }
 bool  isStarterLocked() { return gStarterLocked; }
 
+static void lockStarterForIgnitionCycle()
+{
+  if (gStarterLocked)
+  {
+    return;
+  }
+
+  gStarterLocked = true;
+  disableStarter();
+  DEBUG_LOG("Engine: starter LOCKED (RPM=%u)\r\n", (unsigned)rpms);
+}
+
 // ── FSM ─────────────────────────────────────────────────────────────────────
 
 void handler()
@@ -50,6 +62,7 @@ void handler()
     {
       gState = State::Running;
       gOffSince = 0;
+      lockStarterForIgnitionCycle();
       DEBUG_LOG("Engine: fresh telemetry -> state Running (RPM=%u)\r\n",
                 (unsigned)rpms);
     }
@@ -65,6 +78,8 @@ void handler()
     if (engineOn)
     {
       gState = State::Running;
+      gOffSince = 0;
+      lockStarterForIgnitionCycle();
       DEBUG_LOG("Engine: state Running (RPM=%u)\r\n", (unsigned)rpms);
     }
     break;
@@ -75,17 +90,27 @@ void handler()
       gState         = State::Moving;
       gOffSince      = 0;   // clear stale Off timestamp so the stop debounce
                             // in State::Moving starts fresh (Fixes #59)
-      gStarterLocked = true;
-      disableStarter();
-      DEBUG_LOG("Engine: state Moving -> starter LOCKED (RPM=%u KPH=%u)\r\n",
+      DEBUG_LOG("Engine: state Moving (RPM=%u KPH=%u)\r\n",
                 (unsigned)rpms, (unsigned)kph);
     }
     else if (stopped)
     {
-      // Revving at standstill then cutting throttle — treat as Off candidate.
-      gOffSince = now;
-      gState    = State::Off;
-      DEBUG_LOG("Engine: state Off (RPM=0 KPH=0)\r\n");
+      /* A single zero frame at idle must not disable DRL or change starter
+       * policy. Require the same continuous stop debounce used after Moving. */
+      if (gOffSince == 0)
+      {
+        gOffSince = now;
+      }
+      if ((now - gOffSince) >= ENGINE_OFF_DEBOUNCE_MS)
+      {
+        gOffSince = 0;
+        gState = State::Off;
+        DEBUG_LOG("Engine: state Off after stop debounce\r\n");
+      }
+    }
+    else
+    {
+      gOffSince = 0;
     }
     break;
 

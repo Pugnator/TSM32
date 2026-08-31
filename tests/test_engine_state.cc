@@ -1,5 +1,6 @@
 #include "test_env.h"
 #include "../Core/Inc/engine_state.h"
+#include "../Core/Inc/watchdog.h"
 
 #include <cstdio>
 
@@ -40,6 +41,12 @@ extern "C" void enableStarter()
 
 int main()
 {
+    CHECK(watchdog_reset_allows_starter(WATCHDOG_RESET_CAUSE_POWER_ON));
+    CHECK(!watchdog_reset_allows_starter(WATCHDOG_RESET_CAUSE_IWDG));
+    CHECK(!watchdog_reset_allows_starter(WATCHDOG_RESET_CAUSE_SOFTWARE));
+    CHECK(!watchdog_reset_allows_starter(WATCHDOG_RESET_CAUSE_PIN));
+    CHECK(!watchdog_reset_allows_starter(WATCHDOG_RESET_CAUSE_UNKNOWN));
+
     Engine::handler();
     CHECK(Engine::getState() == Engine::State::Unknown);
 
@@ -48,13 +55,41 @@ int main()
     Engine::handler();
     CHECK(Engine::getState() == Engine::State::Off);
 
+    // RPM below the configured threshold must not arm the lock, even when
+    // speed is already high enough.
     ++fakeTick;
-    publishTelemetry(1200, 0);
+    publishTelemetry(ENGINE_RUNNING_RPM_MIN - 1, ENGINE_RUNNING_KPH_MIN);
+    Engine::handler();
+    CHECK(Engine::getState() == Engine::State::Off);
+    CHECK(disableCalls == 0);
+
+    // The exact 700 RPM boundary enters Running and locks immediately. Speed
+    // is only used to distinguish Running from Moving.
+    ++fakeTick;
+    publishTelemetry(ENGINE_RUNNING_RPM_MIN, ENGINE_RUNNING_KPH_MIN - 1);
+    Engine::handler();
+    CHECK(Engine::getState() == Engine::State::Running);
+    CHECK(Engine::isStarterLocked());
+    CHECK(disableCalls == 1);
+
+    // One or several isolated zero frames at stationary idle must not turn
+    // DRL off or declare the engine stopped before the continuous debounce.
+    ++fakeTick;
+    publishTelemetry(0, 0);
+    Engine::handler();
+    CHECK(Engine::getState() == Engine::State::Running);
+    fakeTick += ENGINE_OFF_DEBOUNCE_MS - 1;
+    publishTelemetry(0, 0);
     Engine::handler();
     CHECK(Engine::getState() == Engine::State::Running);
 
     ++fakeTick;
-    publishTelemetry(1200, 20);
+    publishTelemetry(ENGINE_RUNNING_RPM_MIN, ENGINE_RUNNING_KPH_MIN - 1);
+    Engine::handler();
+    CHECK(Engine::getState() == Engine::State::Running);
+
+    ++fakeTick;
+    publishTelemetry(ENGINE_RUNNING_RPM_MIN, ENGINE_RUNNING_KPH_MIN);
     Engine::handler();
     CHECK(Engine::getState() == Engine::State::Moving);
     CHECK(Engine::isStarterLocked());

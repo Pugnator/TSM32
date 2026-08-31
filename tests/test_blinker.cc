@@ -74,6 +74,7 @@ static void sim_reset()
     rightEnabled  = false;
     hazardEnabled = false;
     overtakeMode  = false;
+    postTurnTailActive = false;
     blinkCounter  = 0;
     currentSidemarkBrightness = 0;
 
@@ -125,20 +126,6 @@ static void sim_press_right()
 static void sim_release_left()  { fakeLeftPin  = GPIO_PIN_SET; }
 static void sim_release_right() { fakeRightPin = GPIO_PIN_SET; }
 
-// Inline the auto-cancel logic that lives in tsm.cc's main loop.
-// Call this after a sim_advance that should have accumulated enough blinks.
-// Mirrors the fixed off-path (side-off helpers, see #60).
-#define APPLY_OVERTAKE_CANCEL()                                                \
-    do {                                                                       \
-        if (overtakeMode && OVERTAKE_BLINK_COUNT < blinkCounter) {            \
-            overtakeMode = false;                                              \
-            hazardEnabled = false;                                             \
-            leftSideOff();                                                     \
-            rightSideOff();                                                    \
-            blinkCounter = 0;                                                  \
-        }                                                                      \
-    } while (0)
-
 // ── Tests ─────────────────────────────────────────────────────────────────────────
 
 // 1. Single right press (held through first tick) → rightEnabled
@@ -186,10 +173,9 @@ TEST(overtake_auto_cancel)
 
     // Each blink cycle = ramp (~250 ms) + hold (200 ms) + pause (250 ms) = ~700 ms.
     sim_advance((OVERTAKE_BLINK_COUNT + 2) * 1200);
-    ASSERT_TRUE(blinkCounter > OVERTAKE_BLINK_COUNT);
+    ASSERT_TRUE(blinkCounter >= OVERTAKE_BLINK_COUNT);
 
-    // Replicate the auto-cancel that lives in tsm.cc's main loop.
-    APPLY_OVERTAKE_CANCEL();
+    blinkerAutoCancelHandler();
     ASSERT_FALSE(overtakeMode);
     ASSERT_FALSE(rightEnabled);
 }
@@ -235,14 +221,12 @@ TEST(switch_sides)
     ASSERT_FALSE(rightEnabled);
 }
 
-// 8. Hazard ON: both buttons held when the first tick fires
+// 8. Hazard ON: the second physical press resolves the chord immediately.
 TEST(hazard_both_held)
 {
     sim_reset();
     sim_press_left();
     sim_press_right();
-    // Both pins still PRESSED at tick time → hazardToggle()
-    sim_advance(BLINKER_TIMER_PERIOD_MS);
     ASSERT_TRUE(hazardEnabled);
 }
 
@@ -360,6 +344,110 @@ TEST(opposite_press_in_window_switches)
     sim_advance((LONG_PRESS_COUNT + 1) * BLINKER_TIMER_PERIOD_MS); // left window expires
     ASSERT_TRUE(leftEnabled);
     ASSERT_TRUE(overtakeMode);              // released early → overtake for the left side
+}
+
+// 14. Both-button hazard chord wins even while a turn is being classified.
+TEST(hazard_chord_during_classification)
+{
+    sim_reset();
+    sim_press_right();
+    sim_advance(BLINKER_TIMER_PERIOD_MS); // right ON, waitLongPress active
+    ASSERT_TRUE(rightEnabled);
+
+    // Keep right held and press left: both pins are now physically pressed.
+    sim_press_left();
+    ASSERT_TRUE(hazardEnabled);
+    ASSERT_FALSE(leftEnabled);
+    ASSERT_FALSE(rightEnabled);
+    ASSERT_FALSE(overtakeMode);
+}
+
+// 15. Hazard starts with a clean counter and cannot be timed out.
+TEST(hazard_does_not_inherit_overtake_countdown)
+{
+    sim_reset();
+    sim_press_right();
+    sim_advance(BLINKER_TIMER_PERIOD_MS);
+    sim_release_right();
+    sim_advance((LONG_PRESS_COUNT + 1) * BLINKER_TIMER_PERIOD_MS);
+    ASSERT_TRUE(overtakeMode);
+
+    blinkCounter = OVERTAKE_BLINK_COUNT - 1;
+    sim_press_left();
+    sim_press_right();
+    ASSERT_TRUE(hazardEnabled);
+    ASSERT_FALSE(overtakeMode);
+    ASSERT_EQ(blinkCounter, 0);
+
+    blinkCounter = OVERTAKE_BLINK_COUNT + 10;
+    blinkerAutoCancelHandler();
+    ASSERT_TRUE(hazardEnabled);
+}
+
+// 16. Cancellation occurs at the configured completed-flash boundary.
+TEST(timed_cancel_exact_boundary)
+{
+    sim_reset();
+    rightEnabled = true;
+    overtakeMode = true;
+    blinkCounter = OVERTAKE_BLINK_COUNT - 1;
+    blinkerAutoCancelHandler();
+    ASSERT_TRUE(rightEnabled);
+
+    blinkCounter = OVERTAKE_BLINK_COUNT;
+    blinkerAutoCancelHandler();
+    ASSERT_FALSE(rightEnabled);
+    ASSERT_FALSE(overtakeMode);
+}
+
+// 17. A tick from the stopped timer cannot advance a newly armed press.
+TEST(stale_timer_tick_is_discarded)
+{
+    sim_reset();
+    fakeRightPin = GPIO_PIN_RESET;
+    HAL_GPIO_EXTI_Callback(RT_BUTTON_Pin);      // raw press waiting for main loop
+    HAL_TIM_PeriodElapsedCallback(&htim4);     // stale tick from old generation
+    blinkerHandler();                          // starts timer and clears stale tick
+    ASSERT_FALSE(rightEnabled);
+
+    sim_advance(BLINKER_TIMER_PERIOD_MS);
+    ASSERT_TRUE(rightEnabled);
+}
+
+// 18. Post-turn tail counts only flashes completed after it is armed.
+TEST(post_turn_tail_uses_fresh_count)
+{
+    sim_reset();
+    leftEnabled = true;
+    blinkCounter = 42;
+    startPostTurnTail();
+    ASSERT_TRUE(postTurnTailActive);
+    ASSERT_FALSE(overtakeMode);
+    ASSERT_EQ(blinkCounter, 0);
+
+    blinkCounter = POST_TURN_BLINK_COUNT - 1;
+    blinkerAutoCancelHandler();
+    ASSERT_TRUE(leftEnabled);
+    blinkCounter = POST_TURN_BLINK_COUNT;
+    blinkerAutoCancelHandler();
+    ASSERT_FALSE(leftEnabled);
+    ASSERT_FALSE(postTurnTailActive);
+}
+
+// 19. Late short/long classification cannot overwrite a detected turn tail.
+TEST(post_turn_tail_wins_over_pending_classification)
+{
+    sim_reset();
+    sim_press_right();
+    sim_advance(BLINKER_TIMER_PERIOD_MS); // right ON, classification pending
+    sim_release_right();
+    startPostTurnTail();                  // IMU detects turn before deadline
+    ASSERT_TRUE(postTurnTailActive);
+
+    sim_advance((LONG_PRESS_COUNT + 1) * BLINKER_TIMER_PERIOD_MS);
+    ASSERT_TRUE(postTurnTailActive);
+    ASSERT_FALSE(overtakeMode);
+    ASSERT_TRUE(rightEnabled);
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────────

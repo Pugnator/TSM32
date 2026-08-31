@@ -2,9 +2,12 @@
 #include "settings.h"
 #include "j1850.h"
 
+#if J1850_ENABLED
+#include "engine_state.h"
+#endif
+
 #if MEMS_ENABLED
 #include "ahrs.h"
-#include "engine_state.h"
 #endif
 
 #include <stdio.h>
@@ -13,6 +16,8 @@
 #include "assert.h"
 #include "dwtdelay.h"
 #include "watchdog.h"
+#include "eeprom.h"
+#include "security.h"
 
 bool stopAppExecuting = true;
 
@@ -54,6 +59,11 @@ extern "C"
 
   void tsmRunApp()
   {
+    /* Sample the settings-menu gesture first: both buttons held while the
+     * ignition comes on. */
+    const bool settingsRequested =
+        LEFT_BUTTON == PRESSED && RIGHT_BUTTON == PRESSED;
+
     uint32_t id[3] = {0};
     getCPUid(id, STM32F1_t);
     BANNER("Device ID %.8lx%.8lx%.8lx\r\nTSM %s %s (%s) started\r\n",
@@ -64,8 +74,15 @@ extern "C"
      * arm the IWDG BEFORE the slow init below, so a hang in init is caught as
      * well as one in the main loop. Every init phase and the loop refresh
      * within the ~2 s timeout. */
-    watchdog_report_reset_cause();
+    const watchdog_reset_cause_t resetCause = watchdog_report_reset_cause();
     watchdog_init();
+
+    /* Load the flash-emulated EEPROM (security PIN and future settings)
+     * before anything can ask for a stored value. Fast: two page scans. */
+    if (!ee_init())
+    {
+      PrintF("EEPROM: store unavailable\r\n");
+    }
 
     startupSettingsHandler();
     watchdog_refresh();
@@ -84,8 +101,24 @@ extern "C"
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
-    /*Enable starter first*/
-    enableStarter();
+    /* The relay initializes low in gpio.c. Only a real ignition/power cycle
+     * may release it (fail-lock), and a configured security PIN keeps it low
+     * until the PIN is entered - securityInit() applies both policies. */
+#if BLINKER_ENABLED
+    securityInit(settingsRequested, watchdog_reset_allows_starter(resetCause));
+#else
+    /* No buttons/lamps in this build: PIN entry is impossible, so the PIN
+     * gate must not apply. Only the reset-cause fail-lock remains. */
+    (void)settingsRequested;
+    if (watchdog_reset_allows_starter(resetCause))
+    {
+      enableStarter();
+    }
+    else
+    {
+      disableStarter();
+    }
+#endif
 
     leftSideOff();
     rightSideOff();
@@ -189,6 +222,49 @@ extern "C"
           hbInterval = (s1 && s2) ? 2000u : 250u;
         }
       }
+
+#if SECURITY_FLASH_SIL
+      // EXPERIMENTAL: while the immobilizer is locked/waiting, try to flash
+      // the cluster security lamp by toggling an 0x89 SIL frame ~1 Hz. See
+      // the SECURITY_SIL_* notes in settings.h - unconfirmed on hardware, so
+      // every TX is logged for the bench session. Note this fights the
+      // "disarmed" security handshake above; if the lamp bounces instead of
+      // flashing, the cluster is honouring the IPC's own state and we need
+      // the armed-handshake variant, not a direct SIL broadcast.
+      {
+        const security_state_t ss = securityState();
+        const bool silActive = (ss == SECURITY_STATE_LOCKED ||
+                                ss == SECURITY_STATE_LOCKOUT);
+        static bool     silOn       = false;
+        static bool     silWasActive = false;
+        static uint32_t silLastTick = 0;
+        const uint32_t  now_sil     = HAL_GetTick();
+        if (silActive)
+        {
+          if (!silWasActive || (now_sil - silLastTick) >= SECURITY_SIL_FLASH_MS)
+          {
+            silOn = !silWasActive ? true : !silOn;
+            const uint8_t sil[] = {SECURITY_SIL_HDR, 0x89, SECURITY_SIL_SRC,
+                                   (uint8_t)(silOn ? 0x83 : 0x03)};
+            PrintF("[%lu] SIL flash -> %02X 89 %02X %02X (%s)\r\n",
+                   (unsigned long)now_sil, (unsigned)SECURITY_SIL_HDR,
+                   (unsigned)SECURITY_SIL_SRC, (unsigned)(silOn ? 0x83 : 0x03),
+                   silOn ? "ON" : "off");
+            j1850TxRaw(sil, sizeof(sil));
+            silLastTick = now_sil;
+          }
+        }
+        else if (silWasActive)
+        {
+          /* Just unlocked/idle: command the lamp off once so it doesn't
+           * stick lit if the last frame we sent was ON. */
+          const uint8_t off[] = {SECURITY_SIL_HDR, 0x89, SECURITY_SIL_SRC, 0x03};
+          j1850TxRaw(off, sizeof(off));
+          silOn = false;
+        }
+        silWasActive = silActive;
+      }
+#endif
 
       // DTC monitor: once the bus is active (>=5 frames), query ECM(0x10)
       // and both IPC address candidates (0x60, 0x61 - see #72, the log will
@@ -308,12 +384,21 @@ extern "C"
 #endif
 
 #if BLINKER_ENABLED
-      blinkerHandler();
+      if (securityBusy())
+      {
+        /* PIN entry / settings menu owns the buttons and lamps; the hazard
+         * chord still works and blinkerDoBlink below keeps it flashing. */
+        securityHandler();
+      }
+      else
+      {
+        blinkerHandler();
+      }
 
       if (hazardEnabled || leftEnabled || rightEnabled)
       {
         #if MEMS_ENABLED
-        if (!hazardEnabled && !trackingEnabled)
+        if (!hazardEnabled && !postTurnTailActive && !trackingEnabled)
         {
           trackingEnabled = true;
           initialTime = HAL_GetTick();
@@ -324,18 +409,7 @@ extern "C"
         blinkerDoBlink();
       }
 
-      if (overtakeMode && OVERTAKE_BLINK_COUNT < blinkCounter)
-      {
-        DEBUG_LOG("Deactivating the blinker: blink counter\r\n");
-        /* Go through the side-off helpers so the sidemark brightness is
-         * restored and the blink FSM is reset, like every other off-path
-         * (Fixes #60). */
-        overtakeMode = false;
-        hazardEnabled = false;
-        leftSideOff();
-        rightSideOff();
-        blinkCounter = 0;
-      }
+      blinkerAutoCancelHandler();
 #endif
 
 #if MEMS_ENABLED
@@ -364,6 +438,17 @@ extern "C"
         continue;
       }
 
+      /* Yaw tracking runs only while armed. Once the turn is detected (or
+       * the tracker timed out) trackingEnabled is cleared and the post-turn
+       * tail owns the shutdown; without this gate the block below would
+       * re-seed initialYaw during the tail and re-trigger the tail on every
+       * further 60 degrees of a U-turn (blanking the lamp mid-cycle), and
+       * the timeout branch would fire against a stale initialTime and kill
+       * the tail early. Re-armed by the tracking block in the blinker
+       * section on the next signal activation. */
+      if (!trackingEnabled)
+        continue;
+
       auto ypr = mpu->getYawPitchRollD();
 
       if (initialYaw == INT16_MIN)
@@ -373,19 +458,24 @@ extern "C"
         continue;
       }
 
-      if (!detectTurn(initialYaw, ypr.x, TURN_ANGLE_THRESHOLD) &&
-          HAL_GetTick() - initialTime < TURN_MAX_TIME_MS)
+      const bool turnDetected = detectTurn(initialYaw, ypr.x, TURN_ANGLE_THRESHOLD);
+      const bool turnTimedOut = HAL_GetTick() - initialTime >= TURN_MAX_TIME_MS;
+      if (!turnDetected && !turnTimedOut)
         continue;
 
-      DEBUG_LOG("Deactivating the blinker: turn detected, yaw = %.3d\r\n", ypr.x);
-
-      if (leftEnabled)
+      if (turnDetected)
       {
-        leftSideToggle();
+        DEBUG_LOG("Turn detected, arming post-turn tail: yaw = %.3d\r\n", ypr.x);
+        startPostTurnTail();
       }
-      else if (rightEnabled)
+      else
       {
-        rightSideToggle();
+        DEBUG_LOG("Deactivating the blinker: turn tracking timeout\r\n");
+        overtakeMode = false;
+        postTurnTailActive = false;
+        blinkCounter = 0;
+        leftSideOff();
+        rightSideOff();
       }
 
       trackingEnabled = false;

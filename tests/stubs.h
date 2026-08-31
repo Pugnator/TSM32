@@ -23,6 +23,7 @@ typedef struct {
 } TIM_TypeDef;
 
 typedef struct { TIM_TypeDef *Instance; } TIM_HandleTypeDef;
+typedef struct { void *Instance; } ADC_HandleTypeDef;
 
 // ── TIM peripheral instances ─────────────────────────────────────────────────
 // TIM1 holds the PWM compare registers: CCR3=left turn, CCR4=right turn.
@@ -39,6 +40,12 @@ inline TIM_HandleTypeDef htim1 = { TIM1 };
 inline TIM_HandleTypeDef htim2 = { TIM2 };
 inline TIM_HandleTypeDef htim3 = { TIM3 };
 inline TIM_HandleTypeDef htim4 = { TIM4 };
+
+// ── ADC simulation ──────────────────────────────────────────────────────────
+#define ADC1 ((void*)0x01u)
+inline ADC_HandleTypeDef hadc1 = { ADC1 };
+inline HAL_StatusTypeDef HAL_ADC_Stop_DMA(ADC_HandleTypeDef*) { return HAL_OK; }
+inline HAL_StatusTypeDef HAL_ADC_Start_DMA(ADC_HandleTypeDef*, uint32_t*, uint32_t) { return HAL_OK; }
 
 // ── GPIO simulation ──────────────────────────────────────────────────────────
 inline GPIO_PinState fakeLeftPin  = GPIO_PIN_SET;   // GPIO_PIN_SET = DEPRESSED

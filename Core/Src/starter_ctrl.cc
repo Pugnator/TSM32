@@ -9,6 +9,16 @@ extern "C"
   static bool starterEnabledLogged = false;
   static bool starterDisabledLogged = false;
 
+  /* Weak default: permitted. The security module (Core/Src/security.cc)
+   * provides the strong override that refuses while a configured PIN has not
+   * been entered this power cycle, so no caller (engine FSM, voltage
+   * fallback) can enable the starter past the immobilizer. Host tests that
+   * do not link the security module get the permissive default. */
+  __attribute__((weak)) bool securityStarterPermitted(void)
+  {
+    return true;
+  }
+
   void disableStarter()
   {
 #if STARTER_LOCK_ENABLE
@@ -34,6 +44,11 @@ extern "C"
   void enableStarter()
   {
 #if STARTER_LOCK_ENABLE
+    if (!securityStarterPermitted())
+    {
+      DEBUG_LOG("Starter enable refused: security PIN not entered.\r\n");
+      return;
+    }
 
 #if STARTER_UNLOCK_DISABLE
     if (starterDisabled)

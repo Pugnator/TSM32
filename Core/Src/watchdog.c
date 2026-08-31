@@ -34,18 +34,36 @@
 
 static bool s_armed;
 
-void watchdog_report_reset_cause(void)
+watchdog_reset_cause_t watchdog_report_reset_cause(void)
 {
   const uint32_t csr = RCC->CSR;
+  watchdog_reset_cause_t cause = WATCHDOG_RESET_CAUSE_UNKNOWN;
   if (csr & RCC_CSR_IWDGRSTF)
+  {
+    cause = WATCHDOG_RESET_CAUSE_IWDG;
     PrintF("RESET: IWDG watchdog - firmware hang recovered\r\n");
+  }
   else if (csr & RCC_CSR_SFTRSTF)
+  {
+    cause = WATCHDOG_RESET_CAUSE_SOFTWARE;
     PrintF("RESET: software - recovered from a CPU fault\r\n");
+  }
   else if (csr & RCC_CSR_PORRSTF)
+  {
+    cause = WATCHDOG_RESET_CAUSE_POWER_ON;
     PrintF("RESET: power-on\r\n");
+  }
   else if (csr & RCC_CSR_PINRSTF)
+  {
+    cause = WATCHDOG_RESET_CAUSE_PIN;
     PrintF("RESET: NRST pin\r\n");
+  }
+  else
+  {
+    PrintF("RESET: unknown - starter remains fail-locked\r\n");
+  }
   RCC->CSR |= RCC_CSR_RMVF; /* clear all reset flags for the next boot */
+  return cause;
 }
 
 void watchdog_init(void)

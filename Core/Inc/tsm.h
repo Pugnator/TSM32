@@ -39,6 +39,7 @@ extern "C"
     extern volatile bool rightEnabled;
     extern volatile bool hazardEnabled;
     extern volatile bool overtakeMode;
+    extern volatile bool postTurnTailActive;
     extern volatile uint32_t blinkCounter;
     extern volatile bool settingsMode;
 
@@ -48,6 +49,11 @@ extern "C"
     void rightSideToggle();
 
     void blinkerDoBlink();
+    void blinkerAutoCancelHandler();
+    void discardButtonEvents();
+    bool securityStarterPermitted();
+    void startOvertakeMode();
+    void startPostTurnTail();
     void hazardToggle();
     void blinkerHandler();
 

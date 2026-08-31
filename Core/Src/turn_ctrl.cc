@@ -16,6 +16,7 @@ extern "C"
   volatile bool rightEnabled = false;
   volatile bool hazardEnabled = false;
   volatile bool overtakeMode = false;
+  volatile bool postTurnTailActive = false;
   uint8_t volatile currentSidemarkBrightness = 0;
 
   volatile uint32_t blinkCounter = 0;
@@ -23,6 +24,29 @@ extern "C"
    * from the beginning of the ON ramp on the next call, so turning the blinker
    * off mid-cycle and then back on always starts a fresh cycle. */
   static volatile bool blinkerResetPending = false;
+
+  static void cancelTimedModes()
+  {
+    overtakeMode = false;
+    postTurnTailActive = false;
+    blinkCounter = 0;
+  }
+
+  static void restartTimedBlinkCycle()
+  {
+    /* A cycle that began before mode classification/turn detection is not a
+     * complete timed flash. Restart from dark so the configured count is
+     * exact and entirely after the transition. */
+    if (leftEnabled)
+    {
+      LEFT_PWM_OUT = 0;
+    }
+    if (rightEnabled)
+    {
+      RIGHT_PWM_OUT = 0;
+    }
+    blinkerResetPending = true;
+  }
 
   void leftSideToggle()
   {
@@ -32,7 +56,7 @@ extern "C"
     }
 
     DEBUG_LOG("Left Side toggle\r\n");
-    blinkCounter = 0;
+    cancelTimedModes();
     leftEnabled = !leftEnabled;
     if (leftEnabled)
     {
@@ -53,7 +77,7 @@ extern "C"
 
     DEBUG_LOG("Right Side toggle\r\n");
     rightEnabled = !rightEnabled;
-    blinkCounter = 0;
+    cancelTimedModes();
     if (rightEnabled)
     {
       leftSideOff();
@@ -83,15 +107,72 @@ extern "C"
   void hazardToggle()
   {
     DEBUG_LOG("Hazard toggle [%u]\r\n", hazardEnabled);
-    hazardEnabled = !hazardEnabled;
-    if (!hazardEnabled)
+    if (hazardEnabled)
     {
       DEBUG_LOG("Turning off the hazard\r\n");
+      hazardEnabled = false;
       leftSideOff();
       rightSideOff();
-      overtakeMode = false;
-      blinkCounter = 0;
+      cancelTimedModes();
+      return;
     }
+
+    /* Hazard owns both outputs and must never inherit a lane-change or
+     * post-turn countdown from the previously active side. */
+    leftSideOff();
+    rightSideOff();
+    cancelTimedModes();
+    hazardEnabled = true;
+  }
+
+  void startPostTurnTail()
+  {
+    if (hazardEnabled || (!leftEnabled && !rightEnabled))
+    {
+      return;
+    }
+
+    overtakeMode = false;
+    postTurnTailActive = true;
+    blinkCounter = 0;
+    restartTimedBlinkCycle();
+    DEBUG_LOG("Post-turn blinker tail armed\r\n");
+  }
+
+  void startOvertakeMode()
+  {
+    if (hazardEnabled || (!leftEnabled && !rightEnabled))
+    {
+      return;
+    }
+
+    postTurnTailActive = false;
+    overtakeMode = true;
+    blinkCounter = 0;
+    restartTimedBlinkCycle();
+    DEBUG_LOG("Overtake blinker mode armed\r\n");
+  }
+
+  void blinkerAutoCancelHandler()
+  {
+    if (hazardEnabled)
+    {
+      return;
+    }
+
+    const uint32_t blinkLimit = postTurnTailActive
+                                    ? POST_TURN_BLINK_COUNT
+                                    : OVERTAKE_BLINK_COUNT;
+    if ((!overtakeMode && !postTurnTailActive) || blinkCounter < blinkLimit)
+    {
+      return;
+    }
+
+    DEBUG_LOG("Deactivating timed blinker after %u complete flashes\r\n",
+              (unsigned)blinkCounter);
+    cancelTimedModes();
+    leftSideOff();
+    rightSideOff();
   }
 
   void blinkerDoBlink()

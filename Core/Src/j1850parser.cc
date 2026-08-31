@@ -164,7 +164,11 @@ namespace J1850VPW
      * starter-lock FSM (Fixes #64). */
     if (destination == RPM)
     {
-      if (j1850RXctr >= 7)
+      /* Captured ECM telemetry schema: 28 1B 10 02 hi lo crc. Generic
+       * length/CRC checks are not enough because another module or subtype
+       * can use the same destination byte. */
+      if (j1850RXctr == 7 && payloadJ1850[2] == ECM &&
+          payloadJ1850[headerSize] == 0x02)
       {
         rpms = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
         rpms /= 4;
@@ -174,7 +178,9 @@ namespace J1850VPW
     }
     else if (destination == SPEED)
     {
-      if (j1850RXctr >= 7)
+      /* Captured ECM telemetry schema: 48 29 10 02 hi lo crc. */
+      if (j1850RXctr == 7 && payloadJ1850[2] == ECM &&
+          payloadJ1850[headerSize] == 0x02)
       {
         kph = payloadJ1850[headerSize + 1] << 8 | payloadJ1850[headerSize + 2];
         kph /= 128;
@@ -319,7 +325,7 @@ namespace J1850VPW
        * SIL/MIL investigation (#81) - never rely on the decode alone. */
       {
         static const char hex[] = "0123456789ABCDEF";
-        char raw[3 * 12 + 1];
+        [[maybe_unused]] char raw[3 * 12 + 1];
         uint8_t p = 0;
         for (uint8_t i = 0; i < j1850RXctr && i < 12; ++i)
         {

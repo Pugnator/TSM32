@@ -13,26 +13,43 @@ for background.
 - Firmware for the STM32F103, built with GCC
 - 3D-printable enclosure (STL files; reference print in PETG, 0.3 mm layers)
 
+## When you need it
+
+- You want to preserve the original turn signal switch and instrument cluster, but the OEM TSM is dead or flaky.
+- You want to use ballast-free LED turn signals without the "hyperflash" effect.
+- You want to develop your own gauge cluster or instrument panel and need a TSM that can talk to the ECM and BCM.
+- You need some really working and tested Harley-oriented J1850 code to base your own TSM or gauge cluster project on.
+
 ## What the firmware does
 
-- Turn-signal control: left/right, automatic cancel, and turn detection via an
-  MPU-9250 IMU (DMP orientation)
-- Hazard lights, including automatic activation on hard braking
+- Basic turn-signal functionality: left/right, hazard, and automatic cancel
 - Halogen and LED bulb support with per-bulb PWM settings
-- J1850 VPW bus receive and transmit (see [docs/J1850_bus.md](docs/J1850_bus.md))
-- Decodes bus signals: RPM, speed, gear/neutral/clutch, engine temperature,
-  odometer, fuel, MIL and security-lamp state, and KWP2000 DTCs
 - TSM/TSSM emulation so the instrument cluster, ECM and BCM see a live module at
   address 0x40: presence broadcasts and the 0x92 security handshake
-- Read-only DTC monitoring and logging; production firmware never clears stored
-  diagnostic history automatically
 - J1850-based starter lock (starter disabled while the bike is moving)
-- Reset-cause and bus tracing over SEGGER RTT
+- Security PIN immobilizer with a boot settings menu (see below), stored in
+  flash-emulated EEPROM
+
+## Security PIN
+
+When a PIN is set, the starter stays disabled after ignition-on until the PIN
+is entered on the turn-signal buttons. The J1850 emulation keeps running during
+entry, so the cluster lamps stay off.
+
+- Digit: press LEFT the digit's value (1-9, each press blips the left lamp),
+  then press RIGHT to commit (right lamp blips)
+- Wrong PIN: both lamps flash rapidly six times; after 5 wrong attempts entry
+  is ignored for 30 s
+- Correct PIN: both lamps give two long flashes and the starter is enabled
+- Both buttons held >= 1 s toggles the hazard lights even while locked
+- Settings menu: hold both buttons while switching the ignition on (enter the
+  PIN first if one is set). Item 1 = set/change PIN; committing an empty first
+  digit clears the PIN and disables the lock. The menu times out after 15 s.
 
 ## Status
 
-Work in progress. J1850 receive/transmit and TSM emulation are implemented and
-tested on a bike. A user-configurable TSM security PIN store is not implemented.
+J1850 receive/transmit, TSM emulation and the security PIN are implemented;
+J1850 and TSM emulation are tested on a bike.
 
 ## Building
 

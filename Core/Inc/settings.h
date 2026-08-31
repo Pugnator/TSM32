@@ -13,12 +13,16 @@
 #define DEBOUNCE_MIN_TIME 100    // Minimum amount of time for which a button must be pressed to be considered a valid input
 #define LONG_PRESS_TIME 1000     // Duration after which a button press will be considered a "long press"
 #define OVERTAKE_BLINK_COUNT 5   // Number of blinks before automatic turn off
+#define POST_TURN_BLINK_COUNT OVERTAKE_BLINK_COUNT // Full flashes after a detected turn
 #define AZIMUTH_AVERAGE_COUNT 2  // Parameter for a Kalman filter
 #define DLR_BRIGHTNESS_VALUE 10
 #define VOLTAGE_DETECTION_THRESHOLD (15 * 1000)
 /* Low-voltage debounce: avoid disabling DRL on short transients
  * (idle + stop lights, cranking). Only react to a sustained drop. */
 #define LOW_VOLTAGE_DETECTION_THRESHOLD (5 * 60 * 1000)
+/* Handler-level smoothing after each 128-conversion DMA burst. At the 500 ms
+ * handler cadence this adds at most about four seconds of step latency. */
+#define VOLTAGE_FILTER_WINDOW_SIZE 8u
 
 #define USE_STATIC_ALLOC
 
@@ -30,9 +34,15 @@
 #define J1850_IC_TIMER_INSTANCE TIM2
 
 
+#ifndef BLINKER_ENABLED
 #define BLINKER_ENABLED 1
+#endif
+#ifndef J1850_ENABLED
 #define J1850_ENABLED 1
+#endif
+#ifndef MEMS_ENABLED
 #define MEMS_ENABLED 1
+#endif
 
 /* Set to 1 to log every J1850 frame on the bus (all sources/destinations).
  * Use this to capture real motorcycle traffic for analysis.
@@ -57,8 +67,33 @@
 #define STARTER_DISABLE_THRESHOLD (5 * 60 * 1000)
 #define STARTER_UNLOCK_DISABLE 1
 
+/* Security PIN (starter immobilizer, Core/Src/security.cc).
+ * Entry: LEFT presses = digit value (1-9), RIGHT press commits the digit;
+ * both buttons held >= 1 s toggles the hazard lights even while locked.
+ * Hold both buttons during power-on to enter the settings menu
+ * (menu item 1 = set/change PIN; committing an empty first digit clears it). */
+#define SECURITY_PIN_LENGTH 4         /* digits, each 1-9                       */
+#define SECURITY_ENTRY_TIMEOUT_MS 15000u /* inactivity aborts a partial entry   */
+#define SECURITY_MAX_ATTEMPTS 5       /* wrong PINs before lockout              */
+#define SECURITY_LOCKOUT_MS 30000u    /* lockout duration after max attempts    */
+#define SECURITY_DEBOUNCE_MS 30u      /* button level debounce for PIN entry    */
+#define SECURITY_CHORD_HAZARD_MS 1000u /* both-held time that toggles hazard    */
+
+/* EXPERIMENTAL - flash the instrument-cluster security lamp (SIL) while the
+ * immobilizer is locked and waiting for the PIN, by broadcasting an 0x89 SIL
+ * frame toggled ~1 Hz. Unconfirmed on real hardware: the SIL is normally the
+ * IPC's own broadcast (source 0x61), so the cluster may ignore a TSM-sourced
+ * (0x40) frame or override it with its own "off". Bench-verify: watch the RTT
+ * "SIL flash ->" lines against the lamp; if 0x40 is ignored, set
+ * SECURITY_SIL_SRC to 0x61 to spoof the IPC's own source. header 0xC8 = pri 6,
+ * matching the observed OEM key-lamp frames; CRC is appended by the TX path. */
+#define SECURITY_FLASH_SIL 1
+#define SECURITY_SIL_FLASH_MS 500u    /* half-period -> ~1 Hz flash             */
+#define SECURITY_SIL_HDR  0xC8        /* priority-6 header                      */
+#define SECURITY_SIL_SRC  0x40        /* our TSM address; try 0x61 if ignored   */
+
 /* J1850-based engine-state starter lock (issue #54) */
-#define ENGINE_RUNNING_RPM_MIN    1000u  /* RPM threshold to consider engine on     */
+#define ENGINE_RUNNING_RPM_MIN     700u  /* Below observed warm-idle floor (~729)   */
 #define ENGINE_RUNNING_KPH_MIN    10u    /* KPH threshold to confirm bike is moving */
 #define ENGINE_OFF_DEBOUNCE_MS    5000u  /* ms of RPM=0+KPH=0 before Off confirmed  */
 #define J1850_SIGNAL_TIMEOUT_MS   10000u /* ms without valid RPM or KPH → voltage fallback */

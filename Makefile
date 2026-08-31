@@ -40,6 +40,11 @@ BUILD_MACHINE := $(shell echo %username%)@$(shell hostname)
 ######################################
 # debug build?
 DEBUG = 0
+# Feature switches are command-line overrideable for build-matrix checks,
+# e.g. `make MEMS_ENABLED=0 J1850_ENABLED=1`.
+BLINKER_ENABLED ?= 1
+J1850_ENABLED ?= 1
+MEMS_ENABLED ?= 1
 # optimization
 
 ifeq ($(DEBUG), 1)
@@ -97,10 +102,13 @@ Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.c
 #CPP sources
 CPP_SOURCES =  \
 	Core/Src/bulb_ctrl.cc \
+	Core/Src/voltage_policy.cc \
 	Core/Src/starter_ctrl.cc \
 	Core/Src/engine_state.cc \
 	Core/Src/turn_ctrl.cc \
 	Core/Src/settings.cc \
+	Core/Src/eeprom.cc \
+	Core/Src/security.cc \
 	Core/Src/switch_ctrl.cc \
 	Core/Src/j1850vpw.cc \
 	Core/Src/j1850parser.cc \
@@ -109,7 +117,10 @@ CPP_SOURCES =  \
 	Core/Src/printf.cc \
 	Core/Src/trace.cc\
 	Core/Src/uniqueid.cc\
-	Core/Src/vmmu.cc\
+	Core/Src/vmmu.cc
+
+ifeq ($(MEMS_ENABLED),1)
+CPP_SOURCES += \
 	Core/Src/ahrs/ahrs.cc\
 	Core/Src/ahrs/impl/mpu9250/imu.cc\
 	Core/Src/ahrs/impl/mpu9250/dmp.cc\
@@ -133,6 +144,7 @@ else ifeq ($(IMU_BUS),I2C)
 $(error IMU_BUS=I2C is no longer supported: the CubeMX project was regenerated without the I2C peripheral (Core/Src/i2c.c and Core/Inc/i2c.h were removed))
 else
 $(error IMU_BUS must be SPI, got '$(IMU_BUS)')
+endif
 endif
 
 # ASM sources
@@ -189,7 +201,10 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
--DSTM32F103xB
+-DSTM32F103xB \
+-DBLINKER_ENABLED=$(BLINKER_ENABLED) \
+-DJ1850_ENABLED=$(J1850_ENABLED) \
+-DMEMS_ENABLED=$(MEMS_ENABLED)
 
 
 # AS includes
@@ -221,6 +236,7 @@ CXXFLAGS += --std=$(CXXSTD) -Wall -D_GNU_SOURCE
 
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
+CXXFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 
 # IMU transport defines, appended OUTSIDE the CubeMX-generated C_DEFS block
 # so a project regeneration cannot drop or mangle them (it has, twice: a

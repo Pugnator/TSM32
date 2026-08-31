@@ -21,6 +21,7 @@ extern "C"
     extern volatile bool     rightEnabled;
     extern volatile bool     hazardEnabled;
     extern volatile bool     overtakeMode;
+    extern volatile bool     postTurnTailActive;
     extern volatile uint32_t blinkCounter;
 
     void leftSideOff();
@@ -28,10 +29,18 @@ extern "C"
     void rightSideOff();
     void rightSideToggle();
     void blinkerDoBlink();
+    void blinkerAutoCancelHandler();
+    void startOvertakeMode();
+    void startPostTurnTail();
     void hazardToggle();
 
     // --- switch_ctrl.cc ---
     void blinkerHandler();
+
+    // --- bulb_ctrl.cc ---
+    void adcHandler();
+    extern uint32_t adcDMAbuffer[ADC_DMA_BUF_SIZE];
+    extern volatile bool adcDMAcompleted;
 
     // HAL callbacks routed to production code by the test driver
     void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
