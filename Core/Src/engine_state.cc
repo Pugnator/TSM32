@@ -33,18 +33,24 @@ void handler()
 {
   const uint32_t now = HAL_GetTick();
 
-  // Both inputs are required and expire independently.  Raw frameCounter
-  // activity is deliberately ignored: unrelated traffic and malformed SOFs
-  // say nothing about whether RPM/KPH are still current.
-  const bool telemetryFresh =
-      rpmSignalSeen && speedSignalSeen &&
-      (now - rpmLastUpdateTick) <= J1850_SIGNAL_TIMEOUT_MS &&
-      (now - speedLastUpdateTick) <= J1850_SIGNAL_TIMEOUT_MS;
-  if (!telemetryFresh)
+  // RPM is the authoritative engine-running signal: the ECM broadcasts it
+  // continuously (~15/s), including RPM=0 while the ignition is on and the
+  // engine is off. Speed is broadcast only sporadically (a handful of frames
+  // per ride), so it must NOT gate telemetry freshness - requiring it left the
+  // state stuck at Unknown and handed the starter lock to the voltage
+  // heuristic, which false-locks on a charged battery (>13.4 V for 15 s).
+  // Speed is used only to distinguish Moving from Running. Raw frameCounter
+  // activity is still ignored: unrelated traffic and malformed SOFs say
+  // nothing about whether RPM is current.
+  const bool rpmFresh =
+      rpmSignalSeen && (now - rpmLastUpdateTick) <= J1850_SIGNAL_TIMEOUT_MS;
+  const bool speedFresh =
+      speedSignalSeen && (now - speedLastUpdateTick) <= J1850_SIGNAL_TIMEOUT_MS;
+  if (!rpmFresh)
   {
     if (gState != State::Unknown)
     {
-      DEBUG_LOG("Engine: RPM/KPH telemetry stale -> state Unknown (voltage FSM takes over)\r\n");
+      DEBUG_LOG("Engine: RPM telemetry stale -> state Unknown (voltage FSM takes over)\r\n");
       gState = State::Unknown;
     }
     gOffSince = 0;
@@ -52,8 +58,12 @@ void handler()
   }
 
   const bool engineOn  = (rpms >= ENGINE_RUNNING_RPM_MIN);
-  const bool moving    = engineOn && (kph >= ENGINE_RUNNING_KPH_MIN);
-  const bool stopped   = (rpms == 0) && (kph == 0);
+  // Only a fresh speed frame may upgrade Running -> Moving; a stale kph value
+  // must never fabricate motion.
+  const bool moving    = engineOn && speedFresh && (kph >= ENGINE_RUNNING_KPH_MIN);
+  // RPM=0 alone is the authoritative "engine stopped" signal - speed frames
+  // are too sparse to require kph==0 here.
+  const bool stopped   = (rpms == 0);
 
   switch (gState)
   {

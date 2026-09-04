@@ -110,10 +110,23 @@ int main()
     CHECK(enableCalls == 1);
 #endif
 
-    // Unrelated bus activity is not telemetry. Expiring either required
-    // signal must hand control back to the voltage FSM.
+    // RPM is the authoritative signal. Both fresh again -> Off.
     fakeTick += J1850_SIGNAL_TIMEOUT_MS + 1;
-    rpmLastUpdateTick = fakeTick; // RPM is fresh, speed is deliberately stale.
+    publishTelemetry(0, 0);
+    Engine::handler();
+    CHECK(Engine::getState() == Engine::State::Off);
+
+    // Speed goes stale but RPM stays fresh: the FSM stays engine-led and must
+    // NOT fall back to Unknown (the regression that handed the starter lock to
+    // the voltage heuristic and false-locked on a charged battery).
+    fakeTick += J1850_SIGNAL_TIMEOUT_MS + 1;
+    rpms = 0;
+    rpmLastUpdateTick = fakeTick; // RPM fresh, speed deliberately stale.
+    Engine::handler();
+    CHECK(Engine::getState() == Engine::State::Off);
+
+    // Only when RPM itself expires does control return to the voltage FSM.
+    fakeTick += J1850_SIGNAL_TIMEOUT_MS + 1;
     Engine::handler();
     CHECK(Engine::getState() == Engine::State::Unknown);
 
