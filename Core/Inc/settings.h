@@ -51,8 +51,7 @@
 
 /* IMU transport. The Makefile always passes -DIMU_USE_SPI/-DIMU_USE_I2C;
  * these fallbacks only matter for header-only consumers (IDE indexers,
- * host tools) and match the board default (SPI since the CubeMX project
- * dropped the I2C peripheral). */
+ * host tools) and match the board default (SPI - MPU-9250 on SPI1). */
 #ifndef IMU_USE_SPI
 #define IMU_USE_SPI 1
 #endif
@@ -66,6 +65,15 @@
 #define STARTER_LOCK_ENABLE 1
 #define STARTER_DISABLE_THRESHOLD (5 * 60 * 1000)
 #define STARTER_UNLOCK_DISABLE 1
+
+/* Immobilizer master switch. DISABLED for the v1.0 release: with the PIN gate
+ * compiled out, the security module can never hold the starter relay off, so a
+ * rider cannot be locked out by it. When 0, securityInit()/securityHandler()
+ * are never called (the module's safe defaults leave the starter permitted),
+ * PIN entry and the settings menu are inert, and the SIL-flash experiment is
+ * off. Set to 1 to re-enable the full immobilizer. The watchdog reset-cause
+ * fail-lock is independent of this switch and stays active. */
+#define SECURITY_PIN_ENABLED 0
 
 /* Security PIN (starter immobilizer, Core/Src/security.cc).
  * Entry: LEFT presses = digit value (1-9), RIGHT press commits the digit;

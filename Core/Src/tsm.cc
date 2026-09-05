@@ -104,11 +104,13 @@ extern "C"
     /* The relay initializes low in gpio.c. Only a real ignition/power cycle
      * may release it (fail-lock), and a configured security PIN keeps it low
      * until the PIN is entered - securityInit() applies both policies. */
-#if BLINKER_ENABLED
+#if BLINKER_ENABLED && SECURITY_PIN_ENABLED
     securityInit(settingsRequested, watchdog_reset_allows_starter(resetCause));
 #else
-    /* No buttons/lamps in this build: PIN entry is impossible, so the PIN
-     * gate must not apply. Only the reset-cause fail-lock remains. */
+    /* Immobilizer disabled (SECURITY_PIN_ENABLED=0) or no buttons/lamps in this
+     * build: the PIN gate does not apply. Only the reset-cause fail-lock
+     * remains - enable the starter on a genuine power-on, keep it latched off
+     * otherwise. */
     (void)settingsRequested;
     if (watchdog_reset_allows_starter(resetCause))
     {
@@ -223,7 +225,7 @@ extern "C"
         }
       }
 
-#if SECURITY_FLASH_SIL
+#if SECURITY_FLASH_SIL && SECURITY_PIN_ENABLED
       // EXPERIMENTAL: while the immobilizer is locked/waiting, try to flash
       // the cluster security lamp by toggling an 0x89 SIL frame ~1 Hz. See
       // the SECURITY_SIL_* notes in settings.h - unconfirmed on hardware, so
@@ -384,6 +386,7 @@ extern "C"
 #endif
 
 #if BLINKER_ENABLED
+#if SECURITY_PIN_ENABLED
       if (securityBusy())
       {
         /* PIN entry / settings menu owns the buttons and lamps; the hazard
@@ -394,6 +397,10 @@ extern "C"
       {
         blinkerHandler();
       }
+#else
+      /* Immobilizer disabled: the buttons always drive the blinker. */
+      blinkerHandler();
+#endif
 
       if (hazardEnabled || leftEnabled || rightEnabled)
       {

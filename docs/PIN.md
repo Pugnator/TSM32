@@ -1,5 +1,11 @@
 # Security PIN — User Manual
 
+> **Disabled in the v1.0 release.** The immobilizer is compiled out
+> (`SECURITY_PIN_ENABLED 0` in `Core/Inc/settings.h`); the starter is never
+> held off by a PIN, and the settings menu below does nothing. Set
+> `SECURITY_PIN_ENABLED 1` and rebuild to enable everything this manual
+> describes.
+
 The TSM includes an optional **starter immobilizer**. When a PIN is set, the
 starter stays disabled after you switch the ignition on until you enter the PIN
 on the **turn-signal buttons**. Everything else on the J1850 bus keeps working
