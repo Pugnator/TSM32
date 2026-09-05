@@ -28,7 +28,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "vmmu.h"
 #include "dwtdelay.h"
 
 /* USER CODE END Includes */
@@ -103,7 +102,6 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init();
-  vmmu_init();
   tsmRunApp();
   /* USER CODE END 2 */
 

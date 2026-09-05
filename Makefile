@@ -116,8 +116,7 @@ CPP_SOURCES =  \
 	Core/Src/sys.cc \
 	Core/Src/printf.cc \
 	Core/Src/trace.cc\
-	Core/Src/uniqueid.cc\
-	Core/Src/vmmu.cc
+	Core/Src/uniqueid.cc
 
 ifeq ($(MEMS_ENABLED),1)
 CPP_SOURCES += \
@@ -244,6 +243,10 @@ CXXFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # "-DIMU_USE_SPI" - the variable already carries its own -D flags).
 CFLAGS += $(IMU_BUS_DEFS)
 CXXFLAGS += $(IMU_BUS_DEFS)
+
+# Bare metal, single-threaded: the function-local static AHRS instance in
+# tsm.cc needs no __cxa_guard_acquire/release locking around its construction.
+CXXFLAGS += -fno-threadsafe-statics
 
 CFLAGS += -DVERSION_BUILD_DATE=\""$(BUILD_DATE)\"" \
           -DVERSION_TAG=\""$(BUILD_TAG)\"" \

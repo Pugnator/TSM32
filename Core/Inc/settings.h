@@ -24,8 +24,6 @@
  * handler cadence this adds at most about four seconds of step latency. */
 #define VOLTAGE_FILTER_WINDOW_SIZE 8u
 
-#define USE_STATIC_ALLOC
-
 #define BLINKER_TIMER htim4
 #define BLINKER_TIMER_INSTANCE TIM4
 #define J1850_EOF_TIMER htim3

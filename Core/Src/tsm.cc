@@ -12,7 +12,6 @@
 
 #include <stdio.h>
 #include "id.h"
-#include "vmmu.h"
 #include "assert.h"
 #include "dwtdelay.h"
 #include "watchdog.h"
@@ -132,8 +131,13 @@ extern "C"
 #endif
 
 #if MEMS_ENABLED
-    std::unique_ptr<Ahrs::AhrsBase<Imu::Bus>> mpu(
-        new Ahrs::AhrsBase<Imu::Bus>(IMU_BUS_HANDLE, true));
+    /* The one AHRS instance lives for the whole run, so it is a function-local
+     * static, not a heap object: constructed right here (after MX_SPI1_Init,
+     * unlike a file-scope static) and never destroyed. This removed the only
+     * dynamic allocation in the firmware and with it the 4 KB vmmu pool. The
+     * pointer alias keeps the mpu-> call sites below unchanged. */
+    static Ahrs::AhrsBase<Imu::Bus> mpuInstance(IMU_BUS_HANDLE, true);
+    Ahrs::AhrsBase<Imu::Bus> *const mpu = &mpuInstance;
     PrintF("MEMS: MPU9250 %s init %s\r\n",
            Imu::kBusName,
            mpu->ok() ? "OK" : "FAILED - check bus / wiring");

@@ -1,6 +1,5 @@
 #include <sys/time.h>
 #include "tsm.h"
-#include "vmmu.h"
 #include "assert.h"
 
 #ifdef __cplusplus
@@ -34,26 +33,52 @@ void __wrap___aeabi_unwind_cpp_pr0()
     ;
 }
 
+/* The firmware has NO heap. Its single long-lived object (the AHRS instance
+ * in tsm.cc) is a function-local static, and the vmmu pool allocator that
+ * once backed operator new was removed with the last `new`. These overrides
+ * stay so that any FUTURE accidental allocation fails loudly - log + reset -
+ * instead of silently resolving to libstdc++'s default operator new, which
+ * would call newlib malloc against the 512-byte _Min_Heap_Size and fault
+ * unpredictably later. Unconditional trap, like the old OOM path (#46). */
+[[noreturn]] static void noHeapTrap(const char *what, size_t n)
+{
+  PrintF("FATAL: %s(%u) - firmware has no heap\r\n", what, (unsigned)n);
+  NVIC_SystemReset();
+  for (;;)
+  {
+  }
+}
+
 void *operator new(size_t n)
 {
-  void *const p = stalloc(n);
-  if (!p)
-  {
-    /* assert() compiles out under NDEBUG, leaving callers to dereference
-     * a nullptr return. Trap unconditionally so OOM is observable in
-     * release builds (Fixes #46). */
-    PrintF("FATAL: operator new(%u) OOM\r\n", (unsigned)n);
-    NVIC_SystemReset();
-  }
-  return p;
+  noHeapTrap("operator new", n);
+}
+
+void *operator new[](size_t n)
+{
+  noHeapTrap("operator new[]", n);
 }
 
 void operator delete(void *p)
 {
-  stfree(p);
+  (void)p;
+  noHeapTrap("operator delete", 0);
 }
 
-void operator delete(void *p, unsigned int)
+void operator delete(void *p, unsigned int n)
 {
-  stfree(p);
+  (void)p;
+  noHeapTrap("operator delete", n);
+}
+
+void operator delete[](void *p)
+{
+  (void)p;
+  noHeapTrap("operator delete[]", 0);
+}
+
+void operator delete[](void *p, unsigned int n)
+{
+  (void)p;
+  noHeapTrap("operator delete[]", n);
 }
