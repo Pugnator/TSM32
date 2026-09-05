@@ -101,7 +101,15 @@ void adcHandler()
   else if (voltageSample.highQualified &&
            appliedFallbackRegion != VoltagePolicy::Region::High)
   {
-    disableStarter();
+    /* Starter policy is RPM-driven. Voltage is a charging-system proxy, not
+     * an engine-running signal: a fresh or tender-charged battery sits above
+     * the high threshold with the engine off. Only ever latch the relay from
+     * voltage on a bus that has NEVER carried telemetry, so a J1850 fault
+     * mid-ride cannot fabricate a lock. DRL still follows voltage. */
+    if (!Engine::telemetryEverSeen())
+    {
+      disableStarter();
+    }
 #if AUTO_LIGHT_ENABLE
     currentSidemarkBrightness = DLR_BRIGHTNESS_VALUE;
 #else
@@ -112,7 +120,12 @@ void adcHandler()
   else if (voltageSample.lowQualified &&
            appliedFallbackRegion != VoltagePolicy::Region::Low)
   {
-    enableStarter();
+    /* Symmetric with the high branch: only a never-alive bus lets voltage
+     * release the relay it was allowed to latch. */
+    if (!Engine::telemetryEverSeen())
+    {
+      enableStarter();
+    }
     currentSidemarkBrightness = 0;
     appliedFallbackRegion = VoltagePolicy::Region::Low;
   }

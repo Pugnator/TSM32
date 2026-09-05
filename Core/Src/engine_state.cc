@@ -12,8 +12,9 @@ static uint32_t  gOffSince       = 0;   // tick when RPM+KPH first hit zero
 
 // ── public API ──────────────────────────────────────────────────────────────
 
-State getState()        { return gState; }
-bool  isStarterLocked() { return gStarterLocked; }
+State getState()          { return gState; }
+bool  isStarterLocked()   { return gStarterLocked; }
+bool  telemetryEverSeen() { return rpmSignalSeen; }
 
 static void lockStarterForIgnitionCycle()
 {

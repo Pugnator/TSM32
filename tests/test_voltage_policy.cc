@@ -168,14 +168,17 @@ void testDrlAndStarterIntegration()
     sampleAdc(ADC_10V_VALUE);
     CHECK(currentSidemarkBrightness == 0);
 
-    // With telemetry stale, sustained charging voltage is the fallback.
+    // With telemetry stale, sustained charging voltage is the DRL fallback.
+    // The STARTER, however, stays RPM-driven: this bus has carried telemetry,
+    // so a later J1850 fault must not let a charged battery fabricate a lock.
     fakeTick += J1850_SIGNAL_TIMEOUT_MS + 1;
     Engine::handler();
     CHECK(Engine::getState() == Engine::State::Unknown);
+    CHECK(Engine::telemetryEverSeen());
     for (int i = 0; i < 50; ++i)
         sampleAdc(ADC_14_3V_VALUE);
     CHECK(currentSidemarkBrightness == DLR_BRIGHTNESS_VALUE);
-    CHECK(disableCalls == 2); // Voltage fallback also requests the idempotent lock.
+    CHECK(disableCalls == 1); // Still only the 700 RPM lock; voltage added none.
 
     // More than five minutes of low voltage must not disable DRL while fresh
     // RPM proves the engine is still running (red-light/idle droop case).
@@ -192,11 +195,43 @@ void testDrlAndStarterIntegration()
     CHECK(enableCalls == 0);
 
     // Once telemetry expires, the already sustained undervoltage fallback
-    // applies immediately.
+    // applies immediately to DRL - but not to the starter, for the same
+    // reason as above.
     fakeTick += J1850_SIGNAL_TIMEOUT_MS + 1;
     Engine::handler();
     sampleAdc(ADC_10V_VALUE);
     CHECK(currentSidemarkBrightness == 0);
+    CHECK(enableCalls == 0);
+}
+
+// A bus that has NEVER carried telemetry is the one case where voltage still
+// owns the starter relay: no J1850 install, or a bus dead from power-on.
+// Runs after testDrlAndStarterIntegration and continues from its state (DRL
+// fallback region Low, engine state Unknown), so it only has to clear the
+// sticky telemetry flag and the call counters.
+void testDeadBusVoltageStillDrivesStarter()
+{
+    rpmSignalSeen = false;
+    speedSignalSeen = false;
+    disableCalls = 0;
+    enableCalls = 0;
+
+    fakeTick += J1850_SIGNAL_TIMEOUT_MS + 1;
+    Engine::handler();
+    CHECK(Engine::getState() == Engine::State::Unknown);
+    CHECK(!Engine::telemetryEverSeen());
+
+    // Sustained charging voltage latches the relay when nothing else can.
+    for (int i = 0; i < 50; ++i)
+        sampleAdc(ADC_14_3V_VALUE);
+    CHECK(disableCalls == 1);
+
+    // And sustained undervoltage releases it again.
+    const int lowSamples =
+        static_cast<int>(LOW_VOLTAGE_DETECTION_THRESHOLD / 500) +
+        static_cast<int>(VOLTAGE_FILTER_WINDOW_SIZE) + 2;
+    for (int i = 0; i < lowSamples; ++i)
+        sampleAdc(ADC_10V_VALUE);
     CHECK(enableCalls == 1);
 }
 } // namespace
@@ -217,6 +252,7 @@ int main()
     testQualificationMustBeContinuous();
     testIntermittentUndervoltageDoesNotAccumulate();
     testDrlAndStarterIntegration();
+    testDeadBusVoltageStillDrivesStarter();
 
     std::printf("Voltage/DRL tests: %s\n", failures ? "FAIL" : "PASS");
     return failures ? 1 : 0;

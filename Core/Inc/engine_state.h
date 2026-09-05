@@ -25,6 +25,12 @@ namespace Engine
   // otherwise it clears after Off is confirmed.
   bool isStarterLocked();
 
+  // True once valid J1850 engine telemetry (an RPM frame) has been decoded at
+  // least once this power cycle. Sticky: a bus that later goes silent does not
+  // clear it. The voltage fallback may only drive the STARTER relay while this
+  // is false - i.e. only on a bus that has never been alive.
+  bool telemetryEverSeen();
+
   // Call once per main-loop iteration when J1850 is enabled.
   void handler();
 } // namespace Engine
