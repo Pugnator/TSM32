@@ -265,8 +265,10 @@ static uint16_t replayPage(int8_t page)
     {
       cachePut(key, value);
     }
-    else if (slotErased(r) && freeSlot == EE_REC_COUNT)
+    else if (slotErased(r))
     {
+      /* First erased slot: freeSlot is still EE_REC_COUNT here by construction
+       * (it is only ever assigned immediately before the break below). */
       freeSlot = s;
       /* Keep scanning: a torn write can leave a valid record after a
        * skipped slot only if programming reordered, which it does not -
@@ -382,7 +384,11 @@ static bool compact(void)
 
 bool ee_write(ee_key_t key, uint32_t value)
 {
-  if (eeActive < 0 || key == (ee_key_t)0x00 || key == (ee_key_t)0xFF)
+  /* Compare on the raw value: casting 0x00/0xFF *into* ee_key_t would be an
+   * out-of-range enum conversion (unspecified/UB in C++), whereas enum -> int
+   * is always well defined (PVS V1016/V560). */
+  const unsigned rawKey = (unsigned)key;
+  if (eeActive < 0 || rawKey == 0x00u || rawKey == 0xFFu)
   {
     return false;
   }
