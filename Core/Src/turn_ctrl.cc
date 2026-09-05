@@ -196,6 +196,12 @@ extern "C"
     }
 
     uint32_t currentTick = HAL_GetTick();
+    /* Re-zeroed by every stage transition below, because each transition also
+     * restarts startTick. Without that, one slow main-loop iteration (J1850
+     * frame burst, ADC handler, RTT trace) could carry a single large elapsed
+     * value through two stage tests in the same call: the OFF transition and
+     * then the pause test, skipping the dark pause entirely and showing up as
+     * a brief off/on flicker instead of a proper gap between flashes. */
     uint32_t elapsed = currentTick - startTick;
 
     if (turnOnStage)
@@ -203,6 +209,7 @@ extern "C"
       if (elapsed >= PWM_DUTY_DELAY)
       {
         startTick = currentTick;
+        elapsed = 0;
         if (period < 96)
         {
           period += hazardEnabled ? PWM_HAZARD_DUTY_STEP : PWM_ON_DUTY_STEP;
@@ -247,6 +254,7 @@ extern "C"
         RIGHT_PWM_OUT = 0;
       }
       startTick = currentTick;
+      elapsed = 0;
       turnOffStage = false;
       pauseStage = true;
     }

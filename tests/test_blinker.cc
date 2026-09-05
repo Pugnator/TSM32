@@ -450,6 +450,57 @@ TEST(post_turn_tail_wins_over_pending_classification)
     ASSERT_TRUE(rightEnabled);
 }
 
+// 20. One slow main-loop iteration must not swallow the dark pause between
+//     flashes. The OFF transition and the pause test both read the same
+//     `elapsed`, captured once at function entry, so a single long iteration
+//     (J1850 burst, ADC handler, RTT trace) satisfied both at once: the lamp
+//     went dark and the flash was retroactively counted complete in the same
+//     call, so the next ramp began immediately. On the bike that showed up as
+//     a brief off/on flicker instead of a gap - very visible in overtake mode.
+TEST(slow_iteration_preserves_dark_pause)
+{
+    sim_reset();
+    sim_press_left();
+    sim_advance(BLINKER_TIMER_PERIOD_MS);
+    sim_release_left();
+    ASSERT_TRUE(leftEnabled);
+
+    // Run the ON ramp up to full brightness.
+    uint32_t pwm = 0;
+    for (int i = 0; i < 200 && pwm < 96; ++i)
+    {
+        sim_advance(PWM_DUTY_DELAY);
+        pwm = fakeLeftPWM;
+    }
+    ASSERT_TRUE(pwm >= 96);
+
+    // One more step so the ramp hands over to the full-brightness hold.
+    sim_advance(PWM_DUTY_DELAY + 2);
+    ASSERT_TRUE(fakeLeftPWM >= 96);
+
+    const uint32_t flashesBefore = blinkCounter;
+
+    // A single iteration long enough to span the hold AND the dark pause.
+    fakeTick += TURN_OFF_DELAY + TURN_OFF_PAUSE + 50;
+    blinkerDoBlink();
+
+    // It may end the hold, but the pause must be timed from here - not
+    // consumed by the same stale elapsed value.
+    ASSERT_EQ(fakeLeftPWM, 0);
+    ASSERT_EQ(blinkCounter, flashesBefore);
+
+    // Still dark just short of a full pause.
+    fakeTick += TURN_OFF_PAUSE - 10;
+    blinkerDoBlink();
+    ASSERT_EQ(fakeLeftPWM, 0);
+    ASSERT_EQ(blinkCounter, flashesBefore);
+
+    // Only now is the flash complete and the next cycle armed.
+    fakeTick += 20;
+    blinkerDoBlink();
+    ASSERT_EQ(blinkCounter, flashesBefore + 1);
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────────
 int main()
 {
